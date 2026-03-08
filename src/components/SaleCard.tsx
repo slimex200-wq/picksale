@@ -1,4 +1,5 @@
 import { Sale, platformColors, platformEmojis, getSaleStatus, saleStatusConfig, calculateRankingScore } from "@/data/salesUtils";
+import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bell, ArrowRight } from "lucide-react";
