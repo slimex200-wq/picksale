@@ -6,7 +6,6 @@ import { useSales } from "@/hooks/useSales";
 import PlatformFilter from "@/components/PlatformFilter";
 import SaleCard from "@/components/SaleCard";
 import SaleTimeline from "@/components/SaleTimeline";
-import CommunityHotDeals from "@/components/CommunityHotDeals";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Trophy, ChevronRight } from "lucide-react";
@@ -112,9 +111,6 @@ export default function Index() {
               ))}
             </div>
           </section>
-
-          {/* Community Hot Deals */}
-          <CommunityHotDeals />
         </>
       )}
     </div>

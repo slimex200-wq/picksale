@@ -13,7 +13,7 @@ export default function AdminCommunity() {
   const handleApprove = async (post: CommunityPost) => {
     try {
       const { error: insertError } = await supabase.from("sales").insert({
-        platform: post.platform || "기타",
+        platform: post.platform || "커뮤니티 핫딜",
         sale_name: post.title,
         start_date: new Date().toISOString().split("T")[0],
         end_date: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
