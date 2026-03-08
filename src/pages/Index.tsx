@@ -102,11 +102,11 @@ export default function Index() {
                 <Link
                   key={p}
                   to={`/platform/${platformSlugs[p]}`}
-                  className={`${platformColors[p]} rounded-xl px-3 py-3 flex items-center gap-2.5 text-primary-foreground hover:opacity-90 transition-opacity`}
+                  className="bg-card border border-border rounded-xl px-3 py-3 flex items-center gap-2.5 hover:shadow-md transition-shadow"
                 >
-                  <img src={platformLogos[p]} alt={p} className="h-5 w-auto object-contain brightness-0 invert" />
-                  <span className="text-xs font-bold flex-1">{p}</span>
-                  <ChevronRight className="w-3.5 h-3.5 opacity-70" />
+                  <img src={platformLogos[p]} alt={p} className="h-8 w-8 object-contain rounded-lg" />
+                  <span className="text-xs font-bold text-card-foreground flex-1">{p}</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
                 </Link>
               ))}
             </div>

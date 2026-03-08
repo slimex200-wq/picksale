@@ -55,8 +55,8 @@ export default function SaleTimeline({ sales }: Props) {
                   className="flex items-center gap-3 px-3 py-2.5 hover:bg-accent/50 cursor-pointer transition-colors"
                 >
                   {/* Platform indicator */}
-                  <div className={`${platformColors[sale.platform]} w-8 h-8 rounded-lg flex items-center justify-center shrink-0`}>
-                    <img src={platformLogos[sale.platform]} alt={sale.platform} className="h-4 w-auto object-contain brightness-0 invert" />
+                  <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0">
+                    <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-cover" />
                   </div>
 
                   {/* Info */}
