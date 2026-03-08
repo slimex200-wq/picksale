@@ -37,6 +37,7 @@ export default function CommunityPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-4 pb-24 space-y-4">
+      <CanonicalLink href={window.location.origin + "/community"} />
       {/* Header + CTA */}
       <div className="flex items-center justify-between">
         <div>

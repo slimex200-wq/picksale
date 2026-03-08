@@ -103,6 +103,7 @@ export default function PlatformSales() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
+      <CanonicalLink href={`${window.location.origin}/platform/${slug}`} />
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "CollectionPage",

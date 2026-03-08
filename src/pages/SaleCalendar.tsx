@@ -71,6 +71,7 @@ export default function SaleCalendar() {
 
   return (
     <div className="max-w-lg mx-auto px-4 pt-4 pb-24 overflow-x-hidden">
+      <CanonicalLink href={window.location.origin + "/calendar"} />
       {/* Glassmorphism Calendar Container */}
       <div className="rounded-3xl border border-white/40 bg-white/30 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] p-4"
         style={{ WebkitBackdropFilter: 'blur(40px)', backdropFilter: 'blur(40px)' }}

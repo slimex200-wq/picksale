@@ -40,6 +40,7 @@ export default function Index() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
+      <CanonicalLink href={window.location.origin + "/"} />
       {/* Search */}
       <div className="relative max-w-lg">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
