@@ -32,10 +32,10 @@ export function useAdminSales(filters?: {
     queryFn: async (): Promise<Sale[]> => {
       let q = supabase.from("sales").select("*");
 
-      if (filters?.review_status) q = q.eq("review_status", filters.review_status);
-      if (filters?.publish_status) q = q.eq("publish_status", filters.publish_status);
-      if (filters?.sale_tier) q = q.eq("sale_tier", filters.sale_tier);
-      if (filters?.platform) q = q.eq("platform", filters.platform);
+      if (filters?.review_status && filters.review_status !== "all") q = q.eq("review_status", filters.review_status);
+      if (filters?.publish_status && filters.publish_status !== "all") q = q.eq("publish_status", filters.publish_status);
+      if (filters?.sale_tier && filters.sale_tier !== "all") q = q.eq("sale_tier", filters.sale_tier);
+      if (filters?.platform && filters.platform !== "all") q = q.eq("platform", filters.platform);
 
       if (filters?.sort === "importance") {
         q = q.order("importance_score", { ascending: false });
