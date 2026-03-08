@@ -15,6 +15,7 @@ import AdminReview from "./pages/AdminReview";
 import AdminEvents from "./pages/AdminEvents";
 import AdminCommunity from "./pages/AdminCommunity";
 import AdminSubmissions from "./pages/AdminSubmissions";
+import AdminSignals from "./pages/AdminSignals";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
