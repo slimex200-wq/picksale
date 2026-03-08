@@ -14,44 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
+      community_comments: {
+        Row: {
+          author_name: string
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          author_name?: string
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          author_name?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_posts: {
         Row: {
           author: string | null
           category: string[]
+          comments_count: number
           content: string | null
           created_at: string
+          external_link: string
           id: string
-          link: string
+          is_sale_signal: boolean
           platform: string | null
           review_status: string
+          signal_score: number
           source_type: string | null
           title: string
+          updated_at: string
+          upvotes: number
         }
         Insert: {
           author?: string | null
           category?: string[]
+          comments_count?: number
           content?: string | null
           created_at?: string
+          external_link?: string
           id?: string
-          link?: string
+          is_sale_signal?: boolean
           platform?: string | null
           review_status?: string
+          signal_score?: number
           source_type?: string | null
           title: string
+          updated_at?: string
+          upvotes?: number
         }
         Update: {
           author?: string | null
           category?: string[]
+          comments_count?: number
           content?: string | null
           created_at?: string
+          external_link?: string
           id?: string
-          link?: string
+          is_sale_signal?: boolean
           platform?: string | null
           review_status?: string
+          signal_score?: number
           source_type?: string | null
           title?: string
+          updated_at?: string
+          upvotes?: number
         }
         Relationships: []
+      }
+      community_upvotes: {
+        Row: {
+          created_at: string
+          fingerprint: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          created_at?: string
+          fingerprint: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          created_at?: string
+          fingerprint?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_upvotes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       event_aliases: {
         Row: {
@@ -325,7 +401,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      recalc_signal_score: { Args: { p_post_id: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
