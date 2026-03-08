@@ -112,6 +112,9 @@ export default function Index() {
               ))}
             </div>
           </section>
+
+          {/* Community Hot Deals */}
+          <CommunityHotDeals />
         </>
       )}
     </div>
