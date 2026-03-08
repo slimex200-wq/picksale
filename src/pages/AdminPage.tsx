@@ -306,8 +306,8 @@ export default function AdminPage() {
                         {post.platform || "미지정"} · {post.author || "익명"} · {new Date(post.created_at).toLocaleDateString("ko-KR")}
                       </p>
                     </div>
-                    {post.link && (
-                      <a href={post.link} target="_blank" rel="noopener noreferrer">
+                    {post.external_link && (
+                      <a href={post.external_link} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                       </a>
                     )}
