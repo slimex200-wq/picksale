@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { Sale, Platform, SaleTier, ReviewStatus, PublishStatus } from "@/data/salesUtils";
+import { type Sale, type Platform, type SaleTier, type ReviewStatus, type PublishStatus, normalizePlatform } from "@/data/salesUtils";
 
 /** Public hook – only returns published sales */
 export function useSales() {
