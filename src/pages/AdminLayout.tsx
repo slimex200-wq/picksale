@@ -1,16 +1,23 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Settings, Inbox, List, LogOut, MessageSquare, Send, Radio } from "lucide-react";
+import {
+  Settings, Inbox, List, LogOut, MessageSquare, Send, Radio,
+  Bug, Copy, BarChart3, FlaskConical,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 const tabs = [
   { to: "/admin", label: "개요", icon: Settings, exact: true },
-  { to: "/admin/review", label: "검토 대기", icon: Inbox },
-  { to: "/admin/events", label: "전체 이벤트", icon: List },
+  { to: "/admin/review", label: "검토", icon: Inbox },
+  { to: "/admin/events", label: "이벤트", icon: List },
+  { to: "/admin/signals", label: "시그널", icon: Radio },
   { to: "/admin/community", label: "커뮤니티", icon: MessageSquare },
   { to: "/admin/submissions", label: "제보", icon: Send },
-  { to: "/admin/signals", label: "시그널", icon: Radio },
+  { to: "/admin/signal-debug", label: "디버그", icon: Bug },
+  { to: "/admin/duplicates", label: "중복", icon: Copy },
+  { to: "/admin/analytics", label: "분석", icon: BarChart3 },
+  { to: "/admin/signal-simulator", label: "시뮬레이터", icon: FlaskConical },
 ];
 
 export default function AdminLayout() {
@@ -22,7 +29,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pt-4 pb-24">
+    <div className="max-w-5xl mx-auto px-4 pt-4 pb-24">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Settings className="w-5 h-5 text-primary" />
@@ -34,20 +41,20 @@ export default function AdminLayout() {
         </Button>
       </div>
 
-      <nav className="flex gap-1 mb-6 border-b border-border">
+      <nav className="flex gap-0.5 mb-6 border-b border-border overflow-x-auto scrollbar-hide">
         {tabs.map(({ to, label, icon: Icon, exact }) => {
-          const active = exact ? pathname === to : pathname.startsWith(to);
+          const active = exact ? pathname === to : pathname.startsWith(to) && pathname !== "/admin";
           return (
             <Link
               key={to}
               to={to}
-              className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-2 text-xs font-medium border-b-2 whitespace-nowrap transition-colors ${
                 active
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-3.5 h-3.5" />
               {label}
             </Link>
           );

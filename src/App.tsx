@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
 import PlatformSales from "./pages/PlatformSales";
 import SaleCalendar from "./pages/SaleCalendar";
+import EventDetail from "./pages/EventDetail";
 import CommunityPage from "./pages/CommunityPage";
 import CommunityDetail from "./pages/CommunityDetail";
 import SubmitSale from "./pages/SubmitSale";
@@ -18,6 +19,10 @@ import AdminEvents from "./pages/AdminEvents";
 import AdminCommunity from "./pages/AdminCommunity";
 import AdminSubmissions from "./pages/AdminSubmissions";
 import AdminSignals from "./pages/AdminSignals";
+import AdminSignalDebug from "./pages/AdminSignalDebug";
+import AdminDuplicates from "./pages/AdminDuplicates";
+import AdminAnalytics from "./pages/AdminAnalytics";
+import AdminSignalSimulator from "./pages/AdminSignalSimulator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +39,7 @@ const App = () => (
           <Route path="/sale/:id" element={<SaleDetail />} />
           <Route path="/platform/:slug" element={<PlatformSales />} />
           <Route path="/calendar" element={<SaleCalendar />} />
+          <Route path="/event/:eventId" element={<EventDetail />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/community/:id" element={<CommunityDetail />} />
           <Route path="/submit" element={<SubmitSale />} />
@@ -44,6 +50,10 @@ const App = () => (
             <Route path="community" element={<AdminCommunity />} />
             <Route path="submissions" element={<AdminSubmissions />} />
             <Route path="signals" element={<AdminSignals />} />
+            <Route path="signal-debug" element={<AdminSignalDebug />} />
+            <Route path="duplicates" element={<AdminDuplicates />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="signal-simulator" element={<AdminSignalSimulator />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
