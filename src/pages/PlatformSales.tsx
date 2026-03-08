@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { useSales } from "@/hooks/useSales";
 import { slugToPlatform, platformEmojis, platformColors, getSaleStatus, calculateRankingScore, Platform } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
@@ -7,6 +7,7 @@ import SaleCard from "@/components/SaleCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import JsonLd from "@/components/JsonLd";
 
 type StatusFilter = "all" | "live" | "starting_soon" | "ending_today" | "ending_soon";
 type SortOption = "ranking" | "newest" | "ending_soon" | "starting_soon";
