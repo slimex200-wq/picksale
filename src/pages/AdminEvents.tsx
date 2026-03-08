@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAdminSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,10 +21,11 @@ import {
 
 export default function AdminEvents() {
   const queryClient = useQueryClient();
-  const [platformFilter, setPlatformFilter] = useState("");
-  const [tierFilter, setTierFilter] = useState("");
-  const [reviewFilter, setReviewFilter] = useState("");
-  const [publishFilter, setPublishFilter] = useState("");
+  const [searchParams] = useSearchParams();
+  const [platformFilter, setPlatformFilter] = useState(searchParams.get("platform") || "");
+  const [tierFilter, setTierFilter] = useState(searchParams.get("tier") || "");
+  const [reviewFilter, setReviewFilter] = useState(searchParams.get("review") || "");
+  const [publishFilter, setPublishFilter] = useState(searchParams.get("publish") || "");
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
   const { data: sales = [], isLoading } = useAdminSales({
