@@ -116,3 +116,21 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
     </div>
   );
 }
+
+/** Visual signal strength indicator based on importance_score */
+function SignalStrength({ score }: { score: number }) {
+  const bars = Math.min(Math.max(Math.ceil(score / 2), 1), 5);
+  return (
+    <div className="flex items-end gap-0.5 ml-auto" title={`신호 강도: ${score}`}>
+      {[1, 2, 3, 4, 5].map((level) => (
+        <div
+          key={level}
+          className={`w-1 rounded-full transition-colors ${
+            level <= bars ? "bg-primary" : "bg-border"
+          }`}
+          style={{ height: `${4 + level * 2}px` }}
+        />
+      ))}
+    </div>
+  );
+}
