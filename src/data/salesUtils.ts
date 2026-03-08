@@ -25,6 +25,20 @@ export interface Sale {
 
 export const platforms: Platform[] = ["쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM"];
 
+export const platformSlugs: Record<Platform, string> = {
+  "쿠팡": "coupang",
+  "올리브영": "oliveyoung",
+  "무신사": "musinsa",
+  "KREAM": "kream",
+  "SSG": "ssg",
+  "오늘의집": "ohouse",
+  "29CM": "29cm",
+};
+
+export const slugToPlatform: Record<string, Platform> = Object.fromEntries(
+  Object.entries(platformSlugs).map(([k, v]) => [v, k as Platform])
+) as Record<string, Platform>;
+
 export const platformColors: Record<Platform, string> = {
   "쿠팡": "bg-sale-coupang",
   "올리브영": "bg-sale-oliveyoung",
