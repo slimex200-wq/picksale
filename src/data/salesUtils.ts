@@ -1,13 +1,5 @@
 export type Platform = "쿠팡" | "올리브영" | "무신사" | "KREAM" | "SSG" | "오늘의집" | "29CM" | "커뮤니티 핫딜";
 
-const knownPlatforms = new Set(["쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM", "커뮤니티 핫딜"]);
-
-/** DB에서 가져온 플랫폼 문자열을 Platform 타입으로 정규화 */
-export function normalizePlatform(raw: string): Platform {
-  if (knownPlatforms.has(raw)) return raw as Platform;
-  return "커뮤니티 핫딜";
-}
-
 export type SaleTier = "major" | "minor" | "excluded";
 export type ReviewStatus = "pending" | "approved" | "rejected";
 export type PublishStatus = "draft" | "published" | "hidden";
