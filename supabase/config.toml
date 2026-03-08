@@ -1,1 +1,4 @@
 project_id = "scekmyoyodcuvadxxwmh"
+
+[functions.api-sales]
+verify_jwt = false
