@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Header from "@/components/Header";
+import LandingPage from "./pages/LandingPage";
 import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
 import PlatformSales from "./pages/PlatformSales";
@@ -36,17 +37,20 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Header />
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/sale/:id" element={<SaleDetail />} />
-            <Route path="/platform/:slug" element={<PlatformSales />} />
-            <Route path="/calendar" element={<SaleCalendar />} />
-            <Route path="/event/:eventId" element={<EventDetail />} />
-            <Route path="/community" element={<CommunityPage />} />
-            <Route path="/community/:id" element={<CommunityDetail />} />
-            <Route path="/submit" element={<SubmitSale />} />
-            <Route path="/login" element={<LoginPage />} />
+            {/* Landing — no header */}
+            <Route path="/" element={<LandingPage />} />
+            {/* Login — no header */}
+            <Route path="/login" element={<><Header /><LoginPage /></>} />
+            {/* All other pages — with header */}
+            <Route path="/home" element={<><Header /><Index /></>} />
+            <Route path="/sale/:id" element={<><Header /><SaleDetail /></>} />
+            <Route path="/platform/:slug" element={<><Header /><PlatformSales /></>} />
+            <Route path="/calendar" element={<><Header /><SaleCalendar /></>} />
+            <Route path="/event/:eventId" element={<><Header /><EventDetail /></>} />
+            <Route path="/community" element={<><Header /><CommunityPage /></>} />
+            <Route path="/community/:id" element={<><Header /><CommunityDetail /></>} />
+            <Route path="/submit" element={<><Header /><SubmitSale /></>} />
             <Route path="/admin" element={<AdminGuard />}>
               <Route index element={<AdminOverview />} />
               <Route path="review" element={<AdminReview />} />
@@ -59,7 +63,7 @@ const App = () => (
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="signal-simulator" element={<AdminSignalSimulator />} />
             </Route>
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<><Header /><NotFound /></>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
