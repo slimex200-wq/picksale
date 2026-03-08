@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      sale_submissions: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          link: string
+          platform: string | null
+          sale_name: string
+          start_date: string | null
+          status: string
+          submitter_email: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          link?: string
+          platform?: string | null
+          sale_name: string
+          start_date?: string | null
+          status?: string
+          submitter_email?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          link?: string
+          platform?: string | null
+          sale_name?: string
+          start_date?: string | null
+          status?: string
+          submitter_email?: string | null
+        }
+        Relationships: []
+      }
       sales: {
         Row: {
           category: string[]
