@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
 
 const navItems = [
-  { to: "/", label: "홈", icon: Home },
+  { to: "/home", label: "홈", icon: Home },
   { to: "/community", label: "레이더", icon: Flame },
   { to: "/calendar", label: "캘린더", icon: CalendarDays },
   { to: "/admin", label: "관리", icon: Settings },
@@ -19,7 +19,7 @@ export default function Header() {
       {/* Top bar */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-center gap-2 justify-between">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/home" className="flex items-center gap-2">
             <img src={logo} alt="PickSale" className="w-8 h-8 rounded-lg object-cover" />
             <h1 className="text-lg font-extrabold text-foreground tracking-tight">
               PickSale
@@ -69,7 +69,7 @@ export default function Header() {
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-lg border-t border-border">
         <div className="max-w-lg mx-auto flex justify-around py-2">
           {navItems.map(({ to, label, icon: Icon }) => {
-            const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
+            const active = to === "/home" ? pathname === "/home" : pathname.startsWith(to);
             return (
               <Link
                 key={to}
