@@ -6,14 +6,15 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
-const tabs = [
+const tabDefs = [
   { to: "/admin", label: "개요", icon: Settings, exact: true },
-  { to: "/admin/review", label: "검토", icon: Inbox },
-  { to: "/admin/events", label: "이벤트", icon: List },
-  { to: "/admin/signals", label: "시그널", icon: Radio },
-  { to: "/admin/community", label: "커뮤니티", icon: MessageSquare },
-  { to: "/admin/submissions", label: "제보", icon: Send },
+  { to: "/admin/review", label: "검토", icon: Inbox, countKey: "review" },
+  { to: "/admin/events", label: "이벤트", icon: List, countKey: "events" },
+  { to: "/admin/signals", label: "시그널", icon: Radio, countKey: "signals" },
+  { to: "/admin/community", label: "커뮤니티", icon: MessageSquare, countKey: "community" },
+  { to: "/admin/submissions", label: "제보", icon: Send, countKey: "submissions" },
   { to: "/admin/signal-debug", label: "디버그", icon: Bug },
   { to: "/admin/duplicates", label: "중복", icon: Copy },
   { to: "/admin/analytics", label: "분석", icon: BarChart3 },
@@ -22,6 +23,43 @@ const tabs = [
 
 export default function AdminLayout() {
   const { pathname } = useLocation();
+
+  // Fetch counts for tabs
+  const { data: counts } = useQuery({
+    queryKey: ["admin_tab_counts"],
+    queryFn: async () => {
+      const [salesRes, signalsRes, communityRes, submissionsRes] = await Promise.all([
+        supabase.from("sales").select("review_status, publish_status", { count: "exact" }),
+        supabase.from("sale_signals").select("review_status", { count: "exact" }),
+        supabase.from("community_posts").select("review_status", { count: "exact" }),
+        supabase.from("sale_submissions").select("status", { count: "exact" }),
+      ]);
+
+      const sales = salesRes.data ?? [];
+      const signals = signalsRes.data ?? [];
+      const community = communityRes.data ?? [];
+      const submissions = submissionsRes.data ?? [];
+
+      const reviewPending = sales.filter(s => s.review_status === "pending").length;
+      const reviewTotal = sales.length;
+      const signalsPending = signals.filter(s => s.review_status === "pending").length;
+      const signalsTotal = signals.length;
+      const communityPublished = community.filter(p => p.review_status === "published").length;
+      const communityTotal = community.length;
+      const subsPending = submissions.filter(s => s.status === "pending").length;
+      const subsTotal = submissions.length;
+      const eventsPublished = sales.filter(s => s.publish_status === "published").length;
+
+      return {
+        review: { highlight: reviewPending, total: reviewTotal },
+        events: { highlight: eventsPublished, total: reviewTotal },
+        signals: { highlight: signalsPending, total: signalsTotal },
+        community: { highlight: communityPublished, total: communityTotal },
+        submissions: { highlight: subsPending, total: subsTotal },
+      } as Record<string, { highlight: number; total: number }>;
+    },
+    refetchInterval: 30000,
+  });
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -42,8 +80,9 @@ export default function AdminLayout() {
       </div>
 
       <nav className="flex gap-0.5 mb-6 border-b border-border overflow-x-auto scrollbar-hide">
-        {tabs.map(({ to, label, icon: Icon, exact }) => {
+        {tabDefs.map(({ to, label, icon: Icon, exact, countKey }) => {
           const active = exact ? pathname === to : pathname.startsWith(to) && pathname !== "/admin";
+          const c = countKey && counts ? counts[countKey] : null;
           return (
             <Link
               key={to}
@@ -56,6 +95,11 @@ export default function AdminLayout() {
             >
               <Icon className="w-3.5 h-3.5" />
               {label}
+              {c && (
+                <span className={`ml-0.5 text-[10px] font-bold ${c.highlight > 0 ? "text-primary" : "text-muted-foreground"}`}>
+                  {c.highlight}/{c.total}
+                </span>
+              )}
             </Link>
           );
         })}
