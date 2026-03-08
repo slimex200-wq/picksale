@@ -1,17 +1,39 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
-import { sortByRanking, Platform, getSaleStatus, saleStatusConfig, platforms, platformEmojis, platformColors, platformSlugs } from "@/data/salesUtils";
+import { sortByRanking, Platform, getSaleStatus, platforms, platformSlugs } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { useSales } from "@/hooks/useSales";
 import PlatformFilter from "@/components/PlatformFilter";
 import SaleCard from "@/components/SaleCard";
-import SaleTimeline from "@/components/SaleTimeline";
-import TrendingCommunity from "@/components/TrendingCommunity";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Trophy, ChevronRight } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
+
+// Lazy load secondary sections — they are below the fold
+const SaleTimeline = lazy(() => import("@/components/SaleTimeline"));
+const TrendingCommunity = lazy(() => import("@/components/TrendingCommunity"));
+
+function TimelineSkeleton() {
+  return (
+    <div className="space-y-3">
+      <Skeleton className="h-6 w-32" />
+      <Skeleton className="h-48 w-full rounded-xl" />
+    </div>
+  );
+}
+
+function TrendingSkeleton() {
+  return (
+    <div className="space-y-3">
+      <Skeleton className="h-6 w-40" />
+      {[1, 2, 3].map((i) => (
+        <Skeleton key={i} className="h-14 w-full rounded-xl" />
+      ))}
+    </div>
+  );
+}
 
 export default function Index() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
@@ -74,7 +96,7 @@ export default function Index() {
         <>
           {/* Desktop: 2-column layout (ranking + timeline) */}
           <div className="lg:grid lg:grid-cols-[1fr_340px] lg:gap-6">
-            {/* Left: Ranking */}
+            {/* Left: Ranking — renders immediately */}
             <section className="space-y-3">
               <h2 className="text-base font-bold text-foreground px-1 flex items-center gap-2">
                 <span>🏆</span>
@@ -90,14 +112,18 @@ export default function Index() {
               </div>
             </section>
 
-            {/* Right: Timeline (sidebar on desktop, below on mobile) */}
+            {/* Right: Timeline — lazy loaded */}
             <aside className="mt-6 lg:mt-0">
-              <SaleTimeline sales={sales} />
+              <Suspense fallback={<TimelineSkeleton />}>
+                <SaleTimeline sales={sales} />
+              </Suspense>
             </aside>
           </div>
 
-          {/* Trending Community */}
-          <TrendingCommunity />
+          {/* Trending Community — lazy loaded */}
+          <Suspense fallback={<TrendingSkeleton />}>
+            <TrendingCommunity />
+          </Suspense>
 
           {/* Platform Navigation */}
           <section className="space-y-3">
@@ -112,7 +138,7 @@ export default function Index() {
                   to={`/platform/${platformSlugs[p]}`}
                   className="bg-card border border-border rounded-xl px-3 py-3 flex items-center gap-2.5 hover:shadow-md transition-shadow"
                 >
-                  <img src={platformLogos[p]} alt={p} className="h-8 w-8 object-contain rounded-lg" />
+                  <img src={platformLogos[p]} alt={p} className="h-8 w-8 object-contain rounded-lg" loading="lazy" />
                   <span className="text-xs font-bold text-card-foreground flex-1">{p}</span>
                   <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
                 </Link>
