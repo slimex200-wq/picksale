@@ -70,6 +70,7 @@ export const platformEmojis: Record<Platform, string> = {
   "SSG": "🛒",
   "오늘의집": "🏠",
   "29CM": "✨",
+  "기타": "🛍️",
 };
 
 const fmt = (d: Date) => d.toISOString().split("T")[0];
