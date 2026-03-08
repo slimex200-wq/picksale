@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       community_comments: {
         Row: {
+          author_id: string | null
           author_name: string
           content: string
           created_at: string
@@ -23,6 +24,7 @@ export type Database = {
           post_id: string
         }
         Insert: {
+          author_id?: string | null
           author_name?: string
           content: string
           created_at?: string
@@ -30,6 +32,7 @@ export type Database = {
           post_id: string
         }
         Update: {
+          author_id?: string | null
           author_name?: string
           content?: string
           created_at?: string
@@ -37,6 +40,13 @@ export type Database = {
           post_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "community_comments_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "community_comments_post_id_fkey"
             columns: ["post_id"]
@@ -49,6 +59,7 @@ export type Database = {
       community_posts: {
         Row: {
           author: string | null
+          author_id: string | null
           category: string[]
           comments_count: number
           content: string | null
@@ -66,6 +77,7 @@ export type Database = {
         }
         Insert: {
           author?: string | null
+          author_id?: string | null
           category?: string[]
           comments_count?: number
           content?: string | null
@@ -83,6 +95,7 @@ export type Database = {
         }
         Update: {
           author?: string | null
+          author_id?: string | null
           category?: string[]
           comments_count?: number
           content?: string | null
@@ -98,7 +111,15 @@ export type Database = {
           updated_at?: string
           upvotes?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "community_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       community_upvotes: {
         Row: {
@@ -106,18 +127,21 @@ export type Database = {
           fingerprint: string
           id: string
           post_id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
           fingerprint: string
           id?: string
           post_id: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
           fingerprint?: string
           id?: string
           post_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -125,6 +149,13 @@ export type Database = {
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_upvotes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -183,6 +214,27 @@ export type Database = {
           platform?: string
           surface_type?: string
           title_selector?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id: string
+          username?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          username?: string
         }
         Relationships: []
       }
@@ -416,15 +468,40 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       recalc_signal_score: { Args: { p_post_id: string }; Returns: undefined }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -551,6 +628,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
