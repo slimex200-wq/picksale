@@ -1,6 +1,6 @@
 import { useAdminSales } from "@/hooks/useSales";
 import { Link } from "react-router-dom";
-import { CheckCircle, Eye, EyeOff, Clock } from "lucide-react";
+import { CheckCircle, Eye, EyeOff, Clock, XCircle } from "lucide-react";
 
 export default function AdminOverview() {
   const { data: allSales = [] } = useAdminSales();
