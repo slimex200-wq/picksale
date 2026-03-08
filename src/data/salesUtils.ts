@@ -129,6 +129,11 @@ export function calculateRankingScore(sale: Sale): number {
   const todayStr = fmt(now);
   let score = sale.importance_score;
 
+  // 카드 프로모션 패널티
+  if (isCreditCardPromo(sale.sale_name)) {
+    score -= 5;
+  }
+
   // 진행중 보너스
   if (sale.start_date <= todayStr && sale.end_date >= todayStr) score += 3;
 
