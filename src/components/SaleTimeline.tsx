@@ -56,7 +56,7 @@ export default function SaleTimeline({ sales }: Props) {
                 >
                   {/* Platform indicator */}
                   <div className={`${platformColors[sale.platform]} w-8 h-8 rounded-lg flex items-center justify-center shrink-0`}>
-                    <span className="text-sm">{platformEmojis[sale.platform]}</span>
+                    <img src={platformLogos[sale.platform]} alt={sale.platform} className="h-4 w-auto object-contain brightness-0 invert" />
                   </div>
 
                   {/* Info */}
