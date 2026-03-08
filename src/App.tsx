@@ -13,6 +13,7 @@ import AdminGuard from "./pages/AdminGuard";
 import AdminOverview from "./pages/AdminOverview";
 import AdminReview from "./pages/AdminReview";
 import AdminEvents from "./pages/AdminEvents";
+import AdminCommunity from "./pages/AdminCommunity";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
