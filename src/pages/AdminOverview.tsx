@@ -40,6 +40,7 @@ export default function AdminOverview() {
           </div>
         </Link>
       ))}
+      </div>
     </div>
   );
 }
