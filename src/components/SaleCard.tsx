@@ -46,6 +46,7 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
           </span>
         )}
         <img src={platformLogos[sale.platform]} alt={sale.platform} className="h-5 w-auto object-contain rounded" />
+        <span className="text-[11px] font-bold text-primary-foreground/90">{sale.platform}</span>
         <span
           className={`ml-auto text-[10px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full ${
             isUrgent
