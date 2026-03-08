@@ -23,7 +23,7 @@ export interface Sale {
   created_at?: string;
 }
 
-export const platforms: Platform[] = ["쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM", "W CONCEPT", "커뮤니티 핫딜"];
+export const platforms: Platform[] = ["쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM", "WCONCEPT", "커뮤니티 핫딜"];
 
 export const platformSlugs: Record<Platform, string> = {
   "쿠팡": "coupang",
