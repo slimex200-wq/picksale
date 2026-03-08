@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { Radar, CalendarDays, Send, Settings } from "lucide-react";
+import { CalendarDays, Send, Settings, Home } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const navItems = [
-  { to: "/", label: "홈", icon: Radar },
+  { to: "/", label: "홈", icon: Home },
   { to: "/calendar", label: "캘린더", icon: CalendarDays },
   { to: "/submit", label: "제보", icon: Send },
   { to: "/admin", label: "관리", icon: Settings },
@@ -16,13 +17,10 @@ export default function Header() {
       {/* Top bar */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border px-4 py-3">
         <div className="max-w-lg mx-auto flex items-center gap-2">
-          <Radar className="w-6 h-6 text-primary" />
+          <img src={logo} alt="PickSale" className="w-7 h-7 rounded-md" />
           <h1 className="text-lg font-extrabold text-foreground tracking-tight">
-            세일레이더
+            PickSale
           </h1>
-          <span className="text-[10px] text-muted-foreground font-medium bg-secondary px-1.5 py-0.5 rounded-sm ml-1">
-            BETA
-          </span>
         </div>
       </header>
 
