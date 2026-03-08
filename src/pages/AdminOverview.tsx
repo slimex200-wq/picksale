@@ -9,6 +9,7 @@ export default function AdminOverview() {
   const approved = allSales.filter((s) => s.review_status === "approved" && s.publish_status !== "published" && s.publish_status !== "hidden").length;
   const published = allSales.filter((s) => s.publish_status === "published").length;
   const hidden = allSales.filter((s) => s.publish_status === "hidden").length;
+  const rejected = allSales.filter((s) => s.review_status === "rejected").length;
 
   const cards = [
     { label: "검토 대기", value: pending, icon: Clock, color: "text-yellow-600", to: "/admin/review" },
