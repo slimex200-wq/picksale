@@ -16,7 +16,7 @@ export default function Header() {
     <>
       {/* Top bar */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border px-4 py-3">
-        <div className="max-w-lg mx-auto flex items-center gap-2">
+        <div className="max-w-lg mx-auto flex items-center gap-2 justify-start">
           <img src={logo} alt="PickSale" className="w-8 h-8 rounded-lg object-cover" />
           <h1 className="text-lg font-extrabold text-foreground tracking-tight">
             PickSale
