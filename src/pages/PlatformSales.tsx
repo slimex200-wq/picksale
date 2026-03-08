@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { useSales } from "@/hooks/useSales";
 import { slugToPlatform, platformEmojis, platformColors, getSaleStatus, calculateRankingScore, Platform } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
@@ -7,6 +7,7 @@ import SaleCard from "@/components/SaleCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import JsonLd from "@/components/JsonLd";
 
 type StatusFilter = "all" | "live" | "starting_soon" | "ending_today" | "ending_soon";
 type SortOption = "ranking" | "newest" | "ending_soon" | "starting_soon";
@@ -43,6 +44,7 @@ function getDetailedStatus(sale: { start_date: string; end_date: string }): Stat
 
 export default function PlatformSales() {
   const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
   const platform = slug ? slugToPlatform[slug] : undefined;
   const { data: allSales = [], isLoading } = useSales();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -100,6 +102,18 @@ export default function PlatformSales() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: `${platform} 세일 모음 | PickSale`,
+        description: `${platform}의 현재 진행 중이거나 곧 시작하는 주요 세일 이벤트를 모아봅니다.`,
+        url: `${window.location.origin}${location.pathname}`,
+        about: {
+          "@type": "Organization",
+          name: platform,
+        },
+        numberOfItems: filtered.length,
+      }} />
       {/* Header */}
       <div className="space-y-3">
         <Link to="/" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">

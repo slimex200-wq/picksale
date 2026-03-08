@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, ExternalLink, ArrowLeft, Layers } from "lucide-react";
 import { platformLogos } from "@/data/platformLogos";
 import type { Platform } from "@/data/salesUtils";
+import JsonLd from "@/components/JsonLd";
 
 export default function EventDetail() {
   const { eventId } = useParams<{ eventId: string }>();
+  const location = useLocation();
 
   const { data: event, isLoading: eventLoading } = useQuery({
     queryKey: ["event_detail", eventId],
@@ -62,8 +64,32 @@ export default function EventDetail() {
   const isActive = event.event_status === "active";
   const daysLeft = Math.ceil((new Date(event.end_date).getTime() - Date.now()) / 86400000);
 
+  const eventStatusMap: Record<string, string> = {
+    active: "https://schema.org/EventScheduled",
+    expired: "https://schema.org/EventCancelled",
+    merged: "https://schema.org/EventCancelled",
+  };
+
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.canonical_title,
+    startDate: event.start_date,
+    endDate: event.end_date,
+    eventStatus: eventStatusMap[event.event_status] || "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
+    url: `${window.location.origin}${location.pathname}`,
+    organizer: {
+      "@type": "Organization",
+      name: event.platform,
+    },
+    description: `${event.platform} ${event.canonical_title} 세일 이벤트. ${event.start_date} ~ ${event.end_date}`,
+    ...(event.canonical_link ? { sameAs: event.canonical_link } : {}),
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 pt-4 pb-24">
+      <JsonLd data={jsonLdData} />
       {/* SEO title */}
       <title>{event.canonical_title} - {event.platform} | PickSale</title>
       <meta name="description" content={`${event.platform} ${event.canonical_title} 세일 이벤트 정보. ${event.start_date} ~ ${event.end_date}`} />

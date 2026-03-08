@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { platformColors, platformEmojis, Platform } from "@/data/salesUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ExternalLink, Bell, Calendar } from "lucide-react";
 import { toast } from "sonner";
+import JsonLd from "@/components/JsonLd";
 
 function formatDate(d: string) {
   const date = new Date(d);
@@ -16,6 +17,7 @@ function formatDate(d: string) {
 export default function SaleDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { data: sale, isLoading } = useQuery({
     queryKey: ["sale", id],
@@ -58,8 +60,29 @@ export default function SaleDetail() {
 
   const colorClass = platformColors[sale.platform];
 
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: sale.sale_name,
+    description: sale.description || `${sale.platform} ${sale.sale_name} 세일 정보`,
+    url: `${window.location.origin}${location.pathname}`,
+    about: {
+      "@type": "Offer",
+      name: sale.sale_name,
+      validFrom: sale.start_date,
+      validThrough: sale.end_date,
+      offeredBy: {
+        "@type": "Organization",
+        name: sale.platform,
+      },
+      ...(sale.link ? { url: sale.link } : {}),
+    },
+    ...(sale.category.length > 0 ? { keywords: sale.category.join(", ") } : {}),
+  };
+
   return (
     <div className="max-w-lg mx-auto pb-24 px-4 pt-4">
+      <JsonLd data={jsonLdData} />
       <div className="rounded-2xl overflow-hidden shadow-card border border-border/50 bg-card">
         {/* Platform Header */}
         <div className={`${colorClass} px-4 pt-4 pb-8 relative`}>

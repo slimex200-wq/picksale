@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import {
   ThumbsUp, MessageSquare, ExternalLink, ArrowLeft, Send,
 } from "lucide-react";
+import JsonLd from "@/components/JsonLd";
 
 interface Comment {
   id: string;
@@ -28,6 +29,7 @@ const categoryLabels: Record<string, { label: string; className: string }> = {
 
 export default function CommunityDetail() {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const [commentText, setCommentText] = useState("");
   const [authorName, setAuthorName] = useState("");
@@ -146,7 +148,21 @@ export default function CommunityDetail() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-4 pb-24 space-y-4">
-      {/* Back */}
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "DiscussionForumPosting",
+        headline: post.title,
+        text: post.content || "",
+        datePublished: post.created_at,
+        dateModified: post.updated_at,
+        url: `${window.location.origin}${location.pathname}`,
+        interactionStatistic: [
+          { "@type": "InteractionCounter", interactionType: "https://schema.org/LikeAction", userInteractionCount: post.upvotes },
+          { "@type": "InteractionCounter", interactionType: "https://schema.org/CommentAction", userInteractionCount: post.comments_count },
+        ],
+        ...(post.author ? { author: { "@type": "Person", name: post.author } } : {}),
+        ...(post.external_link ? { url: post.external_link } : {}),
+      }} />
       <Link to="/community" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="w-4 h-4" />목록
       </Link>
