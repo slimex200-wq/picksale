@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Settings, Inbox, List, LogOut, MessageSquare, Send } from "lucide-react";
+import { Settings, Inbox, List, LogOut, MessageSquare, Send, Radio } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -10,6 +10,7 @@ const tabs = [
   { to: "/admin/events", label: "전체 이벤트", icon: List },
   { to: "/admin/community", label: "커뮤니티", icon: MessageSquare },
   { to: "/admin/submissions", label: "제보", icon: Send },
+  { to: "/admin/signals", label: "시그널", icon: Radio },
 ];
 
 export default function AdminLayout() {

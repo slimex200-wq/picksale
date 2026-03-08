@@ -53,6 +53,96 @@ export type Database = {
         }
         Relationships: []
       }
+      sale_events: {
+        Row: {
+          canonical_link: string
+          canonical_title: string
+          created_at: string
+          end_date: string
+          event_status: string
+          id: string
+          importance_score: number
+          platform: string
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          canonical_link?: string
+          canonical_title: string
+          created_at?: string
+          end_date: string
+          event_status?: string
+          id?: string
+          importance_score?: number
+          platform: string
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          canonical_link?: string
+          canonical_title?: string
+          created_at?: string
+          end_date?: string
+          event_status?: string
+          id?: string
+          importance_score?: number
+          platform?: string
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sale_signals: {
+        Row: {
+          confidence: number
+          created_at: string
+          detected_discount: string
+          detected_keywords: string[]
+          end_date_raw: string | null
+          id: string
+          platform: string
+          processed: boolean
+          raw_text: string
+          raw_title: string
+          review_status: string
+          source_type: string
+          source_url: string
+          start_date_raw: string | null
+        }
+        Insert: {
+          confidence?: number
+          created_at?: string
+          detected_discount?: string
+          detected_keywords?: string[]
+          end_date_raw?: string | null
+          id?: string
+          platform: string
+          processed?: boolean
+          raw_text?: string
+          raw_title?: string
+          review_status?: string
+          source_type?: string
+          source_url?: string
+          start_date_raw?: string | null
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          detected_discount?: string
+          detected_keywords?: string[]
+          end_date_raw?: string | null
+          id?: string
+          platform?: string
+          processed?: boolean
+          raw_text?: string
+          raw_title?: string
+          review_status?: string
+          source_type?: string
+          source_url?: string
+          start_date_raw?: string | null
+        }
+        Relationships: []
+      }
       sale_submissions: {
         Row: {
           category: string | null
@@ -101,6 +191,7 @@ export type Database = {
           created_at: string
           description: string
           end_date: string
+          event_id: string | null
           filter_reason: string
           grouped_page_count: number
           id: string
@@ -119,6 +210,7 @@ export type Database = {
           created_at?: string
           description?: string
           end_date: string
+          event_id?: string | null
           filter_reason?: string
           grouped_page_count?: number
           id?: string
@@ -137,6 +229,7 @@ export type Database = {
           created_at?: string
           description?: string
           end_date?: string
+          event_id?: string | null
           filter_reason?: string
           grouped_page_count?: number
           id?: string
@@ -150,7 +243,15 @@ export type Database = {
           source_urls?: string[]
           start_date?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "sales_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "sale_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

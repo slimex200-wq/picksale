@@ -15,6 +15,7 @@ import AdminReview from "./pages/AdminReview";
 import AdminEvents from "./pages/AdminEvents";
 import AdminCommunity from "./pages/AdminCommunity";
 import AdminSubmissions from "./pages/AdminSubmissions";
+import AdminSignals from "./pages/AdminSignals";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="events" element={<AdminEvents />} />
             <Route path="community" element={<AdminCommunity />} />
             <Route path="submissions" element={<AdminSubmissions />} />
+            <Route path="signals" element={<AdminSignals />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
