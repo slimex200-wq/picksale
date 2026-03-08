@@ -9,7 +9,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
-  XCircle, ExternalLink, ArrowUpDown, Layers, ArrowRight, MessageSquare, Link2,
+  XCircle, ExternalLink, ArrowUpDown, Layers, ArrowRight, MessageSquare, Link2, Calendar,
 } from "lucide-react";
 import { platforms } from "@/data/salesUtils";
 
