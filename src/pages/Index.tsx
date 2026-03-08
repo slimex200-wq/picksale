@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Trophy, ChevronRight } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
+import PageMeta from "@/components/PageMeta";
 
 export default function Index() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
