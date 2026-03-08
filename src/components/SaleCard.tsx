@@ -1,4 +1,4 @@
-import { Sale, platformColors, platformEmojis } from "@/data/salesUtils";
+import { Sale, platformColors, platformEmojis, getSaleStatus, saleStatusConfig, calculateRankingScore } from "@/data/salesUtils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bell, ArrowRight } from "lucide-react";
@@ -19,11 +19,18 @@ function formatDate(d: string) {
   return `${date.getMonth() + 1}.${date.getDate()}`;
 }
 
-export default function SaleCard({ sale }: { sale: Sale }) {
+interface SaleCardProps {
+  sale: Sale;
+  rank?: number;
+}
+
+export default function SaleCard({ sale, rank }: SaleCardProps) {
   const navigate = useNavigate();
   const colorClass = platformColors[sale.platform];
   const days = daysLeft(sale.end_date);
   const isUrgent = days === "오늘 종료" || days === "내일 종료";
+  const status = getSaleStatus(sale);
+  const statusInfo = saleStatusConfig[status];
 
   return (
     <div
@@ -32,6 +39,11 @@ export default function SaleCard({ sale }: { sale: Sale }) {
     >
       {/* Platform strip */}
       <div className={`${colorClass} px-4 py-2.5 flex items-center gap-2`}>
+        {rank && (
+          <span className="text-primary-foreground font-extrabold text-sm bg-white/20 rounded-full w-6 h-6 flex items-center justify-center shrink-0">
+            {rank}
+          </span>
+        )}
         <span className="text-lg">{platformEmojis[sale.platform]}</span>
         <span className="text-primary-foreground font-bold text-[11px] tracking-wide whitespace-nowrap uppercase">
           {sale.platform}
@@ -49,6 +61,13 @@ export default function SaleCard({ sale }: { sale: Sale }) {
 
       {/* Content */}
       <div className="p-4 flex flex-col gap-2.5 flex-1">
+        {/* Status badge */}
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className={`text-[10px] font-semibold px-2 py-0.5 ${statusInfo.className}`}>
+            {statusInfo.emoji} {statusInfo.label}
+          </Badge>
+        </div>
+
         <h3 className="font-bold text-[15px] text-card-foreground leading-snug tracking-tight">
           {sale.sale_name}
         </h3>
