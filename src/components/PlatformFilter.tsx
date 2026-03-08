@@ -21,7 +21,7 @@ export default function PlatformFilter({ selected, onChange }: Props) {
   const allSelected = selected.length === 0;
 
   return (
-    <div className="flex gap-2 overflow-x-auto hide-scrollbar py-2 px-1">
+    <div className="flex flex-wrap gap-2 py-2 px-1">
       <button
         onClick={() => onChange([])}
         className={`shrink-0 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
