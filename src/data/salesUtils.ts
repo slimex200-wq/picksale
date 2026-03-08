@@ -1,4 +1,4 @@
-export type Platform = "쿠팡" | "올리브영" | "무신사" | "KREAM" | "SSG" | "오늘의집" | "29CM";
+export type Platform = "쿠팡" | "올리브영" | "무신사" | "KREAM" | "SSG" | "오늘의집" | "29CM" | "기타";
 
 export type SaleTier = "major" | "minor" | "excluded";
 export type ReviewStatus = "pending" | "approved" | "rejected";
@@ -23,7 +23,7 @@ export interface Sale {
   created_at?: string;
 }
 
-export const platforms: Platform[] = ["쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM"];
+export const platforms: Platform[] = ["쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM", "기타"];
 
 export const platformSlugs: Record<Platform, string> = {
   "쿠팡": "coupang",
@@ -33,6 +33,7 @@ export const platformSlugs: Record<Platform, string> = {
   "SSG": "ssg",
   "오늘의집": "ohouse",
   "29CM": "29cm",
+  "기타": "etc",
 };
 
 export const slugToPlatform: Record<string, Platform> = Object.fromEntries(
@@ -47,6 +48,7 @@ export const platformLogoImports: Record<Platform, string> = {
   "SSG": "ssg",
   "오늘의집": "ohouse",
   "29CM": "29cm",
+  "기타": "etc",
 };
 
 export const platformColors: Record<Platform, string> = {
@@ -57,6 +59,7 @@ export const platformColors: Record<Platform, string> = {
   "SSG": "bg-sale-ssg",
   "오늘의집": "bg-sale-ohouse",
   "29CM": "bg-sale-29cm",
+  "기타": "bg-muted",
 };
 
 export const platformEmojis: Record<Platform, string> = {
@@ -67,6 +70,7 @@ export const platformEmojis: Record<Platform, string> = {
   "SSG": "🛒",
   "오늘의집": "🏠",
   "29CM": "✨",
+  "기타": "🛍️",
 };
 
 const fmt = (d: Date) => d.toISOString().split("T")[0];
