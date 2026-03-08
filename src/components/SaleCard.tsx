@@ -34,7 +34,6 @@ export default function SaleCard({ sale }: { sale: Sale }) {
         <span className="text-primary-foreground font-semibold text-xs whitespace-nowrap">
           {sale.platform}
         </span>
-        </span>
         <span className="ml-auto text-primary-foreground/80 text-xs font-medium">
           {daysLeft(sale.end_date)}
         </span>
