@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sale, categorizeTimeline, timelineSections, platformEmojis, platformColors, getSaleStatus, saleStatusConfig } from "@/data/salesUtils";
+import { platformLogos } from "@/data/platformLogos";
 
 interface Props {
   sales: Sale[];
