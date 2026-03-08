@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import JsonLd from "@/components/JsonLd";
+import CanonicalLink from "@/components/CanonicalLink";
 
 type StatusFilter = "all" | "live" | "starting_soon" | "ending_today" | "ending_soon";
 type SortOption = "ranking" | "newest" | "ending_soon" | "starting_soon";
@@ -102,6 +103,7 @@ export default function PlatformSales() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
+      <CanonicalLink href={`${window.location.origin}/platform/${slug}`} />
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "CollectionPage",

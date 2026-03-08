@@ -7,6 +7,7 @@ import { Calendar, ExternalLink, ArrowLeft, Layers } from "lucide-react";
 import { platformLogos } from "@/data/platformLogos";
 import type { Platform } from "@/data/salesUtils";
 import JsonLd from "@/components/JsonLd";
+import CanonicalLink from "@/components/CanonicalLink";
 
 export default function EventDetail() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -90,6 +91,7 @@ export default function EventDetail() {
   return (
     <div className="max-w-2xl mx-auto px-4 pt-4 pb-24">
       <JsonLd data={jsonLdData} />
+      <CanonicalLink href={`${window.location.origin}/event/${eventId}`} />
       {/* SEO title */}
       <title>{event.canonical_title} - {event.platform} | PickSale</title>
       <meta name="description" content={`${event.platform} ${event.canonical_title} 세일 이벤트 정보. ${event.start_date} ~ ${event.end_date}`} />

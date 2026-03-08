@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ExternalLink, Bell, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import JsonLd from "@/components/JsonLd";
+import CanonicalLink from "@/components/CanonicalLink";
 
 function formatDate(d: string) {
   const date = new Date(d);
@@ -83,6 +84,11 @@ export default function SaleDetail() {
   return (
     <div className="max-w-lg mx-auto pb-24 px-4 pt-4">
       <JsonLd data={jsonLdData} />
+      <CanonicalLink href={
+        sale.event_id
+          ? `${window.location.origin}/event/${sale.event_id}`
+          : `${window.location.origin}/sale/${id}`
+      } />
       <div className="rounded-2xl overflow-hidden shadow-card border border-border/50 bg-card">
         {/* Platform Header */}
         <div className={`${colorClass} px-4 pt-4 pb-8 relative`}>

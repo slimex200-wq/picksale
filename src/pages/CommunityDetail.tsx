@@ -12,6 +12,7 @@ import {
   ThumbsUp, MessageSquare, ExternalLink, ArrowLeft, Send,
 } from "lucide-react";
 import JsonLd from "@/components/JsonLd";
+import CanonicalLink from "@/components/CanonicalLink";
 
 interface Comment {
   id: string;
@@ -148,6 +149,7 @@ export default function CommunityDetail() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-4 pb-24 space-y-4">
+      <CanonicalLink href={`${window.location.origin}/community/${id}`} />
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "DiscussionForumPosting",
