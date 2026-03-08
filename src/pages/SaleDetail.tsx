@@ -1,7 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { mockSales, platformColors, platformEmojis } from "@/data/mockSales";
+import { platformColors, platformEmojis } from "@/data/salesUtils";
+import { useSales } from "@/hooks/useSales";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ExternalLink, Bell, Calendar } from "lucide-react";
 import { toast } from "sonner";
 
@@ -13,7 +15,17 @@ function formatDate(d: string) {
 export default function SaleDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const sale = mockSales.find((s) => s.id === id);
+  const { data: sales = [], isLoading } = useSales();
+  const sale = sales.find((s) => s.id === id);
+
+  if (isLoading) {
+    return (
+      <div className="max-w-lg mx-auto px-4 pt-8 space-y-4">
+        <Skeleton className="h-32 w-full rounded-lg" />
+        <Skeleton className="h-64 w-full rounded-lg" />
+      </div>
+    );
+  }
 
   if (!sale) {
     return (
@@ -30,7 +42,6 @@ export default function SaleDetail() {
 
   return (
     <div className="max-w-lg mx-auto pb-24">
-      {/* Header */}
       <div className={`${colorClass} px-4 py-6 relative`}>
         <button
           onClick={() => navigate(-1)}
@@ -46,7 +57,6 @@ export default function SaleDetail() {
         </div>
       </div>
 
-      {/* Content */}
       <div className="px-4 -mt-4">
         <div className="bg-card rounded-lg shadow-card p-5 space-y-4">
           <h2 className="text-xl font-bold text-card-foreground">

@@ -1,4 +1,4 @@
-import { Sale } from "@/data/mockSales";
+import { Sale } from "@/data/salesUtils";
 import SaleCard from "./SaleCard";
 
 interface Props {

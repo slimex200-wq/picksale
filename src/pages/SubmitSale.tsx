@@ -6,11 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
-import { Platform } from "@/data/mockSales";
-
-const platforms: Platform[] = ["쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM"];
+import { platforms, Platform } from "@/data/salesUtils";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function SubmitSale() {
+  const queryClient = useQueryClient();
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     platform: "",
     sale_name: "",
@@ -24,22 +26,48 @@ export default function SubmitSale() {
   const update = (key: string, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.platform || !form.sale_name || !form.start_date || !form.end_date) {
       toast.error("필수 항목을 모두 입력해주세요.");
       return;
     }
-    toast.success("세일 제보가 접수되었습니다! 관리자 승인 후 공개됩니다. 🎉");
-    setForm({
-      platform: "",
-      sale_name: "",
-      link: "",
-      start_date: "",
-      end_date: "",
-      category: "",
-      description: "",
-    });
+
+    setSubmitting(true);
+    try {
+      const categories = form.category
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean);
+
+      const { error } = await supabase.from("sales").insert({
+        platform: form.platform,
+        sale_name: form.sale_name,
+        link: form.link || "",
+        start_date: form.start_date,
+        end_date: form.end_date,
+        category: categories,
+        description: form.description || "",
+      });
+
+      if (error) throw error;
+
+      toast.success("세일이 등록되었습니다! 🎉");
+      queryClient.invalidateQueries({ queryKey: ["sales"] });
+      setForm({
+        platform: "",
+        sale_name: "",
+        link: "",
+        start_date: "",
+        end_date: "",
+        category: "",
+        description: "",
+      });
+    } catch (err: any) {
+      toast.error(err.message || "등록에 실패했습니다.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -47,10 +75,10 @@ export default function SubmitSale() {
       <div className="mb-6">
         <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
           <Send className="w-5 h-5 text-primary" />
-          세일 제보하기
+          세일 등록하기
         </h2>
         <p className="text-xs text-muted-foreground mt-1">
-          새로운 세일을 발견하셨나요? 제보해주시면 관리자 승인 후 공개됩니다.
+          새로운 세일 정보를 등록하세요.
         </p>
       </div>
 
@@ -131,9 +159,9 @@ export default function SubmitSale() {
           />
         </div>
 
-        <Button type="submit" className="w-full rounded-md gap-2">
+        <Button type="submit" className="w-full rounded-md gap-2" disabled={submitting}>
           <Send className="w-4 h-4" />
-          제보하기
+          {submitting ? "등록 중..." : "등록하기"}
         </Button>
       </form>
     </div>
