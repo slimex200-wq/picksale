@@ -8,6 +8,7 @@ const tabs = [
   { to: "/admin", label: "개요", icon: Settings, exact: true },
   { to: "/admin/review", label: "검토 대기", icon: Inbox },
   { to: "/admin/events", label: "전체 이벤트", icon: List },
+  { to: "/admin/community", label: "커뮤니티", icon: MessageSquare },
 ];
 
 export default function AdminLayout() {

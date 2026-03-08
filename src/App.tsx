@@ -35,6 +35,7 @@ const App = () => (
             <Route index element={<AdminOverview />} />
             <Route path="review" element={<AdminReview />} />
             <Route path="events" element={<AdminEvents />} />
+            <Route path="community" element={<AdminCommunity />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
