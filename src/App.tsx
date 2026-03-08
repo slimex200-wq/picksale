@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
 import SaleCalendar from "./pages/SaleCalendar";
 import SubmitSale from "./pages/SubmitSale";
+import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
