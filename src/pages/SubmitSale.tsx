@@ -1,25 +1,30 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Send } from "lucide-react";
+import { Send, ArrowLeft } from "lucide-react";
 import { platforms } from "@/data/salesUtils";
 import { supabase } from "@/integrations/supabase/client";
 
+const postCategories = [
+  { value: "sale_info", label: "🏷️ 세일 정보", desc: "대형 세일, 기획전, 할인 행사" },
+  { value: "hot_deal", label: "🔥 핫딜", desc: "단일 상품 특가, 한정 할인" },
+  { value: "shopping_tip", label: "💡 쇼핑 팁", desc: "쿠폰, 카드 혜택, 구매 타이밍" },
+];
+
 export default function SubmitSale() {
+  const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
+    title: "",
+    content: "",
+    external_link: "",
     platform: "",
-    sale_name: "",
-    link: "",
-    start_date: "",
-    end_date: "",
     category: "",
-    description: "",
-    submitter_email: "",
   });
 
   const update = (key: string, value: string) =>
@@ -27,39 +32,32 @@ export default function SubmitSale() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.sale_name || !form.link) {
-      toast.error("세일 이름과 링크는 필수입니다.");
+    if (!form.title.trim()) {
+      toast.error("제목을 입력해주세요.");
+      return;
+    }
+    if (!form.category) {
+      toast.error("카테고리를 선택해주세요.");
       return;
     }
 
     setSubmitting(true);
     try {
-      const { error } = await supabase.from("sale_submissions").insert({
+      const { error } = await supabase.from("community_posts").insert({
+        title: form.title.trim(),
+        content: form.content.trim() || null,
+        external_link: form.external_link.trim() || "",
         platform: form.platform || null,
-        sale_name: form.sale_name,
-        link: form.link,
-        start_date: form.start_date || null,
-        end_date: form.end_date || null,
-        category: form.category || null,
-        description: form.description || null,
-        submitter_email: form.submitter_email || null,
+        category: [form.category],
+        review_status: "published",
       });
 
       if (error) throw error;
 
-      toast.success("세일 제보가 접수되었습니다! 관리자 승인 후 공개됩니다. 🎉");
-      setForm({
-        platform: "",
-        sale_name: "",
-        link: "",
-        start_date: "",
-        end_date: "",
-        category: "",
-        description: "",
-        submitter_email: "",
-      });
+      toast.success("게시글이 등록되었습니다! 🎉");
+      navigate("/community");
     } catch (err: any) {
-      toast.error(err.message || "제보에 실패했습니다.");
+      toast.error(err.message || "등록에 실패했습니다.");
     } finally {
       setSubmitting(false);
     }
@@ -67,22 +65,84 @@ export default function SubmitSale() {
 
   return (
     <div className="max-w-lg mx-auto px-4 pt-4 pb-24">
+      <button
+        onClick={() => navigate("/community")}
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4"
+      >
+        <ArrowLeft className="w-4 h-4" />목록
+      </button>
+
       <div className="mb-6">
         <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
           <Send className="w-5 h-5 text-primary" />
-          세일 제보하기
+          세일 발견 공유
         </h2>
         <p className="text-xs text-muted-foreground mt-1">
-          새로운 세일을 발견하셨나요? 제보해주시면 관리자 승인 후 공개됩니다.
+          발견한 세일, 핫딜, 쇼핑 팁을 공유해주세요. 추천을 많이 받으면 자동으로 세일 레이더에 감지됩니다.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Category Selection */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">카테고리 *</Label>
+          <div className="grid grid-cols-1 gap-2">
+            {postCategories.map((cat) => (
+              <button
+                key={cat.value}
+                type="button"
+                onClick={() => update("category", cat.value)}
+                className={`text-left p-3 rounded-xl border transition-all ${
+                  form.category === cat.value
+                    ? "border-primary bg-primary/5 shadow-sm"
+                    : "border-border bg-card hover:border-primary/30"
+                }`}
+              >
+                <p className="text-sm font-semibold">{cat.label}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{cat.desc}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="space-y-1.5">
-          <Label className="text-sm font-medium">플랫폼</Label>
+          <Label className="text-sm font-medium">제목 *</Label>
+          <Input
+            value={form.title}
+            onChange={(e) => update("title", e.target.value)}
+            placeholder="예: 올리브영 봄맞이 세일 시작!"
+            className="rounded-xl"
+            maxLength={100}
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-sm font-medium">내용</Label>
+          <Textarea
+            value={form.content}
+            onChange={(e) => update("content", e.target.value)}
+            placeholder="세일 정보, 할인율, 기간, 주의사항 등을 자유롭게 작성해주세요"
+            className="rounded-xl resize-none"
+            rows={4}
+            maxLength={2000}
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-sm font-medium">링크 (선택)</Label>
+          <Input
+            value={form.external_link}
+            onChange={(e) => update("external_link", e.target.value)}
+            placeholder="https://..."
+            className="rounded-xl"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-sm font-medium">플랫폼 (선택)</Label>
           <Select value={form.platform} onValueChange={(v) => update("platform", v)}>
-            <SelectTrigger className="rounded-md">
-              <SelectValue placeholder="플랫폼 선택" />
+            <SelectTrigger className="rounded-xl">
+              <SelectValue placeholder="관련 플랫폼 선택" />
             </SelectTrigger>
             <SelectContent>
               {platforms.map((p) => (
@@ -92,82 +152,9 @@ export default function SubmitSale() {
           </Select>
         </div>
 
-        <div className="space-y-1.5">
-          <Label className="text-sm font-medium">세일 이름 *</Label>
-          <Input
-            value={form.sale_name}
-            onChange={(e) => update("sale_name", e.target.value)}
-            placeholder="예: 올영세일"
-            className="rounded-md"
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label className="text-sm font-medium">세일 링크 *</Label>
-          <Input
-            value={form.link}
-            onChange={(e) => update("link", e.target.value)}
-            placeholder="https://..."
-            className="rounded-md"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label className="text-sm font-medium">시작일</Label>
-            <Input
-              type="date"
-              value={form.start_date}
-              onChange={(e) => update("start_date", e.target.value)}
-              className="rounded-md"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-sm font-medium">종료일</Label>
-            <Input
-              type="date"
-              value={form.end_date}
-              onChange={(e) => update("end_date", e.target.value)}
-              className="rounded-md"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-1.5">
-          <Label className="text-sm font-medium">카테고리</Label>
-          <Input
-            value={form.category}
-            onChange={(e) => update("category", e.target.value)}
-            placeholder="예: 뷰티, 패션"
-            className="rounded-md"
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label className="text-sm font-medium">설명</Label>
-          <Textarea
-            value={form.description}
-            onChange={(e) => update("description", e.target.value)}
-            placeholder="세일에 대한 간단한 설명"
-            className="rounded-md resize-none"
-            rows={3}
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label className="text-sm font-medium">이메일 (선택)</Label>
-          <Input
-            type="email"
-            value={form.submitter_email}
-            onChange={(e) => update("submitter_email", e.target.value)}
-            placeholder="승인 알림을 받을 이메일"
-            className="rounded-md"
-          />
-        </div>
-
-        <Button type="submit" className="w-full rounded-md gap-2" disabled={submitting}>
+        <Button type="submit" className="w-full rounded-xl gap-2 h-11" disabled={submitting}>
           <Send className="w-4 h-4" />
-          {submitting ? "제보 중..." : "제보하기"}
+          {submitting ? "등록 중..." : "공유하기"}
         </Button>
       </form>
     </div>
