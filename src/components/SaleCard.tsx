@@ -31,8 +31,9 @@ export default function SaleCard({ sale }: { sale: Sale }) {
       {/* Platform header */}
       <div className={`${colorClass} px-4 py-3 flex items-center gap-2`}>
         <span className="text-xl">{platformEmojis[sale.platform]}</span>
-        <span className="text-primary-foreground font-semibold text-sm">
+        <span className="text-primary-foreground font-semibold text-xs whitespace-nowrap">
           {sale.platform}
+        </span>
         </span>
         <span className="ml-auto text-primary-foreground/80 text-xs font-medium">
           {daysLeft(sale.end_date)}
