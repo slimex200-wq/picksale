@@ -1,6 +1,6 @@
 import { useAdminSales } from "@/hooks/useSales";
 import { Link } from "react-router-dom";
-import { Inbox, List, CheckCircle, Eye, EyeOff, Clock } from "lucide-react";
+import { CheckCircle, Eye, EyeOff, Clock } from "lucide-react";
 
 export default function AdminOverview() {
   const { data: allSales = [] } = useAdminSales();
@@ -11,10 +11,10 @@ export default function AdminOverview() {
   const hidden = allSales.filter((s) => s.publish_status === "hidden").length;
 
   const cards = [
-    { label: "Pending Review", value: pending, icon: Clock, color: "text-yellow-600", to: "/admin/review" },
-    { label: "Approved", value: approved, icon: CheckCircle, color: "text-green-600", to: "/admin/events" },
-    { label: "Published", value: published, icon: Eye, color: "text-primary", to: "/admin/events" },
-    { label: "Hidden", value: hidden, icon: EyeOff, color: "text-muted-foreground", to: "/admin/events" },
+    { label: "검토 대기", value: pending, icon: Clock, color: "text-yellow-600", to: "/admin/review" },
+    { label: "승인됨", value: approved, icon: CheckCircle, color: "text-green-600", to: "/admin/events" },
+    { label: "게시됨", value: published, icon: Eye, color: "text-primary", to: "/admin/events" },
+    { label: "숨김", value: hidden, icon: EyeOff, color: "text-muted-foreground", to: "/admin/events" },
   ];
 
   return (
