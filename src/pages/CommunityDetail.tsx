@@ -29,6 +29,7 @@ const categoryLabels: Record<string, { label: string; className: string }> = {
 
 export default function CommunityDetail() {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const [commentText, setCommentText] = useState("");
   const [authorName, setAuthorName] = useState("");
