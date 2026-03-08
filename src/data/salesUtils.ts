@@ -73,7 +73,7 @@ export const platformEmojis: Record<Platform, string> = {
   "SSG": "🛒",
   "오늘의집": "🏠",
   "29CM": "✨",
-  "W CONCEPT": "👗",
+  "WCONCEPT": "👗",
   "커뮤니티 핫딜": "🔥",
 };
 
