@@ -79,6 +79,8 @@ export default function Index() {
             ))}
           </div>
         </section>
+
+        <SaleTimeline sales={sales} />
       )}
     </div>
   );
