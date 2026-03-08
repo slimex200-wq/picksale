@@ -61,7 +61,7 @@ interface CommunityPost {
   platform: string | null;
   title: string;
   content: string | null;
-  link: string;
+  external_link: string;
   category: string[];
   author: string | null;
   source_type: string | null;
