@@ -78,6 +78,23 @@ export const platformEmojis: Record<Platform, string> = {
   "커뮤니티 핫딜": "🔥",
 };
 
+/* ── 카드 프로모션 필터 키워드 ── */
+const CARD_PROMO_KEYWORDS = [
+  "카드사", "삼성카드", "신한카드", "국민카드", "현대카드", "롯데카드", "우리카드", "하나카드", "BC카드",
+  "결제혜택", "청구할인", "카드할인", "카드혜택", "카드결제",
+];
+const CARD_KEYWORD = "카드";
+
+/** Returns true if the title looks like a standalone credit card promo, not a major sale */
+export function isCreditCardPromo(title: string): boolean {
+  const t = title.toLowerCase();
+  // Direct match on specific card promo keywords
+  if (CARD_PROMO_KEYWORDS.some(kw => t.includes(kw.toLowerCase()))) return true;
+  // Generic "카드" keyword — only flag if no major sale indicators present
+  if (t.includes(CARD_KEYWORD) && !t.includes("세일") && !t.includes("페스타") && !t.includes("위크") && !t.includes("할인대전")) return true;
+  return false;
+}
+
 const fmt = (d: Date) => d.toISOString().split("T")[0];
 
 /* ── 세일 상태 ── */
@@ -111,6 +128,11 @@ export function calculateRankingScore(sale: Sale): number {
   const now = new Date();
   const todayStr = fmt(now);
   let score = sale.importance_score;
+
+  // 카드 프로모션 패널티
+  if (isCreditCardPromo(sale.sale_name)) {
+    score -= 5;
+  }
 
   // 진행중 보너스
   if (sale.start_date <= todayStr && sale.end_date >= todayStr) score += 3;
