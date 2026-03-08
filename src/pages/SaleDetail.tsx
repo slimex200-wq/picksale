@@ -84,7 +84,12 @@ export default function SaleDetail() {
 
   return (
     <div className="max-w-lg mx-auto pb-24 px-4 pt-4">
-      <PageMeta title={`${sale.sale_name} - ${sale.platform} | PickSale`} description={sale.description || `${sale.platform} ${sale.sale_name} 세일 정보. ${sale.start_date} ~ ${sale.end_date}`} />
+      <PageMeta
+        title={`${sale.sale_name} - ${sale.platform} | PickSale`}
+        description={sale.description || `${sale.platform} ${sale.sale_name} 세일 정보. ${sale.start_date} ~ ${sale.end_date}`}
+        ogType="article"
+        ogUrl={`${window.location.origin}/sale/${id}`}
+      />
       <JsonLd data={jsonLdData} />
       <CanonicalLink href={
         sale.event_id
