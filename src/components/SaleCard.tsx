@@ -1,4 +1,4 @@
-import { Sale, platformColors, platformEmojis } from "@/data/mockSales";
+import { Sale, platformColors, platformEmojis } from "@/data/salesUtils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bell, ExternalLink } from "lucide-react";
@@ -28,7 +28,6 @@ export default function SaleCard({ sale }: { sale: Sale }) {
       className="w-full bg-card rounded-lg shadow-card hover:shadow-card-hover transition-all duration-300 cursor-pointer flex flex-col overflow-hidden animate-fade-in"
       onClick={() => navigate(`/sale/${sale.id}`)}
     >
-      {/* Platform header */}
       <div className={`${colorClass} px-4 py-3 flex items-center gap-2`}>
         <span className="text-xl">{platformEmojis[sale.platform]}</span>
         <span className="text-primary-foreground font-semibold text-xs whitespace-nowrap">
@@ -39,7 +38,6 @@ export default function SaleCard({ sale }: { sale: Sale }) {
         </span>
       </div>
 
-      {/* Content */}
       <div className="p-4 flex flex-col gap-3 flex-1">
         <h3 className="font-bold text-base text-card-foreground leading-tight">
           {sale.sale_name}

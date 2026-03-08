@@ -1,8 +1,4 @@
-import { Platform, platformEmojis } from "@/data/mockSales";
-
-const platforms: Platform[] = [
-  "쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM",
-];
+import { Platform, platforms, platformEmojis } from "@/data/salesUtils";
 
 interface Props {
   selected: Platform[];
