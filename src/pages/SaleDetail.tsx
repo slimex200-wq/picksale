@@ -9,6 +9,7 @@ import { ArrowLeft, ExternalLink, Bell, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import JsonLd from "@/components/JsonLd";
 import CanonicalLink from "@/components/CanonicalLink";
+import PageMeta from "@/components/PageMeta";
 
 function formatDate(d: string) {
   const date = new Date(d);
