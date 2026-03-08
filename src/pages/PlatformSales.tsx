@@ -109,7 +109,7 @@ export default function PlatformSales() {
 
         <div className={`${colorClass} rounded-xl p-4 text-primary-foreground`}>
           <div className="flex items-center gap-2">
-            <span className="text-2xl">{emoji}</span>
+            <img src={platformLogos[platform]} alt={platform} className="h-8 w-auto object-contain brightness-0 invert" />
             <div>
               <h1 className="text-lg font-bold">{platform} 세일</h1>
               <p className="text-xs opacity-90">
