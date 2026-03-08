@@ -98,7 +98,7 @@ export default function PlatformSales() {
   }).length;
 
   return (
-    <div className="max-w-lg mx-auto px-4 pt-4 pb-24 space-y-4">
+    <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
       {/* Header */}
       <div className="space-y-3">
         <Link to="/" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
