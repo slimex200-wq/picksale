@@ -9,9 +9,24 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
-  XCircle, ExternalLink, ArrowUpDown, Layers, ArrowRight, MessageSquare, Link2,
+  XCircle, ExternalLink, ArrowUpDown, Layers, ArrowRight, MessageSquare, Link2, Calendar,
 } from "lucide-react";
 import { platforms } from "@/data/salesUtils";
+
+function detectDatePattern(start: string | null, end: string | null): string {
+  if (!start && !end) return "없음";
+  const check = (d: string) => {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return "YYYY-MM-DD";
+    if (/^\d{2}\.\d{2}$/.test(d)) return "MM.DD";
+    if (/^\d{1,2}\/\d{1,2}$/.test(d)) return "M/D";
+    if (/^\d{1,2}월\s?\d{1,2}일/.test(d)) return "M월D일";
+    if (/\d{4}\.\d{1,2}\.\d{1,2}/.test(d)) return "YYYY.M.D";
+    if (/\d{1,2}\.\d{1,2}\.\d{1,2}/.test(d)) return "YY.M.D";
+    return d.length > 10 ? "복합" : "기타";
+  };
+  const patterns = [start, end].filter(Boolean).map(d => check(d!));
+  return [...new Set(patterns)].join(" / ");
+}
 
 interface SaleSignal {
   id: string;
@@ -366,11 +381,49 @@ function SignalCard({
           )}
 
           <p className="text-xs text-muted-foreground mt-0.5">
-            {sig.platform} · {new Date(sig.created_at).toLocaleDateString("ko-KR")}
-          </p>
-          {sig.start_date_raw && sig.end_date_raw && (
-            <p className="text-xs text-muted-foreground">{sig.start_date_raw} ~ {sig.end_date_raw}</p>
-          )}
+369:             {sig.platform} · {new Date(sig.created_at).toLocaleDateString("ko-KR")}
+370:           </p>
+
+          {/* Date extraction details */}
+          <div className="mt-1.5 p-2 bg-muted/40 rounded-md space-y-1 border border-border/50">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+              <Calendar className="w-3 h-3" />날짜 추출 정보
+            </p>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[11px]">
+              <span className="text-muted-foreground">시작일 (파싱):</span>
+              <span className={`font-medium ${sig.start_date_raw ? 'text-foreground' : 'text-destructive/60'}`}>
+                {sig.start_date_raw || "미감지"}
+              </span>
+              <span className="text-muted-foreground">종료일 (파싱):</span>
+              <span className={`font-medium ${sig.end_date_raw ? 'text-foreground' : 'text-destructive/60'}`}>
+                {sig.end_date_raw || "미감지"}
+              </span>
+              <span className="text-muted-foreground">날짜 신뢰도:</span>
+              <span className={`font-medium ${
+                sig.start_date_raw && sig.end_date_raw ? 'text-green-600' :
+                sig.start_date_raw || sig.end_date_raw ? 'text-yellow-600' : 'text-destructive'
+              }`}>
+                {sig.start_date_raw && sig.end_date_raw ? '✅ 양호 (시작+종료)' :
+                 sig.start_date_raw ? '⚠️ 시작일만' :
+                 sig.end_date_raw ? '⚠️ 종료일만' : '❌ 미감지'}
+              </span>
+              <span className="text-muted-foreground">파싱 패턴:</span>
+              <span className="font-mono text-[10px] text-muted-foreground">
+                {detectDatePattern(sig.start_date_raw, sig.end_date_raw)}
+              </span>
+            </div>
+            {/* Show raw text excerpt for date context */}
+            {sig.raw_text && (
+              <details className="mt-1">
+                <summary className="text-[10px] text-muted-foreground cursor-pointer hover:text-foreground">
+                  원본 텍스트에서 날짜 확인 ▸
+                </summary>
+                <p className="text-[10px] text-muted-foreground mt-1 bg-background p-1.5 rounded border border-border max-h-20 overflow-y-auto whitespace-pre-wrap">
+                  {sig.raw_text.slice(0, 300)}
+                </p>
+              </details>
+            )}
+          </div>
 
           {/* Matched event candidate */}
           {matchedEvent && (
