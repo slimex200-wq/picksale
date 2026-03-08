@@ -134,13 +134,11 @@ export default function AdminSignals() {
         });
         if (saleError) throw saleError;
 
-        // Increment signal_count
-        await supabase.rpc("increment_signal_count" as any, { p_event_id: matchedEvent.id }).catch(() => {
-          // fallback: manual increment
-          supabase.from("sale_events").update({
-            signal_count: (matchedEvent as any).signal_count ? (matchedEvent as any).signal_count + 1 : 1
-          }).eq("id", matchedEvent.id);
-        });
+        // Increment signal_count manually
+        const { data: evRow } = await supabase.from("sale_events").select("signal_count").eq("id", matchedEvent.id).single();
+        await supabase.from("sale_events").update({
+          signal_count: ((evRow as any)?.signal_count ?? 0) + 1
+        }).eq("id", matchedEvent.id);
       } else {
         // Create new event
         const { data: eventData, error: eventError } = await supabase
