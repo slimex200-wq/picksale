@@ -53,7 +53,7 @@ export function useAdminSales(filters?: {
 function mapRow(row: any): Sale {
   return {
     id: row.id,
-    platform: row.platform as Platform,
+    platform: normalizePlatform(row.platform),
     sale_name: row.sale_name,
     start_date: row.start_date,
     end_date: row.end_date,
