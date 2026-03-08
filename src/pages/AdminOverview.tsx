@@ -6,7 +6,7 @@ export default function AdminOverview() {
   const { data: allSales = [] } = useAdminSales();
 
   const pending = allSales.filter((s) => s.review_status === "pending").length;
-  const approved = allSales.filter((s) => s.review_status === "approved").length;
+  const approved = allSales.filter((s) => s.review_status === "approved" && s.publish_status !== "published" && s.publish_status !== "hidden").length;
   const published = allSales.filter((s) => s.publish_status === "published").length;
   const hidden = allSales.filter((s) => s.publish_status === "hidden").length;
 
