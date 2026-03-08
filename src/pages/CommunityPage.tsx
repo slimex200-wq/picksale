@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
 import { useCommunityPosts, CommunityPost } from "@/hooks/useCommunityPosts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import {
   ThumbsUp, MessageSquare, ExternalLink, Plus, TrendingUp, Clock,
@@ -29,8 +30,8 @@ export default function CommunityPage() {
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState<"newest" | "upvotes" | "trending">("trending");
   const { data: posts = [], isLoading } = useCommunityPosts({ category, sort });
+  const { user } = useAuth();
 
-  // Split sale_info posts to feature at top when viewing "all"
   const saleInfoPosts = category === "all" ? posts.filter(p => p.category.includes("sale_info")).slice(0, 3) : [];
   const remainingPosts = category === "all"
     ? posts.filter(p => !saleInfoPosts.some(s => s.id === p.id))
@@ -50,7 +51,7 @@ export default function CommunityPage() {
           <p className="text-[11px] text-muted-foreground mt-0.5">세일 발견 · 핫딜 · 쇼핑 팁을 공유하세요</p>
         </div>
         <Link
-          to="/submit"
+          to={user ? "/submit" : "/login"}
           className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold shadow-md hover:opacity-90 transition-opacity"
         >
           <Plus className="w-3.5 h-3.5" />
@@ -61,17 +62,11 @@ export default function CommunityPage() {
       {/* Category Tabs */}
       <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
         {categories.map((cat) => (
-          <button
-            key={cat.key}
-            onClick={() => setCategory(cat.key)}
+          <button key={cat.key} onClick={() => setCategory(cat.key)}
             className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
-              category === cat.key
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "bg-muted text-muted-foreground hover:bg-muted/80"
-            }`}
-          >
-            <span>{cat.emoji}</span>
-            {cat.label}
+              category === cat.key ? "bg-primary text-primary-foreground shadow-sm" : "bg-muted text-muted-foreground hover:bg-muted/80"
+            }`}>
+            <span>{cat.emoji}</span>{cat.label}
           </button>
         ))}
       </div>
@@ -79,17 +74,11 @@ export default function CommunityPage() {
       {/* Sort */}
       <div className="flex gap-1">
         {sortOptions.map((opt) => (
-          <button
-            key={opt.key}
-            onClick={() => setSort(opt.key)}
+          <button key={opt.key} onClick={() => setSort(opt.key)}
             className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors ${
-              sort === opt.key
-                ? "bg-card border border-border text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <opt.icon className="w-3 h-3" />
-            {opt.label}
+              sort === opt.key ? "bg-card border border-border text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+            }`}>
+            <opt.icon className="w-3 h-3" />{opt.label}
           </button>
         ))}
       </div>
@@ -98,13 +87,10 @@ export default function CommunityPage() {
       {saleInfoPosts.length > 0 && (
         <div className="space-y-2">
           <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5 px-1">
-            <Sparkles className="w-3.5 h-3.5 text-primary" />
-            세일 발견 하이라이트
+            <Sparkles className="w-3.5 h-3.5 text-primary" />세일 발견 하이라이트
           </h2>
           <div className="space-y-2">
-            {saleInfoPosts.map((post) => (
-              <FeaturedPostCard key={post.id} post={post} />
-            ))}
+            {saleInfoPosts.map((post) => <FeaturedPostCard key={post.id} post={post} />)}
           </div>
         </div>
       )}
@@ -118,37 +104,30 @@ export default function CommunityPage() {
         <div className="text-center py-16 text-muted-foreground">
           <Radar className="w-10 h-10 mx-auto mb-3 text-muted-foreground/40" />
           <p className="text-sm">아직 게시글이 없습니다.</p>
-          <Link to="/submit" className="text-primary text-sm font-medium mt-2 inline-block">
-            첫 세일 정보를 공유해보세요 →
-          </Link>
+          <Link to="/submit" className="text-primary text-sm font-medium mt-2 inline-block">첫 세일 정보를 공유해보세요 →</Link>
         </div>
       ) : (
         <div className="space-y-1.5">
-          {remainingPosts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
+          {remainingPosts.map((post) => <PostCard key={post.id} post={post} />)}
         </div>
       )}
 
       {/* Floating CTA (mobile) */}
       <Link
-        to="/submit"
+        to={user ? "/submit" : "/login"}
         className="fixed bottom-20 right-4 z-40 md:hidden flex items-center gap-1.5 px-4 py-3 rounded-2xl bg-primary text-primary-foreground text-sm font-bold shadow-lg hover:opacity-90 transition-opacity"
       >
-        <Plus className="w-4 h-4" />
-        공유하기
+        <Plus className="w-4 h-4" />공유하기
       </Link>
     </div>
   );
 }
 
-/* ── Featured card for sale_info posts ── */
+/* ── Featured card ── */
 function FeaturedPostCard({ post }: { post: CommunityPost }) {
   return (
-    <Link
-      to={`/community/${post.id}`}
-      className="block bg-card border border-primary/20 rounded-2xl p-4 hover:shadow-md transition-all relative overflow-hidden"
-    >
+    <Link to={`/community/${post.id}`}
+      className="block bg-card border border-primary/20 rounded-2xl p-4 hover:shadow-md transition-all relative overflow-hidden">
       <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -translate-y-8 translate-x-8" />
       <div className="flex items-start gap-3 relative">
         <div className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl bg-primary/10 shrink-0">
@@ -157,27 +136,16 @@ function FeaturedPostCard({ post }: { post: CommunityPost }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 flex-wrap mb-1">
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-              🏷️ 세일 정보
-            </span>
-            {post.platform && (
-              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
-                {post.platform}
-              </span>
-            )}
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">🏷️ 세일 정보</span>
+            {post.platform && <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">{post.platform}</span>}
           </div>
           <p className="text-sm font-semibold text-card-foreground leading-snug">{post.title}</p>
-          {post.content && (
-            <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{post.content}</p>
-          )}
+          {post.content && <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{post.content}</p>}
           <div className="flex items-center gap-2.5 mt-2 text-[11px] text-muted-foreground">
+            {post.author && <span className="font-medium text-foreground">{post.author}</span>}
             <span>{timeAgo(post.created_at)}</span>
-            <span className="flex items-center gap-0.5">
-              <MessageSquare className="w-3 h-3" />{post.comments_count}
-            </span>
-            {post.is_sale_signal && (
-              <span className="text-primary font-semibold">📡 시그널</span>
-            )}
+            <span className="flex items-center gap-0.5"><MessageSquare className="w-3 h-3" />{post.comments_count}</span>
+            {post.is_sale_signal && <span className="text-primary font-semibold">📡 시그널</span>}
           </div>
         </div>
         <ChevronRight className="w-4 h-4 text-muted-foreground/40 shrink-0 mt-1" />
@@ -189,6 +157,8 @@ function FeaturedPostCard({ post }: { post: CommunityPost }) {
 /* ── Compact post card ── */
 function PostCard({ post }: { post: CommunityPost }) {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [upvoting, setUpvoting] = useState(false);
 
   const categoryStyle: Record<string, { label: string; className: string }> = {
@@ -200,20 +170,18 @@ function PostCard({ post }: { post: CommunityPost }) {
   const handleUpvote = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!user) { navigate("/login"); return; }
     setUpvoting(true);
     try {
-      const fingerprint = `anon_${navigator.userAgent.slice(0, 20)}_${window.screen.width}`;
       const { error: upvoteError } = await supabase
         .from("community_upvotes")
-        .insert({ post_id: post.id, fingerprint });
+        .insert({ post_id: post.id, fingerprint: user.id, user_id: user.id });
 
       if (upvoteError) {
         if (upvoteError.code === "23505") { toast.info("이미 추천했습니다."); return; }
         throw upvoteError;
       }
 
-      await supabase.from("community_posts").update({ upvotes: post.upvotes + 1 }).eq("id", post.id);
-      await supabase.rpc("recalc_signal_score", { p_post_id: post.id });
       toast.success("추천! 👍");
       queryClient.invalidateQueries({ queryKey: ["community_posts"] });
     } catch (err: any) {
@@ -224,51 +192,31 @@ function PostCard({ post }: { post: CommunityPost }) {
   };
 
   return (
-    <Link
-      to={`/community/${post.id}`}
-      className="flex items-center gap-3 p-3 bg-card border border-border rounded-xl hover:shadow-sm transition-all"
-    >
-      {/* Upvote */}
-      <button
-        onClick={handleUpvote}
-        disabled={upvoting}
-        className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg bg-muted/50 hover:bg-primary/10 transition-colors shrink-0 min-w-[40px]"
-      >
+    <Link to={`/community/${post.id}`}
+      className="flex items-center gap-3 p-3 bg-card border border-border rounded-xl hover:shadow-sm transition-all">
+      <button onClick={handleUpvote} disabled={upvoting}
+        className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg bg-muted/50 hover:bg-primary/10 transition-colors shrink-0 min-w-[40px]">
         <ThumbsUp className={`w-3.5 h-3.5 ${post.upvotes > 0 ? "text-primary" : "text-muted-foreground"}`} />
         <span className="text-[11px] font-bold text-foreground">{post.upvotes}</span>
       </button>
 
-      {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1 flex-wrap mb-0.5">
           {post.category.map((c) => {
             const cfg = categoryStyle[c];
             return cfg ? (
-              <span key={c} className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${cfg.className}`}>
-                {cfg.label}
-              </span>
+              <span key={c} className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${cfg.className}`}>{cfg.label}</span>
             ) : null;
           })}
-          {post.platform && (
-            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
-              {post.platform}
-            </span>
-          )}
+          {post.platform && <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">{post.platform}</span>}
         </div>
         <p className="text-[13px] font-semibold text-card-foreground truncate leading-snug">{post.title}</p>
         <div className="flex items-center gap-2.5 mt-1 text-[11px] text-muted-foreground">
+          {post.author && <span className="font-medium text-foreground">{post.author}</span>}
           <span>{timeAgo(post.created_at)}</span>
-          <span className="flex items-center gap-0.5">
-            <MessageSquare className="w-3 h-3" />{post.comments_count}
-          </span>
-          {post.external_link && (
-            <span className="flex items-center gap-0.5 text-primary">
-              <ExternalLink className="w-3 h-3" />
-            </span>
-          )}
-          {post.is_sale_signal && (
-            <span className="text-primary font-semibold text-[10px]">📡</span>
-          )}
+          <span className="flex items-center gap-0.5"><MessageSquare className="w-3 h-3" />{post.comments_count}</span>
+          {post.external_link && <span className="flex items-center gap-0.5 text-primary"><ExternalLink className="w-3 h-3" /></span>}
+          {post.is_sale_signal && <span className="text-primary font-semibold text-[10px]">📡</span>}
         </div>
       </div>
     </Link>
