@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { type Sale, type Platform, type SaleTier, type ReviewStatus, type PublishStatus, normalizePlatform } from "@/data/salesUtils";
+import type { Sale, Platform, SaleTier, ReviewStatus, PublishStatus } from "@/data/salesUtils";
 
 /** Public hook – only returns published sales */
 export function useSales() {
@@ -53,7 +53,7 @@ export function useAdminSales(filters?: {
 function mapRow(row: any): Sale {
   return {
     id: row.id,
-    platform: normalizePlatform(row.platform),
+    platform: row.platform as Platform,
     sale_name: row.sale_name,
     start_date: row.start_date,
     end_date: row.end_date,
