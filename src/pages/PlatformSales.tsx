@@ -102,6 +102,18 @@ export default function PlatformSales() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: `${platform} 세일 모음 | PickSale`,
+        description: `${platform}의 현재 진행 중이거나 곧 시작하는 주요 세일 이벤트를 모아봅니다.`,
+        url: `${window.location.origin}${location.pathname}`,
+        about: {
+          "@type": "Organization",
+          name: platform,
+        },
+        numberOfItems: filtered.length,
+      }} />
       {/* Header */}
       <div className="space-y-3">
         <Link to="/" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
