@@ -59,26 +59,26 @@ export default function SaleDetail() {
   const colorClass = platformColors[sale.platform];
 
   return (
-    <div className="max-w-lg mx-auto pb-24">
-      {/* Platform Header */}
-      <div className={`${colorClass} px-4 pt-4 pb-10 relative`}>
-        <button
-          onClick={() => navigate(-1)}
-          className="absolute top-4 left-4 bg-white/15 backdrop-blur-sm rounded-xl p-2 text-primary-foreground hover:bg-white/25 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <div className="flex flex-col items-center pt-6">
-          <span className="text-4xl">{platformEmojis[sale.platform]}</span>
-          <p className="text-primary-foreground/80 text-xs font-bold tracking-wide mt-2 uppercase">
-            {sale.platform}
-          </p>
+    <div className="max-w-lg mx-auto pb-24 px-4 pt-4">
+      <div className="rounded-2xl overflow-hidden shadow-card border border-border/50 bg-card">
+        {/* Platform Header */}
+        <div className={`${colorClass} px-4 pt-4 pb-8 relative`}>
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute top-4 left-4 bg-white/15 backdrop-blur-sm rounded-xl p-2 text-primary-foreground hover:bg-white/25 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <div className="flex flex-col items-center pt-6">
+            <span className="text-4xl">{platformEmojis[sale.platform]}</span>
+            <p className="text-primary-foreground/80 text-xs font-bold tracking-wide mt-2 uppercase">
+              {sale.platform}
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Content Card */}
-      <div className="px-4 -mt-6">
-        <div className="bg-card rounded-2xl shadow-card p-5 space-y-4">
+        {/* Content */}
+        <div className="p-5 space-y-4">
           <h2 className="text-lg font-bold text-card-foreground leading-snug tracking-tight">
             {sale.sale_name}
           </h2>
