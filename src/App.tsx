@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
 import PlatformSales from "./pages/PlatformSales";
 import SaleCalendar from "./pages/SaleCalendar";
+import CommunityPage from "./pages/CommunityPage";
+import CommunityDetail from "./pages/CommunityDetail";
 import SubmitSale from "./pages/SubmitSale";
 import AdminGuard from "./pages/AdminGuard";
 import AdminOverview from "./pages/AdminOverview";
@@ -32,6 +34,8 @@ const App = () => (
           <Route path="/sale/:id" element={<SaleDetail />} />
           <Route path="/platform/:slug" element={<PlatformSales />} />
           <Route path="/calendar" element={<SaleCalendar />} />
+          <Route path="/community" element={<CommunityPage />} />
+          <Route path="/community/:id" element={<CommunityDetail />} />
           <Route path="/submit" element={<SubmitSale />} />
           <Route path="/admin" element={<AdminGuard />}>
             <Route index element={<AdminOverview />} />

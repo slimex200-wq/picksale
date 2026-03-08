@@ -6,6 +6,7 @@ import { useSales } from "@/hooks/useSales";
 import PlatformFilter from "@/components/PlatformFilter";
 import SaleCard from "@/components/SaleCard";
 import SaleTimeline from "@/components/SaleTimeline";
+import TrendingCommunity from "@/components/TrendingCommunity";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Trophy, ChevronRight } from "lucide-react";
@@ -90,6 +91,9 @@ export default function Index() {
               <SaleTimeline sales={sales} />
             </aside>
           </div>
+
+          {/* Trending Community */}
+          <TrendingCommunity />
 
           {/* Platform Navigation */}
           <section className="space-y-3">

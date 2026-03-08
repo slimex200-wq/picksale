@@ -61,7 +61,7 @@ interface CommunityPost {
   platform: string | null;
   title: string;
   content: string | null;
-  link: string;
+  external_link: string;
   category: string[];
   author: string | null;
   source_type: string | null;
@@ -178,7 +178,7 @@ export default function AdminPage() {
         start_date: new Date().toISOString().split("T")[0],
         end_date: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
         category: post.category,
-        link: post.link,
+        link: post.external_link,
         description: post.content || "",
       });
       if (insertError) throw insertError;
@@ -306,8 +306,8 @@ export default function AdminPage() {
                         {post.platform || "미지정"} · {post.author || "익명"} · {new Date(post.created_at).toLocaleDateString("ko-KR")}
                       </p>
                     </div>
-                    {post.link && (
-                      <a href={post.link} target="_blank" rel="noopener noreferrer">
+                    {post.external_link && (
+                      <a href={post.external_link} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                       </a>
                     )}
