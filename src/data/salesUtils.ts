@@ -1,4 +1,4 @@
-export type Platform = "쿠팡" | "올리브영" | "무신사" | "KREAM" | "SSG" | "오늘의집" | "29CM" | "W CONCEPT" | "커뮤니티 핫딜";
+export type Platform = "쿠팡" | "올리브영" | "무신사" | "KREAM" | "SSG" | "오늘의집" | "29CM" | "WCONCEPT" | "커뮤니티 핫딜";
 
 export type SaleTier = "major" | "minor" | "excluded";
 export type ReviewStatus = "pending" | "approved" | "rejected";
