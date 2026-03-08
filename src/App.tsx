@@ -8,7 +8,10 @@ import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
 import SaleCalendar from "./pages/SaleCalendar";
 import SubmitSale from "./pages/SubmitSale";
-import AdminPage from "./pages/AdminPage";
+import AdminLayout from "./pages/AdminLayout";
+import AdminOverview from "./pages/AdminOverview";
+import AdminReview from "./pages/AdminReview";
+import AdminEvents from "./pages/AdminEvents";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,7 +28,11 @@ const App = () => (
           <Route path="/sale/:id" element={<SaleDetail />} />
           <Route path="/calendar" element={<SaleCalendar />} />
           <Route path="/submit" element={<SubmitSale />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminOverview />} />
+            <Route path="review" element={<AdminReview />} />
+            <Route path="events" element={<AdminEvents />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
