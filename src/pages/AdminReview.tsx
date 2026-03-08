@@ -142,6 +142,12 @@ export default function AdminReview() {
                     <p className="text-[10px] text-muted-foreground mt-0.5">사유: {sale.filter_reason}</p>
                   )}
                 </div>
+                {sale.link && (
+                  <a href={sale.link} target="_blank" rel="noopener noreferrer"
+                    className="shrink-0 p-1.5 rounded-md hover:bg-muted transition-colors">
+                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                  </a>
+                )}
               </div>
 
               {sale.source_urls.length > 0 && (
