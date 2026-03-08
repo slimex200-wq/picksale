@@ -14,6 +14,7 @@ import AdminOverview from "./pages/AdminOverview";
 import AdminReview from "./pages/AdminReview";
 import AdminEvents from "./pages/AdminEvents";
 import AdminCommunity from "./pages/AdminCommunity";
+import AdminSubmissions from "./pages/AdminSubmissions";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="review" element={<AdminReview />} />
             <Route path="events" element={<AdminEvents />} />
             <Route path="community" element={<AdminCommunity />} />
+            <Route path="submissions" element={<AdminSubmissions />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
