@@ -196,6 +196,7 @@ export type Database = {
           id: string
           importance_score: number
           platform: string
+          signal_count: number
           start_date: string
           updated_at: string
         }
@@ -208,6 +209,7 @@ export type Database = {
           id?: string
           importance_score?: number
           platform: string
+          signal_count?: number
           start_date: string
           updated_at?: string
         }
@@ -220,6 +222,7 @@ export type Database = {
           id?: string
           importance_score?: number
           platform?: string
+          signal_count?: number
           start_date?: string
           updated_at?: string
         }
@@ -227,12 +230,15 @@ export type Database = {
       }
       sale_signals: {
         Row: {
+          community_post_id: string | null
           confidence: number
           created_at: string
           detected_discount: string
           detected_keywords: string[]
           end_date_raw: string | null
           id: string
+          matched_alias: string
+          normalized_title: string
           platform: string
           processed: boolean
           raw_text: string
@@ -243,12 +249,15 @@ export type Database = {
           start_date_raw: string | null
         }
         Insert: {
+          community_post_id?: string | null
           confidence?: number
           created_at?: string
           detected_discount?: string
           detected_keywords?: string[]
           end_date_raw?: string | null
           id?: string
+          matched_alias?: string
+          normalized_title?: string
           platform: string
           processed?: boolean
           raw_text?: string
@@ -259,12 +268,15 @@ export type Database = {
           start_date_raw?: string | null
         }
         Update: {
+          community_post_id?: string | null
           confidence?: number
           created_at?: string
           detected_discount?: string
           detected_keywords?: string[]
           end_date_raw?: string | null
           id?: string
+          matched_alias?: string
+          normalized_title?: string
           platform?: string
           processed?: boolean
           raw_text?: string
@@ -274,7 +286,15 @@ export type Database = {
           source_url?: string
           start_date_raw?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "sale_signals_community_post_id_fkey"
+            columns: ["community_post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sale_submissions: {
         Row: {
