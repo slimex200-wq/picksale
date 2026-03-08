@@ -1,5 +1,9 @@
 export type Platform = "쿠팡" | "올리브영" | "무신사" | "KREAM" | "SSG" | "오늘의집" | "29CM";
 
+export type SaleTier = "major" | "minor" | "excluded";
+export type ReviewStatus = "pending" | "approved" | "rejected";
+export type PublishStatus = "draft" | "published" | "hidden";
+
 export interface Sale {
   id: string;
   platform: Platform;
@@ -9,6 +13,14 @@ export interface Sale {
   category: string[];
   link: string;
   description: string;
+  sale_tier: SaleTier;
+  importance_score: number;
+  filter_reason: string;
+  review_status: ReviewStatus;
+  publish_status: PublishStatus;
+  source_urls: string[];
+  grouped_page_count: number;
+  created_at?: string;
 }
 
 export const platforms: Platform[] = ["쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM"];

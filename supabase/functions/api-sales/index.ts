@@ -32,7 +32,10 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { platform, sale_name, start_date, end_date, category, link, description } = body;
+    const {
+      platform, sale_name, start_date, end_date, category, link, description,
+      sale_tier, importance_score, filter_reason, source_urls, grouped_page_count,
+    } = body;
 
     if (!platform || !sale_name || !link) {
       return new Response(
@@ -62,7 +65,7 @@ Deno.serve(async (req) => {
 
     // Parse category string to array
     const categoryArray = category
-      ? category.split(",").map((c: string) => c.trim()).filter(Boolean)
+      ? (Array.isArray(category) ? category : category.split(",").map((c: string) => c.trim()).filter(Boolean))
       : [];
 
     const { error } = await supabase.from("sales").insert({
@@ -73,6 +76,13 @@ Deno.serve(async (req) => {
       category: categoryArray,
       link,
       description: description || "",
+      sale_tier: sale_tier || "major",
+      importance_score: importance_score ?? 0,
+      filter_reason: filter_reason || "",
+      review_status: "pending",
+      publish_status: "draft",
+      source_urls: Array.isArray(source_urls) ? source_urls : [],
+      grouped_page_count: grouped_page_count ?? 0,
     });
 
     if (error) {

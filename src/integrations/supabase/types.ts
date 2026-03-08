@@ -101,10 +101,17 @@ export type Database = {
           created_at: string
           description: string
           end_date: string
+          filter_reason: string
+          grouped_page_count: number
           id: string
+          importance_score: number
           link: string
           platform: string
+          publish_status: string
+          review_status: string
           sale_name: string
+          sale_tier: string
+          source_urls: string[]
           start_date: string
         }
         Insert: {
@@ -112,10 +119,17 @@ export type Database = {
           created_at?: string
           description?: string
           end_date: string
+          filter_reason?: string
+          grouped_page_count?: number
           id?: string
+          importance_score?: number
           link?: string
           platform: string
+          publish_status?: string
+          review_status?: string
           sale_name: string
+          sale_tier?: string
+          source_urls?: string[]
           start_date: string
         }
         Update: {
@@ -123,10 +137,17 @@ export type Database = {
           created_at?: string
           description?: string
           end_date?: string
+          filter_reason?: string
+          grouped_page_count?: number
           id?: string
+          importance_score?: number
           link?: string
           platform?: string
+          publish_status?: string
+          review_status?: string
           sale_name?: string
+          sale_tier?: string
+          source_urls?: string[]
           start_date?: string
         }
         Relationships: []
