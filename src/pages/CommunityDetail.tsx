@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import JsonLd from "@/components/JsonLd";
 import CanonicalLink from "@/components/CanonicalLink";
+import PageMeta from "@/components/PageMeta";
 
 interface Comment {
   id: string;
