@@ -31,15 +31,14 @@ export default function Index() {
       );
     }
 
-    // 종료된 세일 제외, 랭킹순 정렬
     result = result.filter((s) => getSaleStatus(s) !== "ended");
     return sortByRanking(result);
   }, [selectedPlatforms, query, sales]);
 
   return (
-    <div className="max-w-lg mx-auto px-4 pt-4 pb-24 space-y-4">
+    <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
       {/* Search */}
-      <div className="relative">
+      <div className="relative max-w-lg">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           value={query}
@@ -55,8 +54,8 @@ export default function Index() {
       />
 
       {isLoading ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          {[1, 2, 3, 4].map((i) => (
             <Skeleton key={i} className="h-40 w-full rounded-lg" />
           ))}
         </div>
@@ -67,22 +66,29 @@ export default function Index() {
         </div>
       ) : (
         <>
-          <section className="space-y-3">
-            <h2 className="text-base font-bold text-foreground px-1 flex items-center gap-2">
-              <span>🏆</span>
-              세일 랭킹
-              <span className="text-xs text-muted-foreground font-medium ml-1">
-                {ranked.length}
-              </span>
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {ranked.map((sale, index) => (
-                <SaleCard key={sale.id} sale={sale} rank={index + 1} />
-              ))}
-            </div>
-          </section>
+          {/* Desktop: 2-column layout (ranking + timeline) */}
+          <div className="lg:grid lg:grid-cols-[1fr_340px] lg:gap-6">
+            {/* Left: Ranking */}
+            <section className="space-y-3">
+              <h2 className="text-base font-bold text-foreground px-1 flex items-center gap-2">
+                <span>🏆</span>
+                세일 랭킹
+                <span className="text-xs text-muted-foreground font-medium ml-1">
+                  {ranked.length}
+                </span>
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                {ranked.map((sale, index) => (
+                  <SaleCard key={sale.id} sale={sale} rank={index + 1} />
+                ))}
+              </div>
+            </section>
 
-          <SaleTimeline sales={sales} />
+            {/* Right: Timeline (sidebar on desktop, below on mobile) */}
+            <aside className="mt-6 lg:mt-0">
+              <SaleTimeline sales={sales} />
+            </aside>
+          </div>
 
           {/* Platform Navigation */}
           <section className="space-y-3">
@@ -90,7 +96,7 @@ export default function Index() {
               <span>🏬</span>
               플랫폼별 세일
             </h2>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
               {platforms.map((p) => (
                 <Link
                   key={p}
