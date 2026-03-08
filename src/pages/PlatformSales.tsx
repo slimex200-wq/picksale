@@ -9,6 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import JsonLd from "@/components/JsonLd";
 import CanonicalLink from "@/components/CanonicalLink";
+import PageMeta from "@/components/PageMeta";
 
 type StatusFilter = "all" | "live" | "starting_soon" | "ending_today" | "ending_soon";
 type SortOption = "ranking" | "newest" | "ending_soon" | "starting_soon";
