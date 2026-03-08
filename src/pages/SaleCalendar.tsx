@@ -76,29 +76,29 @@ export default function SaleCalendar() {
           return (
             <div
               key={day}
-              className={`min-h-[60px] rounded-md p-1 text-xs transition-colors ${
-                isToday ? "bg-primary/10 border border-primary/30" : "bg-card"
+              className={`min-h-[80px] rounded-md p-2 text-xs transition-colors border ${
+                isToday ? "bg-primary/15 border-primary/40" : "bg-card border-border"
               }`}
             >
               <span
-                className={`block text-center font-medium mb-0.5 ${
+                className={`block text-center font-semibold mb-1 text-sm ${
                   isToday ? "text-primary font-bold" : "text-foreground"
                 }`}
               >
                 {day}
               </span>
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 {daySales.slice(0, 2).map((s) => (
                   <div
                     key={s.id}
                     onClick={() => navigate(`/sale/${s.id}`)}
-                    className={`${platformColors[s.platform]} text-primary-foreground text-[8px] px-1 py-0.5 rounded-sm truncate cursor-pointer font-medium`}
+                    className={`${platformColors[s.platform]} text-primary-foreground text-[9px] px-1.5 py-1 rounded-sm truncate cursor-pointer font-semibold shadow-sm hover:shadow-md transition-shadow`}
                   >
                     {s.sale_name}
                   </div>
                 ))}
                 {daySales.length > 2 && (
-                  <span className="text-[8px] text-muted-foreground block text-center">
+                  <span className="text-[9px] text-foreground font-medium block text-center">
                     +{daySales.length - 2}
                   </span>
                 )}

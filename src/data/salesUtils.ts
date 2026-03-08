@@ -59,7 +59,7 @@ export const platformColors: Record<Platform, string> = {
   "SSG": "bg-sale-ssg",
   "오늘의집": "bg-sale-ohouse",
   "29CM": "bg-sale-29cm",
-  "커뮤니티 핫딜": "bg-muted",
+  "커뮤니티 핫딜": "bg-sale-community",
 };
 
 export const platformEmojis: Record<Platform, string> = {
