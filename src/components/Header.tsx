@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
 
 const navItems = [
-  { to: "/", label: "홈", icon: Home },
+  { to: "/home", label: "홈", icon: Home },
   { to: "/community", label: "레이더", icon: Flame },
   { to: "/calendar", label: "캘린더", icon: CalendarDays },
   { to: "/admin", label: "관리", icon: Settings },
