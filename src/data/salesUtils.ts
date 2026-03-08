@@ -49,7 +49,7 @@ export const platformLogoImports: Record<Platform, string> = {
   "SSG": "ssg",
   "오늘의집": "ohouse",
   "29CM": "29cm",
-  "W CONCEPT": "wconcept",
+  "WCONCEPT": "wconcept",
   "커뮤니티 핫딜": "community",
 };
 
