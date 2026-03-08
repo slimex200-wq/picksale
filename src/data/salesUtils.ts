@@ -47,7 +47,7 @@ export function categorizeSales(sales: Sale[]) {
     .filter((s) => {
       const end = new Date(s.end_date);
       const diff = (end.getTime() - now.getTime()) / 86400000;
-      return diff >= 0 && diff <= 2 && s.start_date !== todayStr;
+      return diff >= 0 && diff <= 3 && s.start_date !== todayStr;
     })
     .sort((a, b) => new Date(a.end_date).getTime() - new Date(b.end_date).getTime());
 
