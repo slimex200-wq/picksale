@@ -65,22 +65,24 @@ export default function Index() {
           <p className="text-sm mt-3">진행 중인 세일이 없습니다.</p>
         </div>
       ) : (
-        <section className="space-y-3">
-          <h2 className="text-base font-bold text-foreground px-1 flex items-center gap-2">
-            <span>🏆</span>
-            세일 랭킹
-            <span className="text-xs text-muted-foreground font-medium ml-1">
-              {ranked.length}
-            </span>
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {ranked.map((sale, index) => (
-              <SaleCard key={sale.id} sale={sale} rank={index + 1} />
-            ))}
-          </div>
-        </section>
+        <>
+          <section className="space-y-3">
+            <h2 className="text-base font-bold text-foreground px-1 flex items-center gap-2">
+              <span>🏆</span>
+              세일 랭킹
+              <span className="text-xs text-muted-foreground font-medium ml-1">
+                {ranked.length}
+              </span>
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {ranked.map((sale, index) => (
+                <SaleCard key={sale.id} sale={sale} rank={index + 1} />
+              ))}
+            </div>
+          </section>
 
-        <SaleTimeline sales={sales} />
+          <SaleTimeline sales={sales} />
+        </>
       )}
     </div>
   );
