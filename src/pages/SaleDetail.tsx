@@ -17,6 +17,7 @@ function formatDate(d: string) {
 export default function SaleDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { data: sale, isLoading } = useQuery({
     queryKey: ["sale", id],
