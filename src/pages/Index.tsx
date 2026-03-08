@@ -5,7 +5,7 @@ import PlatformFilter from "@/components/PlatformFilter";
 import SaleSection from "@/components/SaleSection";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Flame, ShoppingBag, Clock } from "lucide-react";
 
 export default function Index() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
