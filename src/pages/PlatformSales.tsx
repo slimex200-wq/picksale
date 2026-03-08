@@ -44,6 +44,7 @@ function getDetailedStatus(sale: { start_date: string; end_date: string }): Stat
 
 export default function PlatformSales() {
   const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
   const platform = slug ? slugToPlatform[slug] : undefined;
   const { data: allSales = [], isLoading } = useSales();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
