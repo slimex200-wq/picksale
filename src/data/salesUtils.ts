@@ -21,6 +21,7 @@ export interface Sale {
   source_urls: string[];
   grouped_page_count: number;
   event_id?: string | null;
+  signal_id?: string | null;
   created_at?: string;
 }
 
