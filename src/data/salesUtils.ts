@@ -33,6 +33,7 @@ export const platformSlugs: Record<Platform, string> = {
   "SSG": "ssg",
   "오늘의집": "ohouse",
   "29CM": "29cm",
+  "기타": "etc",
 };
 
 export const slugToPlatform: Record<string, Platform> = Object.fromEntries(
