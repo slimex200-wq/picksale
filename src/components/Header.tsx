@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarDays, Flame, Settings, Home } from "lucide-react";
+import { CalendarDays, Flame, Settings, Home, User, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
 
 const navItems = [
@@ -11,16 +12,56 @@ const navItems = [
 
 export default function Header() {
   const { pathname } = useLocation();
+  const { user, profile, signOut } = useAuth();
 
   return (
     <>
       {/* Top bar */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border px-4 py-3">
-        <div className="max-w-6xl mx-auto flex items-center gap-2 justify-start">
-          <img src={logo} alt="PickSale" className="w-8 h-8 rounded-lg object-cover" />
-          <h1 className="text-lg font-extrabold text-foreground tracking-tight">
-            PickSale
-          </h1>
+        <div className="max-w-6xl mx-auto flex items-center gap-2 justify-between">
+          <Link to="/" className="flex items-center gap-2">
+            <img src={logo} alt="PickSale" className="w-8 h-8 rounded-lg object-cover" />
+            <h1 className="text-lg font-extrabold text-foreground tracking-tight">
+              PickSale
+            </h1>
+          </Link>
+
+          {/* User area */}
+          <div className="flex items-center gap-2">
+            {user ? (
+              <>
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt={profile.username}
+                    className="w-7 h-7 rounded-full object-cover border border-border"
+                  />
+                ) : (
+                  <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+                    <User className="w-4 h-4 text-primary" />
+                  </div>
+                )}
+                <span className="text-xs font-medium text-foreground hidden sm:inline max-w-[80px] truncate">
+                  {profile?.username || "사용자"}
+                </span>
+                <button
+                  onClick={signOut}
+                  className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                  title="로그아웃"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity"
+              >
+                <User className="w-3.5 h-3.5" />
+                로그인
+              </Link>
+            )}
+          </div>
         </div>
       </header>
 
