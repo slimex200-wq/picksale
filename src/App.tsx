@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "@/components/Header";
 import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
+import PlatformSales from "./pages/PlatformSales";
 import SaleCalendar from "./pages/SaleCalendar";
 import SubmitSale from "./pages/SubmitSale";
 import AdminGuard from "./pages/AdminGuard";
