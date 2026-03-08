@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Settings, Inbox, List, LogOut, MessageSquare, Send } from "lucide-react";
+import { Settings, Inbox, List, LogOut, MessageSquare, Send, Radio } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
