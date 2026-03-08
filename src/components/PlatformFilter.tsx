@@ -24,7 +24,7 @@ export default function PlatformFilter({ selected, onChange }: Props) {
     <div className="flex flex-wrap gap-2 py-2 px-1">
       <button
         onClick={() => onChange([])}
-        className={`shrink-0 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+        className={`shrink-0 px-2.5 py-1.5 rounded-md text-[11px] font-semibold transition-all whitespace-nowrap ${
           allSelected
             ? "bg-primary text-primary-foreground shadow-sm"
             : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
