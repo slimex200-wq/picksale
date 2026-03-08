@@ -70,7 +70,9 @@ export default function SaleCalendar() {
   return (
     <div className="max-w-lg mx-auto px-4 pt-4 pb-24">
       {/* Glassmorphism Calendar Container */}
-      <div className="rounded-2xl border border-white/30 bg-white/50 backdrop-blur-xl shadow-card p-4">
+      <div className="rounded-3xl border border-white/40 bg-white/30 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] p-4"
+        style={{ WebkitBackdropFilter: 'blur(40px)', backdropFilter: 'blur(40px)' }}
+      >
         {/* Month Navigation */}
         <div className="flex items-center justify-between mb-4">
           <Button variant="ghost" size="icon" onClick={prev} className="h-8 w-8 rounded-full hover:bg-white/40">
