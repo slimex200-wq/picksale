@@ -67,6 +67,8 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Pretendard Variable', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
   }
 }
 
