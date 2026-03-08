@@ -181,7 +181,16 @@ export default function AdminEvents() {
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-card-foreground">{sale.sale_name}</p>
-                  <p className="text-xs text-muted-foreground">{sale.platform} · {sale.start_date} ~ {sale.end_date}</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{sale.platform}</span>
+                    <span>·</span>
+                    <span className="font-mono">{sale.start_date} ~ {sale.end_date}</span>
+                    {sale.signal_id && (
+                      <Badge variant="outline" className="text-[9px] h-4 px-1 bg-blue-50 text-blue-600 border-blue-200">
+                        시그널 연결
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </div>
 
