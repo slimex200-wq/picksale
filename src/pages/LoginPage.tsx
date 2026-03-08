@@ -20,7 +20,7 @@ export default function LoginPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate("/", { replace: true });
+      navigate("/home", { replace: true });
     }
   }, [user, navigate]);
   const handleGoogleLogin = async () => {

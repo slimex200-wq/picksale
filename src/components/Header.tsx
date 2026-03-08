@@ -69,7 +69,7 @@ export default function Header() {
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-lg border-t border-border">
         <div className="max-w-lg mx-auto flex justify-around py-2">
           {navItems.map(({ to, label, icon: Icon }) => {
-            const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
+            const active = to === "/home" ? pathname === "/home" : pathname.startsWith(to);
             return (
               <Link
                 key={to}

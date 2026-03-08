@@ -1,15 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { ArrowRight, Radar } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 export default function LandingPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  // If already logged in, skip landing
-  if (user) {
-    return null; // handled by router
-  }
+  if (loading) return null;
+  if (user) return <Navigate to="/home" replace />;
 
   return (
     <div className="min-h-[calc(100vh-60px)] flex flex-col items-center justify-center px-4 relative overflow-hidden">
