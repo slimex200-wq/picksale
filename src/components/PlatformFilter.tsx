@@ -38,7 +38,7 @@ export default function PlatformFilter({ selected, onChange }: Props) {
           <button
             key={p}
             onClick={() => toggle(p)}
-            className={`shrink-0 px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 ${
+            className={`shrink-0 px-2.5 py-1.5 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1 whitespace-nowrap ${
               active
                 ? "bg-primary text-primary-foreground shadow-sm"
                 : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
