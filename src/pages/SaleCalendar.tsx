@@ -112,10 +112,10 @@ export default function SaleCalendar() {
             <button
               key={day}
               onClick={() => setSelectedDay(day === selectedDay ? null : day)}
-              className={`flex flex-col items-center py-2 rounded-lg transition-all relative ${
+              className={`flex flex-col items-center py-2 rounded-lg transition-all relative border border-border/25 ${
                 isSelected
-                  ? "bg-primary/15 ring-1 ring-primary/40"
-                  : "hover:bg-muted/60"
+                  ? "bg-primary/15 ring-1 ring-primary/40 border-primary/30"
+                  : "hover:bg-muted/60 hover:border-border/40"
               }`}
             >
               <span
