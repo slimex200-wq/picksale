@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.api-community]
 verify_jwt = false
+
+[functions.api-signals]
+verify_jwt = false
+
+[functions.daily-maintenance]
+verify_jwt = false
