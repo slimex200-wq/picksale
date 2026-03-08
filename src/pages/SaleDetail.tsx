@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { platformColors, platformEmojis, Platform } from "@/data/salesUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ExternalLink, Bell, Calendar } from "lucide-react";
 import { toast } from "sonner";
+import JsonLd from "@/components/JsonLd";
 
 function formatDate(d: string) {
   const date = new Date(d);
