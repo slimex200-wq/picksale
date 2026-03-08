@@ -6,12 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
-import { platforms, Platform } from "@/data/salesUtils";
+import { platforms } from "@/data/salesUtils";
 import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
 
 export default function SubmitSale() {
-  const queryClient = useQueryClient();
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     platform: "",
@@ -21,6 +19,7 @@ export default function SubmitSale() {
     end_date: "",
     category: "",
     description: "",
+    submitter_email: "",
   });
 
   const update = (key: string, value: string) =>
@@ -28,32 +27,27 @@ export default function SubmitSale() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.platform || !form.sale_name || !form.start_date || !form.end_date) {
-      toast.error("필수 항목을 모두 입력해주세요.");
+    if (!form.sale_name || !form.link) {
+      toast.error("세일 이름과 링크는 필수입니다.");
       return;
     }
 
     setSubmitting(true);
     try {
-      const categories = form.category
-        .split(",")
-        .map((c) => c.trim())
-        .filter(Boolean);
-
-      const { error } = await supabase.from("sales").insert({
-        platform: form.platform,
+      const { error } = await supabase.from("sale_submissions").insert({
+        platform: form.platform || null,
         sale_name: form.sale_name,
-        link: form.link || "",
-        start_date: form.start_date,
-        end_date: form.end_date,
-        category: categories,
-        description: form.description || "",
+        link: form.link,
+        start_date: form.start_date || null,
+        end_date: form.end_date || null,
+        category: form.category || null,
+        description: form.description || null,
+        submitter_email: form.submitter_email || null,
       });
 
       if (error) throw error;
 
-      toast.success("세일이 등록되었습니다! 🎉");
-      queryClient.invalidateQueries({ queryKey: ["sales"] });
+      toast.success("세일 제보가 접수되었습니다! 관리자 승인 후 공개됩니다. 🎉");
       setForm({
         platform: "",
         sale_name: "",
@@ -62,9 +56,10 @@ export default function SubmitSale() {
         end_date: "",
         category: "",
         description: "",
+        submitter_email: "",
       });
     } catch (err: any) {
-      toast.error(err.message || "등록에 실패했습니다.");
+      toast.error(err.message || "제보에 실패했습니다.");
     } finally {
       setSubmitting(false);
     }
@@ -75,16 +70,16 @@ export default function SubmitSale() {
       <div className="mb-6">
         <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
           <Send className="w-5 h-5 text-primary" />
-          세일 등록하기
+          세일 제보하기
         </h2>
         <p className="text-xs text-muted-foreground mt-1">
-          새로운 세일 정보를 등록하세요.
+          새로운 세일을 발견하셨나요? 제보해주시면 관리자 승인 후 공개됩니다.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <Label className="text-sm font-medium">플랫폼 *</Label>
+          <Label className="text-sm font-medium">플랫폼</Label>
           <Select value={form.platform} onValueChange={(v) => update("platform", v)}>
             <SelectTrigger className="rounded-md">
               <SelectValue placeholder="플랫폼 선택" />
@@ -108,7 +103,7 @@ export default function SubmitSale() {
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-sm font-medium">세일 링크</Label>
+          <Label className="text-sm font-medium">세일 링크 *</Label>
           <Input
             value={form.link}
             onChange={(e) => update("link", e.target.value)}
@@ -119,7 +114,7 @@ export default function SubmitSale() {
 
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <Label className="text-sm font-medium">시작일 *</Label>
+            <Label className="text-sm font-medium">시작일</Label>
             <Input
               type="date"
               value={form.start_date}
@@ -128,7 +123,7 @@ export default function SubmitSale() {
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-sm font-medium">종료일 *</Label>
+            <Label className="text-sm font-medium">종료일</Label>
             <Input
               type="date"
               value={form.end_date}
@@ -159,9 +154,20 @@ export default function SubmitSale() {
           />
         </div>
 
+        <div className="space-y-1.5">
+          <Label className="text-sm font-medium">이메일 (선택)</Label>
+          <Input
+            type="email"
+            value={form.submitter_email}
+            onChange={(e) => update("submitter_email", e.target.value)}
+            placeholder="승인 알림을 받을 이메일"
+            className="rounded-md"
+          />
+        </div>
+
         <Button type="submit" className="w-full rounded-md gap-2" disabled={submitting}>
           <Send className="w-4 h-4" />
-          {submitting ? "등록 중..." : "등록하기"}
+          {submitting ? "제보 중..." : "제보하기"}
         </Button>
       </form>
     </div>
