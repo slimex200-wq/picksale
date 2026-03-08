@@ -1,12 +1,13 @@
 import { useState, useMemo } from "react";
-import { sortByRanking, Platform, getSaleStatus, saleStatusConfig } from "@/data/salesUtils";
+import { Link } from "react-router-dom";
+import { sortByRanking, Platform, getSaleStatus, saleStatusConfig, platforms, platformEmojis, platformColors, platformSlugs } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
 import PlatformFilter from "@/components/PlatformFilter";
 import SaleCard from "@/components/SaleCard";
 import SaleTimeline from "@/components/SaleTimeline";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Search, Trophy } from "lucide-react";
+import { Search, Trophy, ChevronRight } from "lucide-react";
 
 export default function Index() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
@@ -82,6 +83,27 @@ export default function Index() {
           </section>
 
           <SaleTimeline sales={sales} />
+
+          {/* Platform Navigation */}
+          <section className="space-y-3">
+            <h2 className="text-base font-bold text-foreground px-1 flex items-center gap-2">
+              <span>🏬</span>
+              플랫폼별 세일
+            </h2>
+            <div className="grid grid-cols-2 gap-2">
+              {platforms.map((p) => (
+                <Link
+                  key={p}
+                  to={`/platform/${platformSlugs[p]}`}
+                  className={`${platformColors[p]} rounded-xl px-3 py-3 flex items-center gap-2 text-primary-foreground hover:opacity-90 transition-opacity`}
+                >
+                  <span className="text-lg">{platformEmojis[p]}</span>
+                  <span className="text-xs font-bold flex-1">{p}</span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-70" />
+                </Link>
+              ))}
+            </div>
+          </section>
         </>
       )}
     </div>
