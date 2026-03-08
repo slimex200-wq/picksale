@@ -69,35 +69,37 @@ export default function SaleCalendar() {
 
   return (
     <div className="max-w-lg mx-auto px-4 pt-4 pb-24">
-      {/* Month Navigation */}
-      <div className="flex items-center justify-between mb-5">
-        <Button variant="ghost" size="icon" onClick={prev} className="h-8 w-8">
-          <ChevronLeft className="w-5 h-5" />
-        </Button>
-        <h2 className="text-lg font-bold text-foreground">
-          {year}년 {month + 1}월
-        </h2>
-        <Button variant="ghost" size="icon" onClick={next} className="h-8 w-8">
-          <ChevronRight className="w-5 h-5" />
-        </Button>
-      </div>
+      {/* Glassmorphism Calendar Container */}
+      <div className="rounded-2xl border border-white/30 bg-white/50 backdrop-blur-xl shadow-card p-4">
+        {/* Month Navigation */}
+        <div className="flex items-center justify-between mb-4">
+          <Button variant="ghost" size="icon" onClick={prev} className="h-8 w-8 rounded-full hover:bg-white/40">
+            <ChevronLeft className="w-5 h-5" />
+          </Button>
+          <h2 className="text-lg font-bold text-foreground">
+            {year}년 {month + 1}월
+          </h2>
+          <Button variant="ghost" size="icon" onClick={next} className="h-8 w-8 rounded-full hover:bg-white/40">
+            <ChevronRight className="w-5 h-5" />
+          </Button>
+        </div>
 
-      {/* Day Headers */}
-      <div className="grid grid-cols-7 mb-2">
-        {DAYS.map((d, i) => (
-          <div
-            key={d}
-            className={`text-center text-xs font-semibold py-1 ${
-              i === 0 ? "text-destructive/70" : i === 6 ? "text-blue-500/70" : "text-muted-foreground"
-            }`}
-          >
-            {d}
-          </div>
-        ))}
-      </div>
+        {/* Day Headers */}
+        <div className="grid grid-cols-7 mb-1">
+          {DAYS.map((d, i) => (
+            <div
+              key={d}
+              className={`text-center text-xs font-semibold py-1 ${
+                i === 0 ? "text-destructive/70" : i === 6 ? "text-blue-500/70" : "text-muted-foreground"
+              }`}
+            >
+              {d}
+            </div>
+          ))}
+        </div>
 
-      {/* Calendar Grid */}
-      <div className="grid grid-cols-7">
+        {/* Calendar Grid */}
+        <div className="grid grid-cols-7 gap-0.5">
         {cells.map((day, i) => {
           if (day === null) return <div key={`empty-${i}`} />;
           const daySales = getSalesForDay(day);
@@ -112,10 +114,10 @@ export default function SaleCalendar() {
             <button
               key={day}
               onClick={() => setSelectedDay(day === selectedDay ? null : day)}
-              className={`flex flex-col items-center py-2 rounded-lg transition-all relative border border-border/25 ${
+              className={`flex flex-col items-center py-2 rounded-xl transition-all relative border ${
                 isSelected
-                  ? "bg-primary/15 ring-1 ring-primary/40 border-primary/30"
-                  : "hover:bg-muted/60 hover:border-border/40"
+                  ? "bg-white/70 border-primary/30 shadow-sm"
+                  : "border-white/20 hover:bg-white/40 hover:border-white/50"
               }`}
             >
               <span
@@ -153,6 +155,7 @@ export default function SaleCalendar() {
             </button>
           );
         })}
+        </div>
       </div>
 
       {/* Selected Day Detail Panel */}
