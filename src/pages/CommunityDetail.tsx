@@ -12,6 +12,7 @@ import {
   ThumbsUp, MessageSquare, ExternalLink, ArrowLeft, Send,
 } from "lucide-react";
 import JsonLd from "@/components/JsonLd";
+import CanonicalLink from "@/components/CanonicalLink";
 
 interface Comment {
   id: string;

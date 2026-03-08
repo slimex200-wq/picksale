@@ -7,6 +7,7 @@ import { Calendar, ExternalLink, ArrowLeft, Layers } from "lucide-react";
 import { platformLogos } from "@/data/platformLogos";
 import type { Platform } from "@/data/salesUtils";
 import JsonLd from "@/components/JsonLd";
+import CanonicalLink from "@/components/CanonicalLink";
 
 export default function EventDetail() {
   const { eventId } = useParams<{ eventId: string }>();

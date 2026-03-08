@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ExternalLink, Bell, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import JsonLd from "@/components/JsonLd";
+import CanonicalLink from "@/components/CanonicalLink";
 
 function formatDate(d: string) {
   const date = new Date(d);

@@ -10,6 +10,7 @@ import TrendingCommunity from "@/components/TrendingCommunity";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Trophy, ChevronRight } from "lucide-react";
+import CanonicalLink from "@/components/CanonicalLink";
 
 export default function Index() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
