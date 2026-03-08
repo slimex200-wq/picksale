@@ -2,6 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Sale, Platform, SaleTier, ReviewStatus, PublishStatus } from "@/data/salesUtils";
 
+/** Columns needed for card/list views (no description, source_urls, filter_reason) */
+const LIST_COLUMNS = "id,platform,sale_name,start_date,end_date,category,link,sale_tier,importance_score,review_status,publish_status,grouped_page_count,event_id,signal_id,created_at";
+
 /** Public hook – only returns published sales */
 export function useSales() {
   return useQuery({
@@ -9,13 +12,15 @@ export function useSales() {
     queryFn: async (): Promise<Sale[]> => {
       const { data, error } = await supabase
         .from("sales")
-        .select("*")
+        .select(LIST_COLUMNS)
         .eq("publish_status", "published")
         .order("start_date", { ascending: true });
 
       if (error) throw error;
       return (data ?? []).map(mapRow);
     },
+    staleTime: 2 * 60 * 1000, // 2 min
+    gcTime: 5 * 60 * 1000,
   });
 }
 
@@ -68,6 +73,7 @@ function mapRow(row: any): Sale {
     source_urls: row.source_urls ?? [],
     grouped_page_count: row.grouped_page_count ?? 0,
     event_id: row.event_id ?? null,
+    signal_id: row.signal_id ?? null,
     created_at: row.created_at,
   };
 }

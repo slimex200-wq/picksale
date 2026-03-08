@@ -19,6 +19,9 @@ export interface CommunityPost {
   updated_at: string;
 }
 
+/** Columns needed for list/card views (no content, source_type, updated_at) */
+const LIST_COLUMNS = "id,platform,title,external_link,category,author,review_status,upvotes,comments_count,signal_score,is_sale_signal,created_at";
+
 export function useCommunityPosts(options?: {
   category?: string;
   sort?: "newest" | "upvotes" | "trending";
@@ -29,7 +32,7 @@ export function useCommunityPosts(options?: {
     queryFn: async (): Promise<CommunityPost[]> => {
       let q = supabase
         .from("community_posts")
-        .select("*")
+        .select(LIST_COLUMNS)
         .eq("review_status", "published");
 
       if (options?.category && options.category !== "all") {
@@ -52,6 +55,8 @@ export function useCommunityPosts(options?: {
       if (error) throw error;
       return (data ?? []) as CommunityPost[];
     },
+    staleTime: 60 * 1000, // 1 min
+    gcTime: 3 * 60 * 1000,
   });
 }
 
