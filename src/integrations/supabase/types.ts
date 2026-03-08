@@ -53,6 +53,63 @@ export type Database = {
         }
         Relationships: []
       }
+      event_aliases: {
+        Row: {
+          alias: string
+          canonical_name: string
+          id: string
+          platform: string
+        }
+        Insert: {
+          alias: string
+          canonical_name: string
+          id?: string
+          platform: string
+        }
+        Update: {
+          alias?: string
+          canonical_name?: string
+          id?: string
+          platform?: string
+        }
+        Relationships: []
+      }
+      platform_scrape_rules: {
+        Row: {
+          active: boolean
+          card_selector: string
+          date_selector: string
+          id: string
+          link_selector: string
+          page_url: string
+          platform: string
+          surface_type: string
+          title_selector: string
+        }
+        Insert: {
+          active?: boolean
+          card_selector?: string
+          date_selector?: string
+          id?: string
+          link_selector?: string
+          page_url?: string
+          platform: string
+          surface_type?: string
+          title_selector?: string
+        }
+        Update: {
+          active?: boolean
+          card_selector?: string
+          date_selector?: string
+          id?: string
+          link_selector?: string
+          page_url?: string
+          platform?: string
+          surface_type?: string
+          title_selector?: string
+        }
+        Relationships: []
+      }
       sale_events: {
         Row: {
           canonical_link: string
@@ -202,6 +259,7 @@ export type Database = {
           review_status: string
           sale_name: string
           sale_tier: string
+          signal_id: string | null
           source_urls: string[]
           start_date: string
         }
@@ -221,6 +279,7 @@ export type Database = {
           review_status?: string
           sale_name: string
           sale_tier?: string
+          signal_id?: string | null
           source_urls?: string[]
           start_date: string
         }
@@ -240,6 +299,7 @@ export type Database = {
           review_status?: string
           sale_name?: string
           sale_tier?: string
+          signal_id?: string | null
           source_urls?: string[]
           start_date?: string
         }
@@ -249,6 +309,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "sale_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "sale_signals"
             referencedColumns: ["id"]
           },
         ]
