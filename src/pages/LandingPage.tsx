@@ -14,10 +14,7 @@ export default function LandingPage() {
         supabase.from("sales").select("id", { count: "exact", head: true }).eq("publish_status", "published"),
         supabase.from("community_posts").select("id", { count: "exact", head: true }).eq("review_status", "published"),
       ]);
-      return {
-        sales: sales.count ?? 0,
-        posts: posts.count ?? 0,
-      };
+      return { sales: sales.count ?? 0, posts: posts.count ?? 0 };
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -26,67 +23,48 @@ export default function LandingPage() {
   if (user) return <Navigate to="/home" replace />;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center px-4 relative overflow-hidden selection:bg-white/20">
-      {/* Ambient glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[hsl(16,85%,58%)] opacity-[0.04] blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-t from-[hsl(16,85%,58%)]/[0.02] to-transparent pointer-events-none" />
+    <div className="min-h-screen bg-[#09090b] flex flex-col items-center justify-center px-4 relative overflow-hidden selection:bg-white/20">
+      {/* Subtle radial glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full bg-white/[0.015] blur-[100px] pointer-events-none" />
 
-      <div className="relative z-10 flex flex-col items-center text-center max-w-xl space-y-12">
-        {/* Brand */}
-        <p className="text-[#888] text-xs font-medium tracking-[0.3em] uppercase">
-          PickSale
-        </p>
-
-        {/* Headline */}
-        <div className="space-y-5">
-          <h1 className="text-[clamp(2rem,6vw,3.5rem)] font-black text-white tracking-tight leading-[1.1]">
-            한국 쇼핑 세일
-            <br />
-            전체 레이더
+      <div className="relative z-10 flex flex-col items-center text-center max-w-lg space-y-16">
+        {/* Brand mark */}
+        <div className="space-y-8">
+          <h1 className="text-white text-[clamp(2.5rem,8vw,4.5rem)] font-black tracking-[-0.03em] leading-none">
+            PickSale
           </h1>
-          <p className="text-[#777] text-sm sm:text-base leading-relaxed max-w-sm mx-auto">
-            주요 쇼핑몰의 세일을 실시간으로 추적하고
-            <br />
-            커뮤니티와 함께 발견하세요.
+          <p className="text-[#a1a1aa] text-base sm:text-lg font-medium tracking-tight">
+            한국 쇼핑 세일 전체 레이더
           </p>
         </div>
 
-        {/* Buttons */}
-        <div className="flex items-center gap-3">
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
           <Link
             to="/login"
-            className="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-white text-[#0a0a0f] text-sm font-bold hover:bg-white/90 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-white text-[#09090b] text-sm font-bold hover:bg-white/90 transition-colors"
           >
             로그인하고 참여하기
           </Link>
           <Link
             to="/home"
-            className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white/[0.06] border border-white/[0.08] text-white/80 text-sm font-semibold hover:bg-white/[0.1] hover:text-white transition-all"
+            className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full border border-white/10 text-white/70 text-sm font-semibold hover:bg-white/5 hover:text-white transition-all"
           >
             둘러보기
-            <ArrowRight className="w-4 h-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+            <ArrowRight className="w-4 h-4 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
           </Link>
         </div>
 
-        {/* Stats */}
+        {/* Live stats */}
         {stats && (stats.sales > 0 || stats.posts > 0) && (
-          <div className="flex items-center gap-6 text-[#555] text-xs">
+          <p className="text-[#52525b] text-xs tracking-wide">
+            현재 감지된 세일 이벤트{" "}
             {stats.sales > 0 && (
-              <span>
-                <span className="text-white/60 font-semibold">{stats.sales}</span> 세일 감지 중
-              </span>
+              <span className="text-[#a1a1aa]">{stats.sales}건</span>
             )}
-            {stats.posts > 0 && (
-              <span>
-                <span className="text-white/60 font-semibold">{stats.posts}</span> 커뮤니티 포스트
-              </span>
-            )}
-          </div>
+          </p>
         )}
       </div>
-
-      {/* Bottom fade line */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </div>
   );
 }
