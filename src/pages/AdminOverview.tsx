@@ -24,7 +24,9 @@ export default function AdminOverview() {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="space-y-3">
+      <h3 className="text-sm font-semibold text-muted-foreground">대시보드</h3>
+      <div className="grid grid-cols-2 gap-3">
       {cards.map(({ label, value, icon: Icon, color, to }) => (
         <Link
           key={label}
