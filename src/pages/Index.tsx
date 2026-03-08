@@ -106,7 +106,7 @@ export default function Index() {
                 >
                   <img src={platformLogos[p]} alt={p} className="h-8 w-8 object-contain rounded-lg" />
                   <span className="text-xs font-bold text-card-foreground flex-1">{p}</span>
-                  <ChevronRight className="w-3.5 h-3.5 opacity-70" />
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
                 </Link>
               ))}
             </div>
