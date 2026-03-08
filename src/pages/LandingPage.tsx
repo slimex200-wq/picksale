@@ -1,58 +1,92 @@
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowRight, Radar } from "lucide-react";
-import logo from "@/assets/logo.png";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { ArrowRight } from "lucide-react";
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
+
+  const { data: stats } = useQuery({
+    queryKey: ["landing-stats"],
+    queryFn: async () => {
+      const [sales, posts] = await Promise.all([
+        supabase.from("sales").select("id", { count: "exact", head: true }).eq("publish_status", "published"),
+        supabase.from("community_posts").select("id", { count: "exact", head: true }).eq("review_status", "published"),
+      ]);
+      return {
+        sales: sales.count ?? 0,
+        posts: posts.count ?? 0,
+      };
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
   if (loading) return null;
   if (user) return <Navigate to="/home" replace />;
 
   return (
-    <div className="min-h-[calc(100vh-60px)] flex flex-col items-center justify-center px-4 relative overflow-hidden">
-      {/* Subtle grid background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.03)_1px,transparent_1px)] bg-[size:32px_32px]" />
+    <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center px-4 relative overflow-hidden selection:bg-white/20">
+      {/* Ambient glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[hsl(16,85%,58%)] opacity-[0.04] blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-t from-[hsl(16,85%,58%)]/[0.02] to-transparent pointer-events-none" />
 
-      <div className="relative z-10 flex flex-col items-center text-center max-w-lg space-y-8">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <img src={logo} alt="PickSale" className="w-12 h-12 rounded-2xl object-cover" />
-          <span className="text-2xl font-extrabold tracking-tight text-foreground">PickSale</span>
-        </div>
+      <div className="relative z-10 flex flex-col items-center text-center max-w-xl space-y-12">
+        {/* Brand */}
+        <p className="text-[#888] text-xs font-medium tracking-[0.3em] uppercase">
+          PickSale
+        </p>
 
         {/* Headline */}
-        <div className="space-y-3">
-          <h1 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight leading-tight">
+        <div className="space-y-5">
+          <h1 className="text-[clamp(2rem,6vw,3.5rem)] font-black text-white tracking-tight leading-[1.1]">
             한국 쇼핑 세일
             <br />
-            <span className="text-primary">전체 레이더</span>
+            전체 레이더
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-sm mx-auto">
-            쿠팡, 무신사, 올리브영 등 주요 쇼핑몰의 세일을
-            <br className="hidden sm:block" />
-            실시간으로 추적하고, 커뮤니티와 함께 공유하세요.
+          <p className="text-[#777] text-sm sm:text-base leading-relaxed max-w-sm mx-auto">
+            주요 쇼핑몰의 세일을 실시간으로 추적하고
+            <br />
+            커뮤니티와 함께 발견하세요.
           </p>
         </div>
 
-        {/* CTA Buttons */}
+        {/* Buttons */}
         <div className="flex items-center gap-3">
           <Link
             to="/login"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:opacity-90 transition-opacity shadow-md"
+            className="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-white text-[#0a0a0f] text-sm font-bold hover:bg-white/90 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]"
           >
-            <Radar className="w-4 h-4" />
             로그인하고 참여하기
           </Link>
           <Link
             to="/home"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-card border border-border text-foreground text-sm font-semibold hover:bg-accent transition-colors"
+            className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white/[0.06] border border-white/[0.08] text-white/80 text-sm font-semibold hover:bg-white/[0.1] hover:text-white transition-all"
           >
             둘러보기
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
           </Link>
         </div>
+
+        {/* Stats */}
+        {stats && (stats.sales > 0 || stats.posts > 0) && (
+          <div className="flex items-center gap-6 text-[#555] text-xs">
+            {stats.sales > 0 && (
+              <span>
+                <span className="text-white/60 font-semibold">{stats.sales}</span> 세일 감지 중
+              </span>
+            )}
+            {stats.posts > 0 && (
+              <span>
+                <span className="text-white/60 font-semibold">{stats.posts}</span> 커뮤니티 포스트
+              </span>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Bottom fade line */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </div>
   );
 }
