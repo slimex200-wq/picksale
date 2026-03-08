@@ -56,6 +56,7 @@ export default {
           ohouse: "hsl(var(--sale-ohouse))",
           "29cm": "hsl(var(--sale-29cm))",
           community: "hsl(var(--sale-community))",
+          wconcept: "hsl(var(--sale-wconcept))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
