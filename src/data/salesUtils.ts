@@ -101,6 +101,82 @@ export function sortByRanking(sales: Sale[]): Sale[] {
   return [...sales].sort((a, b) => calculateRankingScore(b) - calculateRankingScore(a));
 }
 
+/* ── 타임라인 상태 ── */
+export type TimelineStatus = "ending_today" | "starts_today" | "ending_soon" | "live" | "starting_soon";
+
+export const timelineSections: {
+  key: TimelineStatus;
+  title: string;
+  emoji: string;
+  emptyText: string;
+}[] = [
+  { key: "ending_today", title: "오늘 종료되는 세일", emoji: "🔴", emptyText: "오늘 종료되는 세일이 없습니다." },
+  { key: "starts_today", title: "오늘 시작하는 세일", emoji: "🔥", emptyText: "오늘 시작하는 세일이 없습니다." },
+  { key: "ending_soon", title: "종료 임박 세일", emoji: "⚠️", emptyText: "종료 임박 세일이 없습니다." },
+  { key: "live", title: "지금 진행중인 세일", emoji: "🟢", emptyText: "진행중인 세일이 없습니다." },
+  { key: "starting_soon", title: "곧 시작하는 세일", emoji: "⏳", emptyText: "곧 시작하는 세일이 없습니다." },
+];
+
+function getTimelineStatus(sale: Sale, todayStr: string, now: Date): TimelineStatus | null {
+  const endDiff = Math.ceil((new Date(sale.end_date).getTime() - now.getTime()) / 86400000);
+  const startDiff = Math.ceil((new Date(sale.start_date).getTime() - now.getTime()) / 86400000);
+  const isActive = sale.start_date <= todayStr && sale.end_date >= todayStr;
+
+  // Priority: ending_today > starts_today > ending_soon > live > starting_soon
+  if (sale.end_date === todayStr) return "ending_today";
+  if (sale.start_date === todayStr) return "starts_today";
+  if (isActive && endDiff >= 0 && endDiff <= 2) return "ending_soon";
+  if (isActive) return "live";
+  if (startDiff > 0 && startDiff <= 3) return "starting_soon";
+  return null;
+}
+
+/** Categorize sales into timeline buckets (major + published only, no duplicates) */
+export function categorizeTimeline(sales: Sale[]): Record<TimelineStatus, Sale[]> {
+  const now = new Date();
+  const todayStr = fmt(now);
+  const result: Record<TimelineStatus, Sale[]> = {
+    ending_today: [],
+    starts_today: [],
+    ending_soon: [],
+    live: [],
+    starting_soon: [],
+  };
+
+  const majorPublished = sales.filter(
+    (s) => s.sale_tier === "major" && s.publish_status === "published"
+  );
+
+  const assigned = new Set<string>();
+
+  // Process in priority order
+  for (const section of timelineSections) {
+    for (const sale of majorPublished) {
+      if (assigned.has(sale.id)) continue;
+      const status = getTimelineStatus(sale, todayStr, now);
+      if (status === section.key) {
+        result[section.key].push(sale);
+        assigned.add(sale.id);
+      }
+    }
+
+    // Sort each section
+    result[section.key].sort((a, b) => {
+      if (section.key === "ending_today" || section.key === "ending_soon") {
+        const dateDiff = new Date(a.end_date).getTime() - new Date(b.end_date).getTime();
+        return dateDiff !== 0 ? dateDiff : b.importance_score - a.importance_score;
+      }
+      if (section.key === "starting_soon" || section.key === "starts_today") {
+        const dateDiff = new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+        return dateDiff !== 0 ? dateDiff : b.importance_score - a.importance_score;
+      }
+      return b.importance_score - a.importance_score;
+    });
+  }
+
+  return result;
+}
+
 /* ── 기존 카테고리 분류 (하위 호환) ── */
 export function categorizeSales(sales: Sale[]) {
   const now = new Date();
