@@ -60,35 +60,41 @@ export default function SaleDetail() {
 
   return (
     <div className="max-w-lg mx-auto pb-24">
-      <div className={`${colorClass} px-4 py-6 relative`}>
+      {/* Platform Header */}
+      <div className={`${colorClass} px-4 pt-4 pb-10 relative`}>
         <button
           onClick={() => navigate(-1)}
-          className="absolute top-4 left-4 bg-card/20 backdrop-blur-sm rounded-md p-1.5 text-primary-foreground"
+          className="absolute top-4 left-4 bg-white/15 backdrop-blur-sm rounded-xl p-2 text-primary-foreground hover:bg-white/25 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <div className="text-center pt-4">
+        <div className="flex flex-col items-center pt-6">
           <span className="text-4xl">{platformEmojis[sale.platform]}</span>
-          <p className="text-primary-foreground/80 text-sm font-medium mt-2">
+          <p className="text-primary-foreground/80 text-xs font-bold tracking-wide mt-2 uppercase">
             {sale.platform}
           </p>
         </div>
       </div>
 
-      <div className="px-4 -mt-4">
-        <div className="bg-card rounded-lg shadow-card p-5 space-y-4">
-          <h2 className="text-xl font-bold text-card-foreground">
+      {/* Content Card */}
+      <div className="px-4 -mt-6">
+        <div className="bg-card rounded-2xl shadow-card p-5 space-y-4">
+          <h2 className="text-lg font-bold text-card-foreground leading-snug tracking-tight">
             {sale.sale_name}
           </h2>
 
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="w-4 h-4" />
-            {formatDate(sale.start_date)} ~ {formatDate(sale.end_date)}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+            <Calendar className="w-4 h-4 shrink-0" />
+            <span>{formatDate(sale.start_date)} ~ {formatDate(sale.end_date)}</span>
           </div>
 
           <div className="flex flex-wrap gap-1.5">
             {sale.category.map((cat: string) => (
-              <Badge key={cat} variant="secondary" className="rounded-md">
+              <Badge
+                key={cat}
+                variant="secondary"
+                className="text-[11px] font-semibold rounded-full px-3 py-0.5 bg-secondary/80"
+              >
                 {cat}
               </Badge>
             ))}
@@ -98,9 +104,9 @@ export default function SaleDetail() {
             {sale.description}
           </p>
 
-          <div className="flex flex-col gap-2 pt-2">
+          <div className="flex flex-col gap-2.5 pt-2">
             <Button
-              className="w-full rounded-md gap-2"
+              className="w-full rounded-xl gap-2 h-11 font-semibold"
               onClick={() => window.open(sale.link, "_blank")}
             >
               <ExternalLink className="w-4 h-4" />
@@ -108,7 +114,7 @@ export default function SaleDetail() {
             </Button>
             <Button
               variant="outline"
-              className="w-full rounded-md gap-2"
+              className="w-full rounded-xl gap-2 h-11 font-semibold border-border/70"
               onClick={() => toast.success("알림이 설정되었습니다! 🔔")}
             >
               <Bell className="w-4 h-4" />
