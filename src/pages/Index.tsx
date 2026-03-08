@@ -92,6 +92,9 @@ export default function Index() {
             </aside>
           </div>
 
+          {/* Trending Community */}
+          <TrendingCommunity />
+
           {/* Platform Navigation */}
           <section className="space-y-3">
             <h2 className="text-base font-bold text-foreground px-1 flex items-center gap-2">
