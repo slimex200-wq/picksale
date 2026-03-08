@@ -64,6 +64,29 @@ export default function EventDetail() {
   const isActive = event.event_status === "active";
   const daysLeft = Math.ceil((new Date(event.end_date).getTime() - Date.now()) / 86400000);
 
+  const eventStatusMap: Record<string, string> = {
+    active: "https://schema.org/EventScheduled",
+    expired: "https://schema.org/EventCancelled",
+    merged: "https://schema.org/EventCancelled",
+  };
+
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.canonical_title,
+    startDate: event.start_date,
+    endDate: event.end_date,
+    eventStatus: eventStatusMap[event.event_status] || "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
+    url: `${window.location.origin}${location.pathname}`,
+    organizer: {
+      "@type": "Organization",
+      name: event.platform,
+    },
+    description: `${event.platform} ${event.canonical_title} 세일 이벤트. ${event.start_date} ~ ${event.end_date}`,
+    ...(event.canonical_link ? { sameAs: event.canonical_link } : {}),
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 pt-4 pb-24">
       {/* SEO title */}
