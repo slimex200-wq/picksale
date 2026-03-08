@@ -16,6 +16,7 @@ export default function AdminOverview() {
     { label: "승인됨", value: approved, icon: CheckCircle, color: "text-green-600", to: "/admin/events?review=approved&publish=draft" },
     { label: "게시됨", value: published, icon: Eye, color: "text-primary", to: "/admin/events?publish=published" },
     { label: "숨김", value: hidden, icon: EyeOff, color: "text-muted-foreground", to: "/admin/events?publish=hidden" },
+    { label: "반려됨", value: rejected, icon: XCircle, color: "text-destructive", to: "/admin/events?review=rejected" },
   ];
 
   return (
