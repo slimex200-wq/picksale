@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { platforms, Platform, Sale } from "@/data/salesUtils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,8 +20,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Settings } from "lucide-react";
+import { Plus, Pencil, Trash2, Settings, CheckCircle, ExternalLink } from "lucide-react";
 
 interface FormState {
   platform: string;
@@ -55,6 +56,19 @@ function saleToForm(sale: Sale): FormState {
   };
 }
 
+interface CommunityPost {
+  id: string;
+  platform: string | null;
+  title: string;
+  content: string | null;
+  link: string;
+  category: string[];
+  author: string | null;
+  source_type: string | null;
+  review_status: string;
+  created_at: string;
+}
+
 export default function AdminPage() {
   const { data: sales = [], isLoading } = useSales();
   const queryClient = useQueryClient();
@@ -62,6 +76,20 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [submitting, setSubmitting] = useState(false);
+
+  // Community posts query
+  const { data: communityPosts = [], isLoading: communityLoading } = useQuery({
+    queryKey: ["community_posts", "pending"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("community_posts")
+        .select("*")
+        .eq("review_status", "pending")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as CommunityPost[];
+    },
+  });
 
   const update = (key: keyof FormState, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -135,62 +163,186 @@ export default function AdminPage() {
     }
   };
 
+  const handleApprove = async (post: CommunityPost) => {
+    try {
+      // Insert into sales
+      const { error: insertError } = await supabase.from("sales").insert({
+        platform: post.platform || "기타",
+        sale_name: post.title,
+        start_date: new Date().toISOString().split("T")[0],
+        end_date: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
+        category: post.category,
+        link: post.link,
+        description: post.content || "",
+      });
+      if (insertError) throw insertError;
+
+      // Update community_posts status
+      const { error: updateError } = await supabase
+        .from("community_posts")
+        .update({ review_status: "approved" })
+        .eq("id", post.id);
+      if (updateError) throw updateError;
+
+      toast.success("세일로 승격되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["sales"] });
+      queryClient.invalidateQueries({ queryKey: ["community_posts"] });
+    } catch (err: any) {
+      toast.error(err.message || "승인에 실패했습니다.");
+    }
+  };
+
+  const handleReject = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("community_posts")
+        .update({ review_status: "rejected" })
+        .eq("id", id);
+      if (error) throw error;
+      toast.success("반려되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["community_posts"] });
+    } catch (err: any) {
+      toast.error(err.message || "반려에 실패했습니다.");
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 pt-4 pb-24">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-          <Settings className="w-5 h-5 text-primary" />
-          세일 관리
-        </h2>
-        <Button size="sm" className="gap-1.5 rounded-md" onClick={openCreate}>
-          <Plus className="w-4 h-4" />
-          추가
-        </Button>
+      <div className="flex items-center gap-2 mb-4">
+        <Settings className="w-5 h-5 text-primary" />
+        <h2 className="text-lg font-bold text-foreground">관리</h2>
       </div>
 
-      {/* Sales list */}
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground text-center py-12">불러오는 중...</p>
-      ) : sales.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-12">등록된 세일이 없습니다.</p>
-      ) : (
-        <div className="space-y-2">
-          {sales.map((sale) => (
-            <div
-              key={sale.id}
-              className="bg-card border border-border rounded-lg p-3 flex items-center gap-3"
-            >
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-card-foreground truncate">
-                  {sale.sale_name}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {sale.platform} · {sale.start_date} ~ {sale.end_date}
-                </p>
-              </div>
-              <div className="flex gap-1 shrink-0">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8"
-                  onClick={() => openEdit(sale)}
+      <Tabs defaultValue="sales">
+        <TabsList className="w-full mb-4">
+          <TabsTrigger value="sales" className="flex-1">Sales</TabsTrigger>
+          <TabsTrigger value="community" className="flex-1">
+            Community Inbox
+            {communityPosts.length > 0 && (
+              <span className="ml-1.5 bg-destructive text-destructive-foreground text-xs rounded-full px-1.5 py-0.5 leading-none">
+                {communityPosts.length}
+              </span>
+            )}
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Sales Tab */}
+        <TabsContent value="sales">
+          <div className="flex justify-end mb-4">
+            <Button size="sm" className="gap-1.5 rounded-md" onClick={openCreate}>
+              <Plus className="w-4 h-4" />
+              추가
+            </Button>
+          </div>
+
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground text-center py-12">불러오는 중...</p>
+          ) : sales.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-12">등록된 세일이 없습니다.</p>
+          ) : (
+            <div className="space-y-2">
+              {sales.map((sale) => (
+                <div
+                  key={sale.id}
+                  className="bg-card border border-border rounded-lg p-3 flex items-center gap-3"
                 >
-                  <Pencil className="w-3.5 h-3.5" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8 text-destructive hover:text-destructive"
-                  onClick={() => handleDelete(sale.id)}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-              </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-card-foreground truncate">
+                      {sale.sale_name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {sale.platform} · {sale.start_date} ~ {sale.end_date}
+                    </p>
+                  </div>
+                  <div className="flex gap-1 shrink-0">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-8 w-8"
+                      onClick={() => openEdit(sale)}
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-8 w-8 text-destructive hover:text-destructive"
+                      onClick={() => handleDelete(sale.id)}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          )}
+        </TabsContent>
+
+        {/* Community Inbox Tab */}
+        <TabsContent value="community">
+          {communityLoading ? (
+            <p className="text-sm text-muted-foreground text-center py-12">불러오는 중...</p>
+          ) : communityPosts.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-12">대기 중인 커뮤니티 글이 없습니다.</p>
+          ) : (
+            <div className="space-y-2">
+              {communityPosts.map((post) => (
+                <div
+                  key={post.id}
+                  className="bg-card border border-border rounded-lg p-3 space-y-2"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-card-foreground truncate">
+                        {post.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {post.platform || "미지정"} · {post.author || "익명"} · {new Date(post.created_at).toLocaleDateString("ko-KR")}
+                      </p>
+                    </div>
+                    {post.link && (
+                      <a href={post.link} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
+                      </a>
+                    )}
+                  </div>
+                  {post.content && (
+                    <p className="text-xs text-muted-foreground line-clamp-2">{post.content}</p>
+                  )}
+                  {post.category.length > 0 && (
+                    <div className="flex gap-1 flex-wrap">
+                      {post.category.map((c) => (
+                        <span key={c} className="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded">
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex gap-2 pt-1">
+                    <Button
+                      size="sm"
+                      variant="default"
+                      className="gap-1 text-xs h-7"
+                      onClick={() => handleApprove(post)}
+                    >
+                      <CheckCircle className="w-3 h-3" />
+                      승인 → Sales
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-xs h-7"
+                      onClick={() => handleReject(post.id)}
+                    >
+                      반려
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
 
       {/* Add / Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

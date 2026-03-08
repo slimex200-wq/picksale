@@ -2,3 +2,6 @@ project_id = "scekmyoyodcuvadxxwmh"
 
 [functions.api-sales]
 verify_jwt = false
+
+[functions.api-community]
+verify_jwt = false

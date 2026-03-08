@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      community_posts: {
+        Row: {
+          author: string | null
+          category: string[]
+          content: string | null
+          created_at: string
+          id: string
+          link: string
+          platform: string | null
+          review_status: string
+          source_type: string | null
+          title: string
+        }
+        Insert: {
+          author?: string | null
+          category?: string[]
+          content?: string | null
+          created_at?: string
+          id?: string
+          link?: string
+          platform?: string | null
+          review_status?: string
+          source_type?: string | null
+          title: string
+        }
+        Update: {
+          author?: string | null
+          category?: string[]
+          content?: string | null
+          created_at?: string
+          id?: string
+          link?: string
+          platform?: string | null
+          review_status?: string
+          source_type?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       sale_submissions: {
         Row: {
           category: string | null
