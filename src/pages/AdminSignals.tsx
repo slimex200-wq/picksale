@@ -13,6 +13,21 @@ import {
 } from "lucide-react";
 import { platforms } from "@/data/salesUtils";
 
+function detectDatePattern(start: string | null, end: string | null): string {
+  if (!start && !end) return "없음";
+  const check = (d: string) => {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return "YYYY-MM-DD";
+    if (/^\d{2}\.\d{2}$/.test(d)) return "MM.DD";
+    if (/^\d{1,2}\/\d{1,2}$/.test(d)) return "M/D";
+    if (/^\d{1,2}월\s?\d{1,2}일/.test(d)) return "M월D일";
+    if (/\d{4}\.\d{1,2}\.\d{1,2}/.test(d)) return "YYYY.M.D";
+    if (/\d{1,2}\.\d{1,2}\.\d{1,2}/.test(d)) return "YY.M.D";
+    return d.length > 10 ? "복합" : "기타";
+  };
+  const patterns = [start, end].filter(Boolean).map(d => check(d!));
+  return [...new Set(patterns)].join(" / ");
+}
+
 interface SaleSignal {
   id: string;
   platform: string;
