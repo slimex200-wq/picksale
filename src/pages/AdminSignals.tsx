@@ -9,7 +9,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
-  CheckCircle, XCircle, ExternalLink, ArrowUpDown, Layers, ArrowRight,
+  XCircle, ExternalLink, ArrowUpDown, Layers, ArrowRight, MessageSquare, Link2,
 } from "lucide-react";
 import { platforms } from "@/data/salesUtils";
 
@@ -20,6 +20,9 @@ interface SaleSignal {
   source_url: string;
   raw_title: string;
   raw_text: string;
+  normalized_title: string;
+  matched_alias: string;
+  community_post_id: string | null;
   detected_keywords: string[];
   detected_discount: string;
   start_date_raw: string | null;
@@ -36,6 +39,14 @@ const sourceTypeLabels: Record<string, string> = {
   detail: "상세 페이지",
   news: "뉴스",
   community: "커뮤니티",
+};
+
+const confidenceTiers: Record<string, { label: string; base: number }> = {
+  detail: { label: "상세", base: 0.9 },
+  event_hub: { label: "이벤트 허브", base: 0.8 },
+  homepage: { label: "홈페이지", base: 0.7 },
+  news: { label: "뉴스", base: 0.5 },
+  community: { label: "커뮤니티", base: 0.4 },
 };
 
 export default function AdminSignals() {
@@ -67,7 +78,37 @@ export default function AdminSignals() {
     },
   });
 
-  /** Promote signal → create sale_event + sale entry, link them */
+  // Fetch potential event matches for alias matching
+  const { data: events = [] } = useQuery({
+    queryKey: ["sale_events_for_match"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sale_events")
+        .select("id, canonical_title, platform, event_status")
+        .eq("event_status", "active")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const findMatchedEvent = (sig: SaleSignal) => {
+    if (sig.matched_alias) {
+      return events.find(e =>
+        e.platform === sig.platform &&
+        e.canonical_title.toLowerCase().includes(sig.matched_alias.toLowerCase())
+      );
+    }
+    if (sig.normalized_title) {
+      return events.find(e =>
+        e.platform === sig.platform &&
+        e.canonical_title.toLowerCase().includes(sig.normalized_title)
+      );
+    }
+    return null;
+  };
+
   const handlePromoteToEvent = async (signal: SaleSignal) => {
     try {
       const today = new Date().toISOString().split("T")[0];
@@ -75,59 +116,83 @@ export default function AdminSignals() {
       const startDate = signal.start_date_raw || today;
       const finalEndDate = signal.end_date_raw || endDate;
 
-      // 1. Create sale_event
-      const { data: eventData, error: eventError } = await supabase
-        .from("sale_events")
-        .insert({
-          canonical_title: signal.raw_title,
-          platform: signal.platform,
-          canonical_link: signal.source_url,
+      const matchedEvent = findMatchedEvent(signal);
+
+      if (matchedEvent) {
+        // Attach to existing event
+        const { error: saleError } = await supabase.from("sales").insert({
+          platform: signal.platform || "커뮤니티",
+          sale_name: signal.raw_title,
           start_date: startDate,
           end_date: finalEndDate,
-          importance_score: Math.round(signal.confidence * 10),
-          event_status: "active",
-        })
-        .select("id")
-        .single();
-      if (eventError) throw eventError;
+          link: signal.source_url,
+          description: signal.raw_text.slice(0, 500),
+          review_status: "approved",
+          publish_status: "draft",
+          event_id: matchedEvent.id,
+          signal_id: signal.id,
+        });
+        if (saleError) throw saleError;
 
-      // 2. Create sale linked to event
-      const { error: saleError } = await supabase.from("sales").insert({
-        platform: signal.platform || "커뮤니티 핫딜",
-        sale_name: signal.raw_title,
-        start_date: startDate,
-        end_date: finalEndDate,
-        link: signal.source_url,
-        description: signal.raw_text.slice(0, 500),
-        review_status: "approved",
-        publish_status: "draft",
-        event_id: eventData.id,
-        signal_id: signal.id,
-      });
-      if (saleError) throw saleError;
+        // Increment signal_count
+        await supabase.rpc("increment_signal_count" as any, { p_event_id: matchedEvent.id }).catch(() => {
+          // fallback: manual increment
+          supabase.from("sale_events").update({
+            signal_count: (matchedEvent as any).signal_count ? (matchedEvent as any).signal_count + 1 : 1
+          }).eq("id", matchedEvent.id);
+        });
+      } else {
+        // Create new event
+        const { data: eventData, error: eventError } = await supabase
+          .from("sale_events")
+          .insert({
+            canonical_title: signal.matched_alias || signal.raw_title,
+            platform: signal.platform,
+            canonical_link: signal.source_url,
+            start_date: startDate,
+            end_date: finalEndDate,
+            importance_score: Math.round(signal.confidence * 10),
+            event_status: "active",
+            signal_count: 1,
+          })
+          .select("id")
+          .single();
+        if (eventError) throw eventError;
 
-      // 3. Mark signal as promoted
-      const { error: updateError } = await supabase
+        const { error: saleError } = await supabase.from("sales").insert({
+          platform: signal.platform || "커뮤니티",
+          sale_name: signal.raw_title,
+          start_date: startDate,
+          end_date: finalEndDate,
+          link: signal.source_url,
+          description: signal.raw_text.slice(0, 500),
+          review_status: "approved",
+          publish_status: "draft",
+          event_id: eventData.id,
+          signal_id: signal.id,
+        });
+        if (saleError) throw saleError;
+      }
+
+      await supabase
         .from("sale_signals")
         .update({ review_status: "promoted", processed: true })
         .eq("id", signal.id);
-      if (updateError) throw updateError;
 
-      toast.success("이벤트로 승격되었습니다.");
+      toast.success(matchedEvent ? "기존 이벤트에 연결했습니다." : "새 이벤트로 승격되었습니다.");
       invalidateAll();
     } catch (err: any) {
       toast.error(err.message || "승격에 실패했습니다.");
     }
   };
 
-  /** Quick promote: signal → sale (no event grouping) */
   const handlePromoteDirect = async (signal: SaleSignal) => {
     try {
       const today = new Date().toISOString().split("T")[0];
       const endDate = new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0];
 
       const { error: insertError } = await supabase.from("sales").insert({
-        platform: signal.platform || "커뮤니티 핫딜",
+        platform: signal.platform || "커뮤니티",
         sale_name: signal.raw_title,
         start_date: signal.start_date_raw || today,
         end_date: signal.end_date_raw || endDate,
@@ -139,11 +204,10 @@ export default function AdminSignals() {
       });
       if (insertError) throw insertError;
 
-      const { error: updateError } = await supabase
+      await supabase
         .from("sale_signals")
         .update({ review_status: "promoted", processed: true })
         .eq("id", signal.id);
-      if (updateError) throw updateError;
 
       toast.success("세일로 승격되었습니다.");
       invalidateAll();
@@ -154,11 +218,10 @@ export default function AdminSignals() {
 
   const handleDismiss = async (id: string) => {
     try {
-      const { error } = await supabase
+      await supabase
         .from("sale_signals")
         .update({ review_status: "dismissed", processed: true })
         .eq("id", id);
-      if (error) throw error;
       toast.success("시그널이 무시되었습니다.");
       invalidateAll();
     } catch (err: any) {
@@ -170,6 +233,7 @@ export default function AdminSignals() {
     queryClient.invalidateQueries({ queryKey: ["sale_signals"] });
     queryClient.invalidateQueries({ queryKey: ["sales"] });
     queryClient.invalidateQueries({ queryKey: ["sale_events"] });
+    queryClient.invalidateQueries({ queryKey: ["sale_events_for_match"] });
   };
 
   const confidenceColor = (c: number) => {
@@ -180,6 +244,14 @@ export default function AdminSignals() {
 
   return (
     <div className="space-y-4">
+      {/* Confidence scoring reference */}
+      <div className="flex flex-wrap gap-2 text-[10px] text-muted-foreground bg-muted/50 rounded-lg p-2">
+        <span className="font-semibold">신뢰도 기준:</span>
+        {Object.entries(confidenceTiers).map(([k, v]) => (
+          <span key={k}>{v.label} {Math.round(v.base * 100)}%</span>
+        ))}
+      </div>
+
       <p className="text-xs text-muted-foreground">{signals.length}개 대기 중</p>
 
       {/* Filters */}
@@ -222,16 +294,20 @@ export default function AdminSignals() {
         <p className="text-sm text-muted-foreground text-center py-12">대기 중인 시그널이 없습니다.</p>
       ) : (
         <div className="space-y-2">
-          {signals.map((sig) => (
-            <SignalCard
-              key={sig.id}
-              signal={sig}
-              confidenceColor={confidenceColor}
-              onPromoteToEvent={handlePromoteToEvent}
-              onPromoteDirect={handlePromoteDirect}
-              onDismiss={handleDismiss}
-            />
-          ))}
+          {signals.map((sig) => {
+            const matchedEvent = findMatchedEvent(sig);
+            return (
+              <SignalCard
+                key={sig.id}
+                signal={sig}
+                matchedEvent={matchedEvent}
+                confidenceColor={confidenceColor}
+                onPromoteToEvent={handlePromoteToEvent}
+                onPromoteDirect={handlePromoteDirect}
+                onDismiss={handleDismiss}
+              />
+            );
+          })}
         </div>
       )}
     </div>
@@ -240,12 +316,14 @@ export default function AdminSignals() {
 
 function SignalCard({
   signal: sig,
+  matchedEvent,
   confidenceColor,
   onPromoteToEvent,
   onPromoteDirect,
   onDismiss,
 }: {
   signal: SaleSignal;
+  matchedEvent: { id: string; canonical_title: string; platform: string } | null | undefined;
   confidenceColor: (c: number) => string;
   onPromoteToEvent: (s: SaleSignal) => void;
   onPromoteDirect: (s: SaleSignal) => void;
@@ -267,13 +345,53 @@ function SignalCard({
                 {sig.detected_discount}
               </Badge>
             )}
+            {sig.community_post_id && (
+              <Badge variant="outline" className="text-[10px] bg-blue-50 text-blue-600 border-blue-200 gap-0.5">
+                <MessageSquare className="w-2.5 h-2.5" />커뮤니티
+              </Badge>
+            )}
           </div>
+
+          {/* Raw title */}
           <p className="text-sm font-semibold text-card-foreground">{sig.raw_title || "(제목 없음)"}</p>
-          <p className="text-xs text-muted-foreground">
+
+          {/* Normalized title & alias */}
+          {sig.normalized_title && sig.normalized_title !== sig.raw_title?.toLowerCase().trim() && (
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              정규화: <span className="font-medium text-foreground">{sig.normalized_title}</span>
+            </p>
+          )}
+          {sig.matched_alias && (
+            <p className="text-[11px] text-muted-foreground">
+              매칭 별칭: <span className="font-medium text-primary">{sig.matched_alias}</span>
+            </p>
+          )}
+
+          <p className="text-xs text-muted-foreground mt-0.5">
             {sig.platform} · {new Date(sig.created_at).toLocaleDateString("ko-KR")}
           </p>
           {sig.start_date_raw && sig.end_date_raw && (
             <p className="text-xs text-muted-foreground">{sig.start_date_raw} ~ {sig.end_date_raw}</p>
+          )}
+
+          {/* Matched event candidate */}
+          {matchedEvent && (
+            <div className="mt-1.5 flex items-center gap-1 text-[11px] px-2 py-1 bg-green-50 text-green-700 border border-green-200 rounded-md w-fit">
+              <Link2 className="w-3 h-3" />
+              매칭 이벤트: <span className="font-semibold">{matchedEvent.canonical_title}</span>
+            </div>
+          )}
+
+          {/* Linked community post */}
+          {sig.community_post_id && (
+            <a
+              href={`/community/${sig.community_post_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-flex items-center gap-1 text-[11px] text-blue-600 hover:underline"
+            >
+              <MessageSquare className="w-3 h-3" />원본 커뮤니티 게시글 보기
+            </a>
           )}
         </div>
         {sig.source_url && (
@@ -300,7 +418,8 @@ function SignalCard({
 
       <div className="flex gap-1.5 pt-1 flex-wrap">
         <Button size="sm" className="gap-1 text-xs h-7 bg-green-600 hover:bg-green-700" onClick={() => onPromoteToEvent(sig)}>
-          <Layers className="w-3 h-3" />이벤트로 승격
+          <Layers className="w-3 h-3" />
+          {matchedEvent ? "이벤트에 연결" : "이벤트로 승격"}
         </Button>
         <Button size="sm" className="gap-1 text-xs h-7" onClick={() => onPromoteDirect(sig)}>
           <ArrowRight className="w-3 h-3" />세일로 승격
