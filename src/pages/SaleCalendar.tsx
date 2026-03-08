@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import CanonicalLink from "@/components/CanonicalLink";
+import PageMeta from "@/components/PageMeta";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
