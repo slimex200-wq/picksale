@@ -41,6 +41,7 @@ export default function Index() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
+      <PageMeta title="PickSale - 쇼핑 세일 레이더" description="쿠팡, 무신사, 올리브영 등 주요 쇼핑몰의 세일 정보를 한눈에 확인하세요. 실시간 세일 랭킹과 타임라인을 제공합니다." />
       <CanonicalLink href={window.location.origin + "/"} />
       {/* Search */}
       <div className="relative max-w-lg">
