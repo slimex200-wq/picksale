@@ -1,5 +1,8 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Settings, Inbox, List } from "lucide-react";
+import { Settings, Inbox, List, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const tabs = [
   { to: "/admin", label: "개요", icon: Settings, exact: true },
@@ -10,11 +13,22 @@ const tabs = [
 export default function AdminLayout() {
   const { pathname } = useLocation();
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("로그아웃되었습니다.");
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 pt-4 pb-24">
-      <div className="flex items-center gap-2 mb-4">
-        <Settings className="w-5 h-5 text-primary" />
-        <h2 className="text-lg font-bold text-foreground">관리자 패널</h2>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Settings className="w-5 h-5 text-primary" />
+          <h2 className="text-lg font-bold text-foreground">관리자 패널</h2>
+        </div>
+        <Button variant="ghost" size="sm" className="gap-1 text-xs" onClick={handleLogout}>
+          <LogOut className="w-3.5 h-3.5" />
+          로그아웃
+        </Button>
       </div>
 
       <nav className="flex gap-1 mb-6 border-b border-border">

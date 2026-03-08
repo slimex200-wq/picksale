@@ -8,7 +8,7 @@ import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
 import SaleCalendar from "./pages/SaleCalendar";
 import SubmitSale from "./pages/SubmitSale";
-import AdminLayout from "./pages/AdminLayout";
+import AdminGuard from "./pages/AdminGuard";
 import AdminOverview from "./pages/AdminOverview";
 import AdminReview from "./pages/AdminReview";
 import AdminEvents from "./pages/AdminEvents";
@@ -28,7 +28,7 @@ const App = () => (
           <Route path="/sale/:id" element={<SaleDetail />} />
           <Route path="/calendar" element={<SaleCalendar />} />
           <Route path="/submit" element={<SubmitSale />} />
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/admin" element={<AdminGuard />}>
             <Route index element={<AdminOverview />} />
             <Route path="review" element={<AdminReview />} />
             <Route path="events" element={<AdminEvents />} />
