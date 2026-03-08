@@ -17,6 +17,6 @@ export const platformLogos: Record<Platform, string> = {
   "SSG": logoSsg,
   "오늘의집": logoOhouse,
   "29CM": logo29cm,
-  "W CONCEPT": logoWconcept,
+  "WCONCEPT": logoWconcept,
   "커뮤니티 핫딜": logoEtc,
 };
