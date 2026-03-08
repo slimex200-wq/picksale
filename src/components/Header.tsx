@@ -1,10 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { Radar, CalendarDays, Send } from "lucide-react";
+import { Radar, CalendarDays, Send, Settings } from "lucide-react";
 
 const navItems = [
   { to: "/", label: "홈", icon: Radar },
   { to: "/calendar", label: "캘린더", icon: CalendarDays },
   { to: "/submit", label: "제보", icon: Send },
+  { to: "/admin", label: "관리", icon: Settings },
 ];
 
 export default function Header() {
