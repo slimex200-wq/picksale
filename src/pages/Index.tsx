@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { sortByRanking, Platform, getSaleStatus, saleStatusConfig, platforms, platformEmojis, platformColors, platformSlugs } from "@/data/salesUtils";
+import { platformLogos } from "@/data/platformLogos";
 import { useSales } from "@/hooks/useSales";
 import PlatformFilter from "@/components/PlatformFilter";
 import SaleCard from "@/components/SaleCard";
@@ -101,9 +102,9 @@ export default function Index() {
                 <Link
                   key={p}
                   to={`/platform/${platformSlugs[p]}`}
-                  className={`${platformColors[p]} rounded-xl px-3 py-3 flex items-center gap-2 text-primary-foreground hover:opacity-90 transition-opacity`}
+                  className={`${platformColors[p]} rounded-xl px-3 py-3 flex items-center gap-2.5 text-primary-foreground hover:opacity-90 transition-opacity`}
                 >
-                  <span className="text-lg">{platformEmojis[p]}</span>
+                  <img src={platformLogos[p]} alt={p} className="h-5 w-auto object-contain brightness-0 invert" />
                   <span className="text-xs font-bold flex-1">{p}</span>
                   <ChevronRight className="w-3.5 h-3.5 opacity-70" />
                 </Link>

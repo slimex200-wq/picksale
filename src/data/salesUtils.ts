@@ -39,6 +39,16 @@ export const slugToPlatform: Record<string, Platform> = Object.fromEntries(
   Object.entries(platformSlugs).map(([k, v]) => [v, k as Platform])
 ) as Record<string, Platform>;
 
+export const platformLogoImports: Record<Platform, string> = {
+  "쿠팡": "coupang",
+  "올리브영": "oliveyoung",
+  "무신사": "musinsa",
+  "KREAM": "kream",
+  "SSG": "ssg",
+  "오늘의집": "ohouse",
+  "29CM": "29cm",
+};
+
 export const platformColors: Record<Platform, string> = {
   "쿠팡": "bg-sale-coupang",
   "올리브영": "bg-sale-oliveyoung",

@@ -1,4 +1,5 @@
 import { Sale, platformColors, platformEmojis, getSaleStatus, saleStatusConfig, calculateRankingScore } from "@/data/salesUtils";
+import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bell, ArrowRight } from "lucide-react";
@@ -44,10 +45,7 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
             {rank}
           </span>
         )}
-        <span className="text-lg">{platformEmojis[sale.platform]}</span>
-        <span className="text-primary-foreground font-bold text-[11px] tracking-wide whitespace-nowrap uppercase">
-          {sale.platform}
-        </span>
+        <img src={platformLogos[sale.platform]} alt={sale.platform} className="h-5 w-auto object-contain brightness-0 invert" />
         <span
           className={`ml-auto text-[10px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full ${
             isUrgent
