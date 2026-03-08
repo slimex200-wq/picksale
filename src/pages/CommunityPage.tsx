@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import CanonicalLink from "@/components/CanonicalLink";
+import PageMeta from "@/components/PageMeta";
 import { useCommunityPosts, CommunityPost } from "@/hooks/useCommunityPosts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,6 +38,7 @@ export default function CommunityPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-4 pb-24 space-y-4">
+      <PageMeta title="세일 레이더 - 커뮤니티 | PickSale" description="세일 발견, 핫딜, 쇼핑 팁을 공유하는 PickSale 커뮤니티입니다." />
       <CanonicalLink href={window.location.origin + "/community"} />
       {/* Header + CTA */}
       <div className="flex items-center justify-between">

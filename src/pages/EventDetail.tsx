@@ -8,6 +8,7 @@ import { platformLogos } from "@/data/platformLogos";
 import type { Platform } from "@/data/salesUtils";
 import JsonLd from "@/components/JsonLd";
 import CanonicalLink from "@/components/CanonicalLink";
+import PageMeta from "@/components/PageMeta";
 
 export default function EventDetail() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -90,11 +91,9 @@ export default function EventDetail() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-4 pb-24">
+      <PageMeta title={`${event.canonical_title} - ${event.platform} | PickSale`} description={`${event.platform} ${event.canonical_title} 세일 이벤트 정보. ${event.start_date} ~ ${event.end_date}`} />
       <JsonLd data={jsonLdData} />
       <CanonicalLink href={`${window.location.origin}/event/${eventId}`} />
-      {/* SEO title */}
-      <title>{event.canonical_title} - {event.platform} | PickSale</title>
-      <meta name="description" content={`${event.platform} ${event.canonical_title} 세일 이벤트 정보. ${event.start_date} ~ ${event.end_date}`} />
 
       <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
         <ArrowLeft className="w-4 h-4" />홈

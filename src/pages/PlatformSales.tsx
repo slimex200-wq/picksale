@@ -9,6 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import JsonLd from "@/components/JsonLd";
 import CanonicalLink from "@/components/CanonicalLink";
+import PageMeta from "@/components/PageMeta";
 
 type StatusFilter = "all" | "live" | "starting_soon" | "ending_today" | "ending_soon";
 type SortOption = "ranking" | "newest" | "ending_soon" | "starting_soon";
@@ -103,6 +104,7 @@ export default function PlatformSales() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
+      <PageMeta title={`${platform} 세일 모음 | PickSale`} description={`${platform}의 현재 진행 중이거나 곧 시작하는 주요 세일 이벤트를 모아봅니다.`} />
       <CanonicalLink href={`${window.location.origin}/platform/${slug}`} />
       <JsonLd data={{
         "@context": "https://schema.org",
