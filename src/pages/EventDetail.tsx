@@ -8,6 +8,7 @@ import { platformLogos } from "@/data/platformLogos";
 import type { Platform } from "@/data/salesUtils";
 import JsonLd from "@/components/JsonLd";
 import CanonicalLink from "@/components/CanonicalLink";
+import PageMeta from "@/components/PageMeta";
 
 export default function EventDetail() {
   const { eventId } = useParams<{ eventId: string }>();
