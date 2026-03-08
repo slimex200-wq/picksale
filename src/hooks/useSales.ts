@@ -67,6 +67,7 @@ function mapRow(row: any): Sale {
     publish_status: (row.publish_status ?? "draft") as PublishStatus,
     source_urls: row.source_urls ?? [],
     grouped_page_count: row.grouped_page_count ?? 0,
+    event_id: row.event_id ?? null,
     created_at: row.created_at,
   };
 }
