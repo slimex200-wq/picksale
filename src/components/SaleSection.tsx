@@ -19,9 +19,9 @@ export default function SaleSection({ title, emoji, sales }: Props) {
           {sales.length}
         </span>
       </h2>
-      <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2 snap-x snap-mandatory">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {sales.map((sale) => (
-          <div key={sale.id} className="snap-start">
+          <div key={sale.id}>
             <SaleCard sale={sale} />
           </div>
         ))}

@@ -25,7 +25,7 @@ export default function SaleCard({ sale }: { sale: Sale }) {
 
   return (
     <div
-      className="min-w-[260px] max-w-[300px] bg-card rounded-lg shadow-card hover:shadow-card-hover transition-all duration-300 cursor-pointer flex flex-col overflow-hidden animate-fade-in"
+      className="w-full bg-card rounded-lg shadow-card hover:shadow-card-hover transition-all duration-300 cursor-pointer flex flex-col overflow-hidden animate-fade-in"
       onClick={() => navigate(`/sale/${sale.id}`)}
     >
       {/* Platform header */}
