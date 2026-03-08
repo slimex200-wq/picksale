@@ -83,6 +83,27 @@ export default function Index() {
           </section>
 
           <SaleTimeline sales={sales} />
+
+          {/* Platform Navigation */}
+          <section className="space-y-3">
+            <h2 className="text-base font-bold text-foreground px-1 flex items-center gap-2">
+              <span>🏬</span>
+              플랫폼별 세일
+            </h2>
+            <div className="grid grid-cols-2 gap-2">
+              {platforms.map((p) => (
+                <Link
+                  key={p}
+                  to={`/platform/${platformSlugs[p]}`}
+                  className={`${platformColors[p]} rounded-xl px-3 py-3 flex items-center gap-2 text-primary-foreground hover:opacity-90 transition-opacity`}
+                >
+                  <span className="text-lg">{platformEmojis[p]}</span>
+                  <span className="text-xs font-bold flex-1">{p}</span>
+                  <ChevronRight className="w-3.5 h-3.5 opacity-70" />
+                </Link>
+              ))}
+            </div>
+          </section>
         </>
       )}
     </div>
