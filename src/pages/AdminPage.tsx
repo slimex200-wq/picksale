@@ -154,8 +154,14 @@ export default function AdminPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("정말 삭제하시겠습니까?")) return;
     try {
-      const { error } = await supabase.from("sales").delete().eq("id", id);
+      const { data, error } = await supabase
+        .from("sales")
+        .delete()
+        .eq("id", id)
+        .select("id");
       if (error) throw error;
+      if (!data || data.length === 0) throw new Error("삭제 권한이 없거나 이미 삭제된 항목입니다.");
+
       toast.success("삭제되었습니다.");
       queryClient.invalidateQueries({ queryKey: ["sales"] });
     } catch (err: any) {
