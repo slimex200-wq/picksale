@@ -1,12 +1,13 @@
 import { useState, useMemo } from "react";
-import { sortByRanking, Platform, getSaleStatus, saleStatusConfig } from "@/data/salesUtils";
+import { Link } from "react-router-dom";
+import { sortByRanking, Platform, getSaleStatus, saleStatusConfig, platforms, platformEmojis, platformColors, platformSlugs } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
 import PlatformFilter from "@/components/PlatformFilter";
 import SaleCard from "@/components/SaleCard";
 import SaleTimeline from "@/components/SaleTimeline";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Search, Trophy } from "lucide-react";
+import { Search, Trophy, ChevronRight } from "lucide-react";
 
 export default function Index() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
