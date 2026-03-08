@@ -178,7 +178,7 @@ export default function AdminPage() {
         start_date: new Date().toISOString().split("T")[0],
         end_date: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
         category: post.category,
-        link: post.link,
+        link: post.external_link,
         description: post.content || "",
       });
       if (insertError) throw insertError;
