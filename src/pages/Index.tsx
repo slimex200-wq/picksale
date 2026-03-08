@@ -3,6 +3,7 @@ import { sortByRanking, Platform, getSaleStatus, saleStatusConfig } from "@/data
 import { useSales } from "@/hooks/useSales";
 import PlatformFilter from "@/components/PlatformFilter";
 import SaleCard from "@/components/SaleCard";
+import SaleTimeline from "@/components/SaleTimeline";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Trophy } from "lucide-react";
