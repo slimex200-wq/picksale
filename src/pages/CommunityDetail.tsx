@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import {
   ThumbsUp, MessageSquare, ExternalLink, ArrowLeft, Send,
 } from "lucide-react";
+import JsonLd from "@/components/JsonLd";
 
 interface Comment {
   id: string;
