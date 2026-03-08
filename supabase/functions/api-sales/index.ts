@@ -6,6 +6,13 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+/**
+ * DEPRECATED: Use api-signals for crawler ingestion instead.
+ * api-signals → sale_signals → admin review → sale_events → sales
+ *
+ * This endpoint is kept for backward compatibility but should be phased out.
+ * It inserts directly into the sales table, bypassing the signal review workflow.
+ */
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -93,7 +100,11 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ ok: true, inserted: true }),
+      JSON.stringify({
+        ok: true,
+        inserted: true,
+        _notice: "DEPRECATED: Consider using api-signals instead for signal-based ingestion workflow.",
+      }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (e) {
