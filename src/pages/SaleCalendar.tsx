@@ -19,6 +19,7 @@ const platformDotColors: Record<Platform, string> = {
   "SSG": "bg-sale-ssg",
   "오늘의집": "bg-sale-ohouse",
   "29CM": "bg-sale-29cm",
+  "W CONCEPT": "bg-sale-wconcept",
   "커뮤니티 핫딜": "bg-sale-community",
 };
 
