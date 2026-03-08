@@ -10,6 +10,7 @@ import JsonLd from "@/components/JsonLd";
 
 export default function EventDetail() {
   const { eventId } = useParams<{ eventId: string }>();
+  const location = useLocation();
 
   const { data: event, isLoading: eventLoading } = useQuery({
     queryKey: ["event_detail", eventId],
