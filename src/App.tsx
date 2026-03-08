@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
 import Header from "@/components/Header";
 import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
@@ -12,6 +13,7 @@ import EventDetail from "./pages/EventDetail";
 import CommunityPage from "./pages/CommunityPage";
 import CommunityDetail from "./pages/CommunityDetail";
 import SubmitSale from "./pages/SubmitSale";
+import LoginPage from "./pages/LoginPage";
 import AdminGuard from "./pages/AdminGuard";
 import AdminOverview from "./pages/AdminOverview";
 import AdminReview from "./pages/AdminReview";
@@ -30,34 +32,37 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/sale/:id" element={<SaleDetail />} />
-          <Route path="/platform/:slug" element={<PlatformSales />} />
-          <Route path="/calendar" element={<SaleCalendar />} />
-          <Route path="/event/:eventId" element={<EventDetail />} />
-          <Route path="/community" element={<CommunityPage />} />
-          <Route path="/community/:id" element={<CommunityDetail />} />
-          <Route path="/submit" element={<SubmitSale />} />
-          <Route path="/admin" element={<AdminGuard />}>
-            <Route index element={<AdminOverview />} />
-            <Route path="review" element={<AdminReview />} />
-            <Route path="events" element={<AdminEvents />} />
-            <Route path="community" element={<AdminCommunity />} />
-            <Route path="submissions" element={<AdminSubmissions />} />
-            <Route path="signals" element={<AdminSignals />} />
-            <Route path="signal-debug" element={<AdminSignalDebug />} />
-            <Route path="duplicates" element={<AdminDuplicates />} />
-            <Route path="analytics" element={<AdminAnalytics />} />
-            <Route path="signal-simulator" element={<AdminSignalSimulator />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/sale/:id" element={<SaleDetail />} />
+            <Route path="/platform/:slug" element={<PlatformSales />} />
+            <Route path="/calendar" element={<SaleCalendar />} />
+            <Route path="/event/:eventId" element={<EventDetail />} />
+            <Route path="/community" element={<CommunityPage />} />
+            <Route path="/community/:id" element={<CommunityDetail />} />
+            <Route path="/submit" element={<SubmitSale />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/admin" element={<AdminGuard />}>
+              <Route index element={<AdminOverview />} />
+              <Route path="review" element={<AdminReview />} />
+              <Route path="events" element={<AdminEvents />} />
+              <Route path="community" element={<AdminCommunity />} />
+              <Route path="submissions" element={<AdminSubmissions />} />
+              <Route path="signals" element={<AdminSignals />} />
+              <Route path="signal-debug" element={<AdminSignalDebug />} />
+              <Route path="duplicates" element={<AdminDuplicates />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="signal-simulator" element={<AdminSignalSimulator />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
