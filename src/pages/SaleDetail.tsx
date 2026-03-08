@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { platformColors, platformEmojis } from "@/data/salesUtils";
-import { useSales } from "@/hooks/useSales";
+import { platformColors, platformEmojis, Platform } from "@/data/salesUtils";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,8 +16,25 @@ function formatDate(d: string) {
 export default function SaleDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: sales = [], isLoading } = useSales();
-  const sale = sales.find((s) => s.id === id);
+
+  const { data: sale, isLoading } = useQuery({
+    queryKey: ["sale", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sales")
+        .select("*")
+        .eq("id", id!)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) return null;
+      return {
+        ...data,
+        platform: data.platform as Platform,
+        category: data.category ?? [],
+      };
+    },
+    enabled: !!id,
+  });
 
   if (isLoading) {
     return (
@@ -69,7 +87,7 @@ export default function SaleDetail() {
           </div>
 
           <div className="flex flex-wrap gap-1.5">
-            {sale.category.map((cat) => (
+            {sale.category.map((cat: string) => (
               <Badge key={cat} variant="secondary" className="rounded-md">
                 {cat}
               </Badge>
