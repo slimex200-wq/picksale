@@ -50,6 +50,29 @@ serve(async (req) => {
     if (e3) throw e3;
     results.push(`Auto-dismissed ${dismissedSignals?.length ?? 0} old signals`);
 
+    // 4. Auto-dismiss card promo signals still pending
+    const CARD_KEYWORDS = ["카드사", "삼성카드", "신한카드", "국민카드", "현대카드", "롯데카드", "결제혜택", "청구할인", "카드할인", "카드혜택"];
+    const { data: pendingSignals } = await supabase
+      .from("sale_signals")
+      .select("id, raw_title")
+      .eq("review_status", "pending");
+
+    const cardPromoIds = (pendingSignals ?? [])
+      .filter(s => {
+        const t = s.raw_title.toLowerCase();
+        return CARD_KEYWORDS.some(kw => t.includes(kw.toLowerCase())) ||
+          (t.includes("카드") && !t.includes("세일") && !t.includes("페스타") && !t.includes("위크"));
+      })
+      .map(s => s.id);
+
+    if (cardPromoIds.length > 0) {
+      await supabase
+        .from("sale_signals")
+        .update({ review_status: "dismissed", processed: true })
+        .in("id", cardPromoIds);
+    }
+    results.push(`Card-promo dismissed ${cardPromoIds.length} signals`);
+
     return new Response(JSON.stringify({ ok: true, results }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
