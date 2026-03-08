@@ -5,7 +5,7 @@ import PlatformFilter from "@/components/PlatformFilter";
 import SaleSection from "@/components/SaleSection";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Flame, ShoppingBag, Clock } from "lucide-react";
 
 export default function Index() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
@@ -63,16 +63,9 @@ export default function Index() {
         </div>
       ) : (
         <>
-          <SaleSection title="오늘 시작" emoji="🔥" sales={startsToday} />
-          <SaleSection title="진행중 세일" emoji="🛍️" sales={ongoing} />
-          <SaleSection title="곧 종료" emoji="⏰" sales={endingSoon} />
-
-          {startsToday.length === 0 && ongoing.length === 0 && endingSoon.length === 0 && (
-            <div className="text-center py-16 text-muted-foreground">
-              <p className="text-4xl mb-3">🔍</p>
-              <p className="text-sm">검색 결과가 없습니다.</p>
-            </div>
-          )}
+          <SaleSection title="오늘 시작" emoji="🔥" sales={startsToday} emptyIcon={<Flame className="w-8 h-8 text-muted-foreground/40" />} emptyText="오늘 시작하는 세일이 없습니다." />
+          <SaleSection title="진행중 세일" emoji="🛍️" sales={ongoing} emptyIcon={<ShoppingBag className="w-8 h-8 text-muted-foreground/40" />} emptyText="진행중인 세일이 없습니다." />
+          <SaleSection title="곧 종료" emoji="⏰" sales={endingSoon} emptyIcon={<Clock className="w-8 h-8 text-muted-foreground/40" />} emptyText="곧 종료되는 세일이 없습니다." />
         </>
       )}
     </div>
