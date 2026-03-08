@@ -155,6 +155,7 @@ export default function SaleCalendar() {
             </button>
           );
         })}
+        </div>
       </div>
 
       {/* Selected Day Detail Panel */}
