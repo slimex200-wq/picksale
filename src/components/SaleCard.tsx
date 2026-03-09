@@ -28,14 +28,48 @@ interface SaleCardProps {
   onGoNext?: () => void;
 }
 
-export default function SaleCard({ sale, rank }: SaleCardProps) {
+export default function SaleCard({ sale, rank, onGoPrev, onGoNext }: SaleCardProps) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
   const countdown = countdownText(sale.end_date);
   const isUrgent = countdown.includes("시간") || countdown === "D-1" || countdown === "종료";
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
   const isCardPromo = isCreditCardPromo(sale.sale_name);
+
+  const hasZoneNav = !!(onGoPrev || onGoNext);
+
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).closest("button")) return;
+
+    if (isMobile || !hasZoneNav) {
+      navigate(`/sale/${sale.id}`);
+      return;
+    }
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const pct = x / rect.width;
+
+    if (pct < 0.2 && onGoPrev) {
+      onGoPrev();
+    } else if (pct > 0.8 && onGoNext) {
+      onGoNext();
+    } else {
+      navigate(`/sale/${sale.id}`);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!hasZoneNav || isMobile) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const pct = x / rect.width;
+    if (pct < 0.2 && onGoPrev) setHoverZone("left");
+    else if (pct > 0.8 && onGoNext) setHoverZone("right");
+    else setHoverZone("center");
+  };
 
   return (
     <div
