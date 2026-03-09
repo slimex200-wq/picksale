@@ -41,7 +41,6 @@ interface SaleCardProps {
 
 export default function SaleCard({ sale, rank }: SaleCardProps) {
   const navigate = useNavigate();
-  const colorClass = platformColors[sale.platform];
   const countdown = countdownText(sale.end_date);
   const isUrgent = countdown.includes("시간") || countdown === "종료";
   const status = getSaleStatus(sale);
