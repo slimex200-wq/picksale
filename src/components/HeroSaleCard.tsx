@@ -79,17 +79,9 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
         </h3>
       </div>
 
-      {/* Brand Logo — visual center */}
-      <div className="flex-1 flex items-center justify-center px-6 py-4 min-h-0">
-        <div className="bg-white/90 rounded-xl p-4 shadow-sm">
-          <img
-            src={platformLogos[sale.platform]}
-            alt={sale.platform}
-            className="object-contain"
-            style={{ maxHeight: 80, maxWidth: 120, opacity: 1 }}
-            loading="lazy"
-          />
-        </div>
+      {/* Brand Logo / Banner image */}
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} heightClass="h-full" />
       </div>
 
       {/* Meta: date + countdown */}

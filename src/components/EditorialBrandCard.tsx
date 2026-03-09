@@ -34,26 +34,8 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
       style={{ minHeight: 280 }}
       onClick={handleClick}
     >
-      {/* ── Oversized platform logo (editorial crop effect) ── */}
-      <div
-        className="absolute pointer-events-none select-none"
-        style={{
-          right: -20,
-          bottom: -20,
-          width: "85%",
-          opacity: 0.12,
-          transition: "opacity 0.3s ease",
-        }}
-        aria-hidden
-      >
-        <img
-          src={logoSrc}
-          alt=""
-          className="w-full h-auto object-contain"
-          draggable={false}
-          loading="lazy"
-        />
-      </div>
+      {/* ── Banner image / logo fallback ── */}
+      <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} heightClass="h-28" />
 
       {/* ── Top: status badge + platform ── */}
       <div className="relative z-10 flex items-center justify-between px-3 pt-3 pb-1">

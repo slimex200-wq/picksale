@@ -66,21 +66,22 @@ export default function ExpandedSaleOverlay({ sale, onClose }: Props) {
           boxShadow: "0 25px 60px -12px hsl(var(--foreground) / 0.25), 0 8px 24px -4px hsl(var(--primary) / 0.15)",
         }}
       >
-        {/* Platform header */}
-        <div className={`${colorClass} px-5 pt-5 pb-8 relative shrink-0`}>
+        {/* Banner / Platform header */}
+        <div className="relative shrink-0">
+          <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} heightClass="h-40" />
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 bg-white/15 backdrop-blur-sm rounded-xl p-2 text-primary-foreground hover:bg-white/25 transition-colors z-10"
+            className="absolute top-3 right-3 bg-foreground/20 backdrop-blur-sm rounded-xl p-2 text-white hover:bg-foreground/40 transition-colors z-10"
           >
             <X className="w-4 h-4" />
           </button>
-          <div className="flex flex-col items-center pt-2">
-            <div className="w-14 h-14 rounded-xl bg-white/90 shadow-sm flex items-center justify-center p-2">
+          <div className="absolute bottom-3 left-4 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-white/90 shadow-sm flex items-center justify-center p-1">
               <img src={logoSrc} alt={sale.platform} className="w-full h-full object-contain" />
             </div>
-            <p className="text-primary-foreground/80 text-xs font-bold tracking-wide mt-2 uppercase">
+            <span className="text-white text-xs font-bold tracking-wide drop-shadow-sm">
               {sale.platform}
-            </p>
+            </span>
           </div>
         </div>
 
