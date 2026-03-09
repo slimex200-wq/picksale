@@ -20,6 +20,7 @@ import LoginPage from "./pages/LoginPage";
 import AdminGuard from "./pages/AdminGuard";
 import AdminOverview from "./pages/AdminOverview";
 import AdminReview from "./pages/AdminReview";
+import AdminDrafts from "./pages/AdminDrafts";
 import AdminEvents from "./pages/AdminEvents";
 import AdminCommunity from "./pages/AdminCommunity";
 import AdminSubmissions from "./pages/AdminSubmissions";
@@ -68,6 +69,7 @@ const App = () => (
             <Route path="/admin" element={<><Header /><AdminGuard /></>}>
               <Route index element={<AdminOverview />} />
               <Route path="review" element={<AdminReview />} />
+              <Route path="drafts" element={<AdminDrafts />} />
               <Route path="events" element={<AdminEvents />} />
               <Route path="hidden" element={<AdminHidden />} />
               <Route path="rejected" element={<AdminRejected />} />
