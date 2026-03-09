@@ -6,9 +6,10 @@ import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown"
 
 interface Props {
   sales: Sale[];
+  onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function SaleTimeline({ sales }: Props) {
+export default function SaleTimeline({ sales, onOpenDetail }: Props) {
   const navigate = useNavigate();
   const timeline = useMemo(() => categorizeTimeline(sales), [sales]);
 
@@ -52,7 +53,7 @@ export default function SaleTimeline({ sales }: Props) {
               return (
                 <div
                   key={sale.id}
-                  onClick={() => navigate(`/sale/${sale.id}`)}
+                  onClick={() => onOpenDetail ? onOpenDetail(sale) : navigate(`/sale/${sale.id}`)}
                   className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-accent/50 cursor-pointer transition-colors"
                 >
                   <div className="w-7 h-7 rounded-lg overflow-hidden shrink-0 bg-accent p-1">

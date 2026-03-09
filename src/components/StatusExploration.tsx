@@ -4,6 +4,7 @@ import SaleRankingItem from "./SaleRankingItem";
 
 interface Props {
   sales: Sale[];
+  onOpenDetail?: (sale: Sale) => void;
 }
 
 const sections: { status: SaleStatus; emoji: string; title: string }[] = [
@@ -12,7 +13,7 @@ const sections: { status: SaleStatus; emoji: string; title: string }[] = [
   { status: "starting_soon", emoji: "🟡", title: "곧 시작" },
 ];
 
-export default function StatusExploration({ sales }: Props) {
+export default function StatusExploration({ sales, onOpenDetail }: Props) {
   const grouped = useMemo(() => {
     const result: Record<SaleStatus, Sale[]> = {
       live: [],
@@ -66,7 +67,7 @@ export default function StatusExploration({ sales }: Props) {
               </div>
               <div className="space-y-1.5">
                 {items.map((sale, i) => (
-                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
+                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={onOpenDetail} />
                 ))}
               </div>
             </div>

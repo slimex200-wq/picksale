@@ -1,9 +1,10 @@
-import { lazy, Suspense, useMemo } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSales } from "@/hooks/useSales";
-import { getSaleStatus, platforms, platformSlugs } from "@/data/salesUtils";
+import { Sale, getSaleStatus, platforms, platformSlugs } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import StatusExploration from "@/components/StatusExploration";
+import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronRight, Radar } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
@@ -22,6 +23,7 @@ function TimelineSkeleton() {
 
 export default function RadarPage() {
   const { data: sales = [], isLoading } = useSales();
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
   const activeSales = useMemo(
     () => sales.filter((s) => getSaleStatus(s) !== "ended"),
@@ -51,11 +53,11 @@ export default function RadarPage() {
       ) : (
         <>
           {/* 1. Status Exploration */}
-          <StatusExploration sales={activeSales} />
+          <StatusExploration sales={activeSales} onOpenDetail={setSelectedSale} />
 
           {/* 2. Sale Timeline */}
           <Suspense fallback={<TimelineSkeleton />}>
-            <SaleTimeline sales={sales} />
+            <SaleTimeline sales={sales} onOpenDetail={setSelectedSale} />
           </Suspense>
 
           {/* 3. Platform Exploration */}
@@ -82,6 +84,8 @@ export default function RadarPage() {
           </section>
         </>
       )}
+
+      <ExpandedSaleOverlay sale={selectedSale} onClose={() => setSelectedSale(null)} />
     </div>
   );
 }
