@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
-import { sortByRanking, Platform, getSaleStatus, platforms, platformSlugs, type SaleStatus } from "@/data/salesUtils";
+import { sortByRanking, Platform, getSaleStatus, platforms, platformSlugs } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { useSales } from "@/hooks/useSales";
 import PlatformFilter from "@/components/PlatformFilter";
@@ -8,6 +8,8 @@ import SaleCard from "@/components/SaleCard";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SaleStatusFilter, { type StatusFilter } from "@/components/SaleStatusFilter";
 import SearchSuggestions from "@/components/SearchSuggestions";
+import HeroStats from "@/components/HeroStats";
+import StatusExploration from "@/components/StatusExploration";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Trophy, ChevronRight } from "lucide-react";
@@ -78,18 +80,13 @@ export default function Index() {
 
     result = result.filter((s) => getSaleStatus(s) !== "ended");
 
-    // Apply status filter
     if (statusFilter !== "all") {
-      result = result.filter((s) => {
-        const status = getSaleStatus(s);
-        return status === statusFilter;
-      });
+      result = result.filter((s) => getSaleStatus(s) === statusFilter);
     }
 
     return sortByRanking(result);
   }, [selectedPlatforms, query, sales, statusFilter]);
 
-  // Split: top 6 as featured cards, rest as ranking list
   const featuredSales = ranked.slice(0, 6);
   const rankingSales = ranked.slice(6);
 
@@ -98,12 +95,20 @@ export default function Index() {
     setSearchFocused(false);
   };
 
+  const activeSales = useMemo(
+    () => sales.filter((s) => getSaleStatus(s) !== "ended"),
+    [sales]
+  );
+
   return (
-    <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-10">
       <PageMeta title="PickSale - 쇼핑 세일 레이더" description="쿠팡, 무신사, 올리브영 등 주요 쇼핑몰의 세일 정보를 한눈에 확인하세요. 실시간 세일 랭킹과 타임라인을 제공합니다." />
       <CanonicalLink href={window.location.origin + "/"} />
 
-      {/* Search with suggestions */}
+      {/* 1. Hero — Identity + Stats */}
+      {!isLoading && <HeroStats sales={activeSales} />}
+
+      {/* Search */}
       <div className="relative max-w-lg" ref={searchRef}>
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
@@ -119,42 +124,46 @@ export default function Index() {
         )}
       </div>
 
-      <PlatformFilter
-        selected={selectedPlatforms}
-        onChange={setSelectedPlatforms}
-      />
-
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {[1, 2, 3, 4].map((i) => (
             <Skeleton key={i} className="h-40 w-full rounded-lg" />
           ))}
         </div>
-      ) : ranked.length === 0 ? (
+      ) : ranked.length === 0 && !query.trim() && selectedPlatforms.length === 0 ? (
         <div className="flex flex-col items-center py-16 text-muted-foreground">
           <Trophy className="w-10 h-10 text-muted-foreground/40" />
           <p className="text-sm mt-3">진행 중인 세일이 없습니다.</p>
         </div>
       ) : (
         <>
-          {/* Desktop: 2-column layout */}
-          <div className="lg:grid lg:grid-cols-[1fr_340px] lg:gap-6">
-            {/* Left column */}
-            <div className="space-y-8">
-              {/* Status filter */}
-              <SaleStatusFilter value={statusFilter} onChange={setStatusFilter} />
+          {/* 2. Status-based Exploration */}
+          {!query.trim() && selectedPlatforms.length === 0 && statusFilter === "all" && (
+            <StatusExploration sales={activeSales} />
+          )}
 
-              {/* Featured Sales — Cards */}
-              <section className="space-y-4">
-                <SectionHeader emoji="⚡" title="추천 세일" count={featuredSales.length} />
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                  {featuredSales.map((sale, index) => (
-                    <SaleCard key={sale.id} sale={sale} rank={index + 1} />
-                  ))}
-                </div>
-              </section>
+          {/* 3. Sale Ranking with Filters */}
+          <div className="lg:grid lg:grid-cols-[1fr_340px] lg:gap-8">
+            <div className="space-y-6">
+              {/* Filters */}
+              <div className="space-y-3">
+                <PlatformFilter selected={selectedPlatforms} onChange={setSelectedPlatforms} />
+                <SaleStatusFilter value={statusFilter} onChange={setStatusFilter} />
+              </div>
 
-              {/* Sale Ranking — List view */}
+              {/* Featured Cards */}
+              {featuredSales.length > 0 && (
+                <section className="space-y-4">
+                  <SectionHeader emoji="⚡" title="추천 세일" count={featuredSales.length} />
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                    {featuredSales.map((sale, index) => (
+                      <SaleCard key={sale.id} sale={sale} rank={index + 1} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Ranking List */}
               {rankingSales.length > 0 && (
                 <section className="space-y-4">
                   <SectionHeader emoji="🏆" title="세일 랭킹" count={rankingSales.length} />
@@ -165,9 +174,16 @@ export default function Index() {
                   </div>
                 </section>
               )}
+
+              {ranked.length === 0 && (query.trim() || selectedPlatforms.length > 0 || statusFilter !== "all") && (
+                <div className="flex flex-col items-center py-12 text-muted-foreground">
+                  <Search className="w-8 h-8 text-muted-foreground/40" />
+                  <p className="text-sm mt-3">검색 결과가 없습니다.</p>
+                </div>
+              )}
             </div>
 
-            {/* Right: Timeline */}
+            {/* 4. Timeline Sidebar */}
             <aside className="mt-8 lg:mt-0">
               <Suspense fallback={<TimelineSkeleton />}>
                 <SaleTimeline sales={sales} />
@@ -175,14 +191,14 @@ export default function Index() {
             </aside>
           </div>
 
-          {/* Trending Community */}
-          <section className="space-y-4">
+          {/* 5. Trending Community */}
+          <section>
             <Suspense fallback={<TrendingSkeleton />}>
               <TrendingCommunity />
             </Suspense>
           </section>
 
-          {/* Platform Navigation */}
+          {/* 6. Platform Exploration */}
           <section className="space-y-4">
             <SectionHeader emoji="🏬" title="플랫폼별 세일" />
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
