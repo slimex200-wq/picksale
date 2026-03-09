@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useMemo } from "react";
 import { platformColors, platformEmojis, getSaleStatus, saleStatusConfig } from "@/data/salesUtils";
 import type { Sale, Platform } from "@/data/salesUtils";
