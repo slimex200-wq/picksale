@@ -12,26 +12,36 @@ const ViewModeContext = createContext<ViewModeContextType>({
   setViewMode: () => {},
 });
 
-const DESKTOP_WIDTH = 1280;
+const DESKTOP_MIN_WIDTH = 1280;
 
 export function ViewModeProvider({ children }: { children: ReactNode }) {
   const [viewMode, setViewMode] = useState<ViewMode>("auto");
 
-  // Dynamically update the viewport meta tag so the browser
-  // actually lays out at desktop width on small screens.
+  // Apply CSS zoom to fit desktop layout on small screens
   useEffect(() => {
-    const meta = document.querySelector('meta[name="viewport"]');
-    if (!meta) return;
+    const root = document.getElementById("root");
+    if (!root) return;
 
-    if (viewMode === "desktop") {
-      meta.setAttribute("content", `width=${DESKTOP_WIDTH}, initial-scale=0.25, user-scalable=yes`);
-    } else {
-      meta.setAttribute("content", "width=device-width, initial-scale=1.0");
-    }
+    const apply = () => {
+      if (viewMode === "desktop" && window.innerWidth < DESKTOP_MIN_WIDTH) {
+        const zoom = window.innerWidth / DESKTOP_MIN_WIDTH;
+        root.style.zoom = String(zoom);
+        root.style.minWidth = `${DESKTOP_MIN_WIDTH}px`;
+        root.style.overflowX = "hidden";
+      } else {
+        root.style.zoom = "";
+        root.style.minWidth = "";
+        root.style.overflowX = "";
+      }
+    };
 
+    apply();
+    window.addEventListener("resize", apply);
     return () => {
-      // Reset on unmount
-      meta.setAttribute("content", "width=device-width, initial-scale=1.0");
+      window.removeEventListener("resize", apply);
+      root.style.zoom = "";
+      root.style.minWidth = "";
+      root.style.overflowX = "";
     };
   }, [viewMode]);
 
