@@ -93,9 +93,9 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
 
       {/* Content */}
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
-        <h3 className={`font-bold text-[14px] sm:text-[15px] leading-snug tracking-tight line-clamp-2 ${
+        <h3 className={`font-semibold leading-[1.3] line-clamp-2 ${
           isCardPromo ? "text-muted-foreground" : "text-card-foreground"
-        }`}>
+        }`} style={{ fontSize: '18px', fontWeight: '600' }}>
           {sale.sale_name}
         </h3>
 
