@@ -118,11 +118,10 @@ const platformWeight: Partial<Record<Platform, number>> = {
 };
 
 export function getSaleStatus(sale: Sale): SaleStatus {
-  const todayStr = fmt(new Date());
+  const todayStr = getTodayKST();
   if (sale.end_date < todayStr) return "ended";
-  const endDiff = Math.ceil((new Date(sale.end_date).getTime() - Date.now()) / 86400000);
   if (sale.start_date <= todayStr && sale.end_date >= todayStr) {
-    return endDiff <= 1 ? "ending_today" : "live";
+    return sale.end_date === todayStr ? "ending_today" : "live";
   }
   return "starting_soon";
 }
