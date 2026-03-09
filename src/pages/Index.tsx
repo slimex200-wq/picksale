@@ -4,6 +4,7 @@ import { useSales } from "@/hooks/useSales";
 import SaleCard from "@/components/SaleCard";
 import HeroSaleCard from "@/components/HeroSaleCard";
 import CoverflowCarousel from "@/components/CoverflowCarousel";
+import EditorialBrandCard from "@/components/EditorialBrandCard";
 import PeekCarousel from "@/components/PeekCarousel";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SearchSuggestions from "@/components/SearchSuggestions";
@@ -380,7 +381,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                 <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
                 <PeekCarousel cardWidth={240} gap={16}>
                   {endingTodaySales.map((sale) => (
-                    <HeroSaleCard key={sale.id} sale={sale} />
+                    <EditorialBrandCard key={sale.id} sale={sale} />
                   ))}
                 </PeekCarousel>
               </section>
@@ -390,7 +391,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                 <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
                 <PeekCarousel cardWidth={240} gap={16}>
                   {liveSales.slice(0, 6).map((sale) => (
-                    <HeroSaleCard key={sale.id} sale={sale} />
+                    <EditorialBrandCard key={sale.id} sale={sale} />
                   ))}
                 </PeekCarousel>
               </section>
