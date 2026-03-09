@@ -28,12 +28,20 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
 
   const hasZoneNav = !!(onGoPrev || onGoNext);
 
+  const goToSale = () => {
+    if (onOpenDetail) {
+      onOpenDetail(sale);
+    } else {
+      navigate(`/sale/${sale.id}`);
+    }
+  };
+
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isActive) return;
     if ((e.target as HTMLElement).closest("button")) return;
 
     if (compact || !hasZoneNav) {
-      navigate(`/sale/${sale.id}`);
+      goToSale();
       return;
     }
 
@@ -46,7 +54,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
     } else if (pct > 0.8 && onGoNext) {
       onGoNext();
     } else {
-      navigate(`/sale/${sale.id}`);
+      goToSale();
     }
   };
 
