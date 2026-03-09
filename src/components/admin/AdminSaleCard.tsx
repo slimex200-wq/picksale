@@ -45,7 +45,9 @@ export default function AdminSaleCard({ sale, allSales = [], actions = [], onAct
     ? allSales.filter(s => s.id !== sale.id && s.event_key === sale.event_key && s.publish_status === "draft")
     : [];
 
-  const hasImage = sale.image_url && sale.image_url.trim() !== "";
+  const hasValidImage = sale.image_url && sale.image_url.trim() !== "" && !imgBroken
+    && !/\.(mp4|webm|mov|avi)(\?|$)/i.test(sale.image_url);
+  const logoSrc = platformLogos[sale.platform as Platform];
 
   const copyEventKey = () => {
     if (sale.event_key) {
