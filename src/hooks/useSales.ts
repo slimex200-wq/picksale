@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Sale, Platform, SaleTier, ReviewStatus, PublishStatus } from "@/data/salesUtils";
 
 /** Columns needed for card/list views (no description, source_urls, filter_reason) */
-const LIST_COLUMNS = "id,platform,sale_name,start_date,end_date,category,link,sale_tier,importance_score,review_status,publish_status,grouped_page_count,event_id,signal_id,created_at";
+const LIST_COLUMNS = "id,platform,sale_name,start_date,end_date,category,link,sale_tier,importance_score,review_status,publish_status,grouped_page_count,event_id,signal_id,created_at,image_url";
 
 /** Public hook – only returns published sales */
 export function useSales() {
