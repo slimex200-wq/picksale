@@ -145,7 +145,7 @@ export default function Index() {
         </div>
       </div>
 
-      {isLoading ? (
+      {isLoading && !sales.length ? (
         bp === "mobile" ? <MobileLoadingSkeleton /> :
         bp === "tablet" ? <TabletLoadingSkeleton /> :
         <DesktopLoadingSkeleton />
