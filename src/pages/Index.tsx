@@ -6,7 +6,7 @@ import HeroSaleCard from "@/components/HeroSaleCard";
 import CoverflowCarousel from "@/components/CoverflowCarousel";
 import EditorialBrandCard from "@/components/EditorialBrandCard";
 import PeekCarousel from "@/components/PeekCarousel";
-import SaleDetailSheet from "@/components/SaleDetailSheet";
+import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
@@ -54,6 +54,7 @@ export default function Index() {
   const [heroFilter, setHeroFilter] = useState<SaleStatus | null>(null);
   const [quickFilter, setQuickFilter] = useState<string | null>(null);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const { data: sales = [], isLoading } = useSales();
   const bp = useBreakpoint();
@@ -156,7 +157,7 @@ export default function Index() {
           <SectionHeader emoji="🔍" title="검색 결과" count={filtered.length} />
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3">
-              {filtered.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} />)}
+              {filtered.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />)}
             </div>
           ) : (
             <div className="flex flex-col items-center py-10 text-muted-foreground">
@@ -164,6 +165,7 @@ export default function Index() {
               <p className="text-sm mt-2">검색 결과가 없습니다.</p>
             </div>
           )}
+          <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
         </section>
       ) : bp === "mobile" ? (
         /* ═══ MOBILE LAYOUT ═══ */
@@ -209,7 +211,7 @@ interface LayoutProps {
 
 /* ─── MOBILE ─── */
 function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
-  const [sheetSale, setSheetSale] = useState<Sale | null>(null);
+  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
   return (
     <div className="space-y-6">
@@ -221,7 +223,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           </div>
           <CoverflowCarousel>
             {featuredSales.map((sale, i) => (
-              <EditorialBrandCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setSheetSale} />
+              <EditorialBrandCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
             ))}
           </CoverflowCarousel>
         </section>
@@ -233,7 +235,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
           <div className="space-y-2">
             {endingTodaySales.slice(0, 3).map((sale) => (
-              <SaleCard key={sale.id} sale={sale} compact />
+              <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
             ))}
           </div>
         </section>
@@ -245,7 +247,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} moreLink="/radar" />
           <div className="space-y-2">
             {liveSales.slice(0, 3).map((sale) => (
-              <SaleCard key={sale.id} sale={sale} compact />
+              <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
             ))}
           </div>
         </section>
@@ -273,10 +275,9 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </div>
       )}
 
-      <SaleDetailSheet
-        sale={sheetSale}
-        open={!!sheetSale}
-        onOpenChange={(open) => { if (!open) setSheetSale(null); }}
+      <ExpandedSaleOverlay
+        sale={expandedSale}
+        onClose={() => setExpandedSale(null)}
       />
     </div>
   );
@@ -284,6 +285,8 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 
 /* ─── TABLET ─── */
 function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
+  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
+
   return (
     <div className="space-y-6">
       {/* Featured — 2-col grid */}
@@ -292,7 +295,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
           <div className="grid grid-cols-2 gap-3">
             {featuredSales.slice(0, 4).map((sale, i) => (
-              <SaleCard key={sale.id} sale={sale} rank={i + 1} />
+              <SaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
             ))}
           </div>
         </section>
@@ -305,7 +308,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
             <SectionHeader emoji="⏰" title="오늘 마감" count={endingTodaySales.length} />
             <div className="space-y-2">
               {endingTodaySales.slice(0, 4).map((sale) => (
-                <SaleCard key={sale.id} sale={sale} compact />
+                <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
               ))}
             </div>
           </section>
@@ -315,7 +318,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
             <SectionHeader emoji="🟢" title="진행중" count={liveSales.length} moreLink="/radar" />
             <div className="space-y-2">
               {liveSales.slice(0, 4).map((sale) => (
-                <SaleCard key={sale.id} sale={sale} compact />
+                <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
               ))}
             </div>
           </section>
@@ -343,13 +346,15 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           <p className="text-sm mt-2">진행 중인 세일이 없습니다.</p>
         </div>
       )}
+
+      <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
     </div>
   );
 }
 
 /* ─── DESKTOP ─── */
 function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
-  const [sheetSale, setSheetSale] = useState<Sale | null>(null);
+  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
   return (
     <>
@@ -389,7 +394,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                   <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
                   <PeekCarousel cardWidth={240} gap={16}>
                     {endingTodaySales.map((sale) => (
-                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setSheetSale} />
+                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
                     ))}
                   </PeekCarousel>
                 </section>
@@ -399,7 +404,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                   <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
                   <PeekCarousel cardWidth={240} gap={16}>
                     {liveSales.slice(0, 6).map((sale) => (
-                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setSheetSale} />
+                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
                     ))}
                   </PeekCarousel>
                 </section>
@@ -422,10 +427,9 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
         </aside>
       </div>
 
-      <SaleDetailSheet
-        sale={sheetSale}
-        open={!!sheetSale}
-        onOpenChange={(open) => { if (!open) setSheetSale(null); }}
+      <ExpandedSaleOverlay
+        sale={expandedSale}
+        onClose={() => setExpandedSale(null)}
       />
     </>
   );

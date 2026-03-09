@@ -14,9 +14,10 @@ interface SaleCardProps {
   compact?: boolean;
   onGoPrev?: () => void;
   onGoNext?: () => void;
+  onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function SaleCard({ sale, rank, isActive = true, compact = false, onGoPrev, onGoNext }: SaleCardProps) {
+export default function SaleCard({ sale, rank, isActive = true, compact = false, onGoPrev, onGoNext, onOpenDetail }: SaleCardProps) {
   const navigate = useNavigate();
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
   const countdown = countdownText(sale.end_date);
@@ -27,12 +28,20 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
 
   const hasZoneNav = !!(onGoPrev || onGoNext);
 
+  const goToSale = () => {
+    if (onOpenDetail) {
+      onOpenDetail(sale);
+    } else {
+      navigate(`/sale/${sale.id}`);
+    }
+  };
+
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isActive) return;
     if ((e.target as HTMLElement).closest("button")) return;
 
     if (compact || !hasZoneNav) {
-      navigate(`/sale/${sale.id}`);
+      goToSale();
       return;
     }
 
@@ -45,7 +54,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
     } else if (pct > 0.8 && onGoNext) {
       onGoNext();
     } else {
-      navigate(`/sale/${sale.id}`);
+      goToSale();
     }
   };
 
@@ -67,7 +76,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
           isCardPromo ? "border-border opacity-60" : "border-border/60"
         }`}
         style={{ padding: "10px 12px" }}
-        onClick={() => navigate(`/sale/${sale.id}`)}
+        onClick={goToSale}
       >
         {/* Platform logo */}
         <div className="w-10 h-10 rounded-xl bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-1.5">
@@ -194,7 +203,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             className="mt-auto w-full rounded-lg text-xs font-semibold h-8 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/sale/${sale.id}`);
+              goToSale();
             }}
           >
             세일 보러가기
