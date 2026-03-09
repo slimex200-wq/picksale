@@ -11,6 +11,7 @@ import SaleDetail from "./pages/SaleDetail";
 import PlatformSales from "./pages/PlatformSales";
 import SaleCalendar from "./pages/SaleCalendar";
 import EventDetail from "./pages/EventDetail";
+import RadarPage from "./pages/RadarPage";
 import CommunityPage from "./pages/CommunityPage";
 import CommunityDetail from "./pages/CommunityDetail";
 import SubmitSale from "./pages/SubmitSale";
