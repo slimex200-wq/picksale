@@ -120,7 +120,7 @@ export function getSaleStatus(sale: Sale): SaleStatus {
 export const saleStatusConfig: Record<SaleStatus, { label: string; emoji: string; className: string }> = {
   live: { label: "진행중", emoji: "🟢", className: "bg-green-100 text-green-700 border-green-300" },
   starting_soon: { label: "곧 시작", emoji: "🟡", className: "bg-yellow-100 text-yellow-700 border-yellow-300" },
-  ending_today: { label: "오늘 종료", emoji: "🔴", className: "bg-red-100 text-red-700 border-red-300" },
+  ending_today: { label: "오늘 마감", emoji: "", className: "bg-closing-today-bg text-closing-today border-closing-today/30" },
   ended: { label: "종료", emoji: "⚪", className: "bg-muted text-muted-foreground" },
 };
 

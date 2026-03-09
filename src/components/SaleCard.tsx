@@ -90,13 +90,16 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
-            <Badge
-              variant="outline"
-              className={`${statusInfo.className} border-0 shrink-0`}
-              style={{ fontSize: "10px", fontWeight: "600", padding: "1px 5px" }}
-            >
-              {statusInfo.emoji} {statusInfo.label}
-            </Badge>
+            {status === "ending_today" ? (
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-closing-today-bg text-closing-today shrink-0" style={{ fontSize: "10px", fontWeight: 700, padding: "1px 5px" }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+                오늘 마감
+              </span>
+            ) : (
+              <Badge variant="outline" className={`${statusInfo.className} border-0 shrink-0`} style={{ fontSize: "10px", fontWeight: "600", padding: "1px 5px" }}>
+                {statusInfo.emoji} {statusInfo.label}
+              </Badge>
+            )}
             <span
               className={`text-[10px] font-semibold shrink-0 ${isUrgent ? "text-destructive" : "text-muted-foreground"}`}
             >
@@ -148,13 +151,16 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
         {/* Row 1: Status badge + countdown */}
         <div className="flex items-center justify-between">
-          <Badge
-            variant="outline"
-            className={`${statusInfo.className} border-0`}
-            style={{ fontSize: '11px', fontWeight: '600', padding: '2px 8px' }}
-          >
-            {statusInfo.emoji} {statusInfo.label}
-          </Badge>
+          {status === "ending_today" ? (
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: "11px", fontWeight: 700, padding: "2px 8px" }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+              오늘 마감
+            </span>
+          ) : (
+            <Badge variant="outline" className={`${statusInfo.className} border-0`} style={{ fontSize: '11px', fontWeight: '600', padding: '2px 8px' }}>
+              {statusInfo.emoji} {statusInfo.label}
+            </Badge>
+          )}
           <span
             className={`font-semibold whitespace-nowrap ${isUrgent ? "text-destructive" : "text-muted-foreground"}`}
             style={{ fontSize: '11px' }}

@@ -4,7 +4,7 @@ interface Props {
 }
 
 const QUICK_FILTERS = [
-  { key: "ending_today", label: "오늘 종료", emoji: "🔥" },
+  { key: "ending_today", label: "오늘 마감", emoji: "" },
   { key: "패션", label: "패션", emoji: "👟" },
   { key: "뷰티", label: "뷰티", emoji: "💄" },
   { key: "리빙", label: "가전/리빙", emoji: "🏠" },
@@ -26,7 +26,11 @@ export default function QuickFilters({ activeFilter, onFilter }: Props) {
                 : "bg-card text-muted-foreground border-border hover:bg-accent hover:text-accent-foreground"
             }`}
           >
-            <span className="text-[11px]">{f.emoji}</span>
+            {f.key === "ending_today" ? (
+              <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+            ) : (
+              <span className="text-[11px]">{f.emoji}</span>
+            )}
             {f.label}
           </button>
         );
