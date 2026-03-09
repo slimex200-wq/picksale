@@ -1,5 +1,5 @@
 import { Sale, getSaleStatus, SaleStatus } from "@/data/salesUtils";
-import { Radar, TrendingUp, Clock, AlertTriangle } from "lucide-react";
+import { Radar, TrendingUp, Clock } from "lucide-react";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 interface Props {
@@ -17,7 +17,7 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
   const stats = [
     { key: "live" as SaleStatus, label: "진행중", count: liveSales.length, color: "text-green-600", bg: "bg-green-100/80", activeBorder: "border-green-400", icon: TrendingUp, emoji: "🟢" },
     { key: "starting_soon" as SaleStatus, label: "예정", count: startingSoon.length, color: "text-yellow-600", bg: "bg-yellow-100/80", activeBorder: "border-yellow-400", icon: Clock, emoji: "⏰" },
-    { key: "ending_today" as SaleStatus, label: "오늘 마감", count: endingToday.length, color: "text-closing-today", bg: "bg-closing-today-bg", activeBorder: "border-closing-today", icon: AlertTriangle, emoji: "" },
+    { key: "ending_today" as SaleStatus, label: "오늘 마감", count: endingToday.length, color: "text-closing-today", bg: "bg-closing-today-bg", activeBorder: "border-closing-today", icon: null, emoji: "" },
   ];
 
   const handleClick = (key: SaleStatus) => {
@@ -35,7 +35,6 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
       </div>
 
       {bp === "mobile" ? (
-        /* Mobile: pill row */
         <div className="flex items-center bg-card border border-border rounded-xl px-1 py-1 gap-0.5">
           {stats.map((stat) => {
             const isActive = activeFilter === stat.key;
@@ -49,8 +48,11 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
                     : "text-muted-foreground hover:bg-accent"
                 }`}
               >
-                <span className="text-xs">{stat.key === "ending_today" ? "" : stat.emoji}</span>
-                {stat.key === "ending_today" && <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />}
+                {stat.key === "ending_today" ? (
+                  <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+                ) : (
+                  <span className="text-xs">{stat.emoji}</span>
+                )}
                 <span className="whitespace-nowrap text-[11px]">{stat.label}</span>
                 <span className={`font-extrabold tabular-nums text-[13px] ${isActive ? stat.color : "text-foreground"}`}>
                   {stat.count}
@@ -60,7 +62,6 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
           })}
         </div>
       ) : (
-        /* Tablet + Desktop: stat cards */
         <div className="grid grid-cols-3 gap-2">
           {stats.map((stat) => {
             const isActive = activeFilter === stat.key;
@@ -75,7 +76,11 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
                 }`}
               >
                 <div className={`w-8 h-8 rounded-lg ${stat.bg} flex items-center justify-center`}>
-                  <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                  {stat.key === "ending_today" ? (
+                    <span className="w-2 h-2 rounded-full bg-closing-today animate-closing-pulse" />
+                  ) : (
+                    <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                  )}
                 </div>
                 <span className="text-xl font-extrabold text-card-foreground tabular-nums">{stat.count}</span>
                 <span className="text-[10px] font-semibold text-muted-foreground whitespace-nowrap">{stat.label}</span>

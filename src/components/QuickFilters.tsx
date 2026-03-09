@@ -4,11 +4,11 @@ interface Props {
 }
 
 const QUICK_FILTERS = [
-  { key: "ending_today", label: "오늘 마감", emoji: "" },
+  { key: "ending_today", label: "오늘 마감", emoji: "", dot: true },
   { key: "패션", label: "패션", emoji: "👟" },
   { key: "뷰티", label: "뷰티", emoji: "💄" },
   { key: "리빙", label: "가전/리빙", emoji: "🏠" },
-  { key: null, label: "전체 세일", emoji: "🛍" },
+  { key: null as string | null, label: "전체 세일", emoji: "🛍" },
 ];
 
 export default function QuickFilters({ activeFilter, onFilter }: Props) {
@@ -26,8 +26,8 @@ export default function QuickFilters({ activeFilter, onFilter }: Props) {
                 : "bg-card text-foreground/70 border-border font-medium hover:bg-accent hover:border-border/80"
             }`}
           >
-            {f.key === "ending_today" ? (
-              <span className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-primary-foreground" : "bg-closing-today"} animate-closing-pulse`} />
+            {f.dot ? (
+              <span className={`w-1.5 h-1.5 rounded-full animate-closing-pulse ${isActive ? "bg-primary-foreground" : "bg-closing-today"}`} />
             ) : (
               <span className="text-sm">{f.emoji}</span>
             )}

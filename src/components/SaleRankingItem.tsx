@@ -31,8 +31,8 @@ export default function SaleRankingItem({ sale, rank }: Props) {
         {medal || <span className={rank <= 5 ? "text-foreground" : "text-muted-foreground"}>{rank}</span>}
       </span>
 
-      {/* Logo */}
-      <div className="w-7 h-7 rounded-lg bg-accent border border-border/40 flex items-center justify-center shrink-0 p-1">
+      {/* Logo — bigger for visibility */}
+      <div className="w-10 h-10 rounded-lg bg-accent border border-border/40 flex items-center justify-center shrink-0 p-1.5">
         <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded" loading="lazy" />
       </div>
 

@@ -6,6 +6,14 @@ interface Props {
   maxPosts?: number;
 }
 
+const PLACEHOLDER_THUMBS = [
+  "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=80&h=80&fit=crop",
+  "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=80&h=80&fit=crop",
+  "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=80&h=80&fit=crop",
+  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=80&h=80&fit=crop",
+  "https://images.unsplash.com/photo-1560343090-f0409e92791a?w=80&h=80&fit=crop",
+];
+
 export default function TrendingCommunity({ maxPosts = 5 }: Props) {
   const { data: posts = [] } = useCommunityPosts({ sort: "trending", limit: maxPosts });
 
@@ -34,11 +42,18 @@ export default function TrendingCommunity({ maxPosts = 5 }: Props) {
           <Link
             key={post.id}
             to={`/community/${post.id}`}
-            className="flex items-center gap-2.5 p-2.5 bg-card border border-border rounded-xl hover:shadow-sm transition-shadow"
+            className="flex items-center gap-3 p-2.5 bg-card border border-border rounded-xl hover:shadow-sm transition-shadow"
           >
             <span className="font-bold text-muted-foreground w-5 text-center shrink-0" style={{ fontSize: '13px', fontWeight: '700' }}>
               {i + 1}
             </span>
+            {/* Thumbnail */}
+            <img
+              src={PLACEHOLDER_THUMBS[i % PLACEHOLDER_THUMBS.length]}
+              alt=""
+              className="w-10 h-10 rounded-md object-cover bg-accent shrink-0"
+              loading="lazy"
+            />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1 mb-0.5">
                 {post.category.map((c) => (
