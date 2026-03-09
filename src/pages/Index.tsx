@@ -255,9 +255,9 @@ export default function Index() {
                 {endingTodaySales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
-                    <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                       {endingTodaySales.map((sale) => (
-                        <div key={sale.id} style={{ minWidth: 210, width: 210, height: 280 }} className="shrink-0">
+                        <div key={sale.id} style={{ minWidth: 210, width: 210 }} className="shrink-0">
                           <SaleCard sale={sale} />
                         </div>
                       ))}
