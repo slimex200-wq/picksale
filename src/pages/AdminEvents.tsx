@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
-  Eye, EyeOff, Pencil, Trash2, ArrowUpDown, CheckCircle, XCircle, Clock,
+  Eye, EyeOff, Pencil, Trash2, ArrowUpDown, CheckCircle, XCircle, Clock, ExternalLink,
 } from "lucide-react";
 
 export default function AdminEvents() {
@@ -39,7 +39,7 @@ export default function AdminEvents() {
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const [editForm, setEditForm] = useState({
-    sale_name: "", platform: "", start_date: "", end_date: "",
+    sale_name: "", platform: "", link: "", start_date: "", end_date: "",
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
@@ -62,13 +62,14 @@ export default function AdminEvents() {
 
   const openEdit = (sale: Sale) => {
     setEditingSale(sale);
-    setEditForm({ sale_name: sale.sale_name, platform: sale.platform, start_date: sale.start_date, end_date: sale.end_date });
+    setEditForm({ sale_name: sale.sale_name, platform: sale.platform, link: sale.link || "", start_date: sale.start_date, end_date: sale.end_date });
   };
 
   const handleEditSubmit = async () => {
     if (!editingSale) return;
     const { error } = await supabase.from("sales").update({
       sale_name: editForm.sale_name, platform: editForm.platform,
+      link: editForm.link,
       start_date: editForm.start_date, end_date: editForm.end_date,
     }).eq("id", editingSale.id);
     if (error) { toast.error(error.message); return; }
@@ -186,6 +187,13 @@ export default function AdminEvents() {
                     <span>{sale.platform}</span>
                     <span>·</span>
                     <span className="font-mono">{sale.start_date} ~ {sale.end_date}</span>
+                    {sale.link && (
+                      <a href={sale.link} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-0.5 text-primary hover:underline"
+                        onClick={e => e.stopPropagation()}>
+                        <ExternalLink className="w-3 h-3" /> 링크
+                      </a>
+                    )}
                     {sale.signal_id && (
                       <Badge variant="outline" className="text-[9px] h-4 px-1 bg-blue-50 text-blue-600 border-blue-200">
                         시그널 연결
@@ -236,6 +244,10 @@ export default function AdminEvents() {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>{platforms.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
               </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm">링크</Label>
+              <Input type="url" placeholder="https://..." value={editForm.link} onChange={(e) => setEditForm((f) => ({ ...f, link: e.target.value }))} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
