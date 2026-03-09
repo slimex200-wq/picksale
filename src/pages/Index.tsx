@@ -54,6 +54,7 @@ export default function Index() {
   const [heroFilter, setHeroFilter] = useState<SaleStatus | null>(null);
   const [quickFilter, setQuickFilter] = useState<string | null>(null);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const { data: sales = [], isLoading } = useSales();
   const bp = useBreakpoint();
