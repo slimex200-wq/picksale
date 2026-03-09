@@ -245,7 +245,7 @@ export default function Index() {
                 </div>
                 <CoverflowCarousel>
                   {featuredSales.map((sale, i) => (
-                    <SaleCard key={sale.id} sale={sale} rank={i + 1} />
+                    <HeroSaleCard key={sale.id} sale={sale} rank={i + 1} />
                   ))}
                 </CoverflowCarousel>
               </section>
