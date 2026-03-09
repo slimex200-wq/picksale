@@ -16,6 +16,7 @@ import { ArrowUpDown } from "lucide-react";
 import AdminSaleCard from "@/components/admin/AdminSaleCard";
 import AdminEditDialog from "@/components/admin/AdminEditDialog";
 import SourceDistribution from "@/components/admin/SourceDistribution";
+import { useDuplicateMaps } from "@/hooks/useDuplicateMaps";
 
 export default function AdminEvents() {
   const queryClient = useQueryClient();
@@ -25,27 +26,22 @@ export default function AdminEvents() {
   const [sourceFilter, setSourceFilter] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
-  const { data: rawSales = [], isLoading } = useAdminSales({
-    sort: sortBy,
-  });
+  const { data: rawSales = [], isLoading } = useAdminSales({ sort: sortBy });
 
-  // CANONICAL STATE FILTER FIRST, then additional filters
+  const { duplicatePublished, duplicateDrafts } = useDuplicateMaps(rawSales);
+
   const { salesBeforeSource, sales } = useMemo(() => {
-    // Step 1: canonical state — only published
     let filtered = rawSales.filter(s => getSalePrimaryState(s) === "published");
 
-    // Step 2: platform
     if (platformFilter && platformFilter !== "all") {
       filtered = filtered.filter(s => s.platform === platformFilter);
     }
-    // Step 3: tier
     if (tierFilter && tierFilter !== "all") {
       filtered = filtered.filter(s => s.sale_tier === tierFilter);
     }
 
     const beforeSource = filtered;
 
-    // Step 4: source
     if (sourceFilter && sourceFilter !== "all") {
       filtered = filtered.filter(s => getSourceClass(s) === sourceFilter);
     }
@@ -154,7 +150,8 @@ export default function AdminEvents() {
             <AdminSaleCard
               key={sale.id}
               sale={sale}
-              allSales={rawSales}
+              duplicatePublished={duplicatePublished}
+              duplicateDrafts={duplicateDrafts}
               actions={["hide", "edit", "delete"]}
               onAction={handleAction}
               onEdit={setEditingSale}

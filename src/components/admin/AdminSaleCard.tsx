@@ -42,15 +42,22 @@ export default memo(function AdminSaleCard({ sale, duplicatePublished, duplicate
   // Use pre-computed maps if available, otherwise fall back to legacy allSales filter
   const sameEventKeyPublishedCount = useMemo(() => {
     if (!sale.event_key) return 0;
-    if (duplicatePublished) return duplicatePublished.get(sale.event_key) ?? 0;
+    if (duplicatePublished) {
+      const total = duplicatePublished.get(sale.event_key) ?? 0;
+      // Subtract self if this sale is published
+      return sale.publish_status === "published" ? Math.max(0, total - 1) : total;
+    }
     return allSales.filter(s => s.id !== sale.id && s.event_key === sale.event_key && s.publish_status === "published").length;
-  }, [sale.event_key, sale.id, duplicatePublished, allSales]);
+  }, [sale.event_key, sale.id, sale.publish_status, duplicatePublished, allSales]);
 
   const sameEventKeyDraftsCount = useMemo(() => {
     if (!sale.event_key) return 0;
-    if (duplicateDrafts) return duplicateDrafts.get(sale.event_key) ?? 0;
+    if (duplicateDrafts) {
+      const total = duplicateDrafts.get(sale.event_key) ?? 0;
+      return sale.publish_status === "draft" ? Math.max(0, total - 1) : total;
+    }
     return allSales.filter(s => s.id !== sale.id && s.event_key === sale.event_key && s.publish_status === "draft").length;
-  }, [sale.event_key, sale.id, duplicateDrafts, allSales]);
+  }, [sale.event_key, sale.id, sale.publish_status, duplicateDrafts, allSales]);
 
   const hasValidImage = sale.image_url && sale.image_url.trim() !== "" && !imgBroken
     && !/\.(mp4|webm|mov|avi)(\?|$)/i.test(sale.image_url);

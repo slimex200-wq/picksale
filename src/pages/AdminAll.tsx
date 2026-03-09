@@ -4,7 +4,7 @@ import { useAdminSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sale, platforms } from "@/data/salesUtils";
-import { getSalePrimaryState, getSourceClass, primaryStateConfig, type SalePrimaryState } from "@/data/adminStateModel";
+import { getSalePrimaryState, getSourceClass, type SalePrimaryState } from "@/data/adminStateModel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -15,6 +15,7 @@ import { ArrowUpDown } from "lucide-react";
 import AdminSaleCard from "@/components/admin/AdminSaleCard";
 import AdminEditDialog from "@/components/admin/AdminEditDialog";
 import SourceDistribution from "@/components/admin/SourceDistribution";
+import { useDuplicateMaps } from "@/hooks/useDuplicateMaps";
 
 const stateOptions: { value: string; label: string }[] = [
   { value: "all", label: "전체 상태" },
@@ -35,32 +36,28 @@ export default function AdminAll() {
 
   const { data: rawSales = [], isLoading } = useAdminSales({ sort: sortBy });
 
-  const { salesBeforeSource, sales, stateCounts } = useMemo(() => {
-    let filtered = [...rawSales];
+  const { duplicatePublished, duplicateDrafts } = useDuplicateMaps(rawSales);
 
-    // Count states before any filter
+  const { salesBeforeSource, sales, stateCounts } = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const s of rawSales) {
       const st = getSalePrimaryState(s);
       counts[st] = (counts[st] || 0) + 1;
     }
 
-    // State filter
+    let filtered = [...rawSales];
     if (stateFilter && stateFilter !== "all") {
       filtered = filtered.filter(s => getSalePrimaryState(s) === stateFilter);
     }
-    // Platform filter
     if (platformFilter && platformFilter !== "all") {
       filtered = filtered.filter(s => s.platform === platformFilter);
     }
-    // Tier filter
     if (tierFilter && tierFilter !== "all") {
       filtered = filtered.filter(s => s.sale_tier === tierFilter);
     }
 
     const beforeSource = filtered;
 
-    // Source filter
     if (sourceFilter && sourceFilter !== "all") {
       filtered = filtered.filter(s => getSourceClass(s) === sourceFilter);
     }
@@ -196,7 +193,8 @@ export default function AdminAll() {
             <AdminSaleCard
               key={sale.id}
               sale={sale}
-              allSales={rawSales}
+              duplicatePublished={duplicatePublished}
+              duplicateDrafts={duplicateDrafts}
               actions={["approve", "publish", "hide", "reject", "edit", "delete"]}
               onAction={handleAction}
               onEdit={setEditingSale}
