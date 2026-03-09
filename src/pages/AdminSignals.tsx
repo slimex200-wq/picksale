@@ -144,17 +144,38 @@ export default function AdminSignals() {
     return null;
   };
 
+  const generateEventKey = (signal: SaleSignal) => {
+    const platform = (signal.platform || "unknown").toLowerCase().replace(/\s+/g, "_");
+    const title = (signal.matched_alias || signal.raw_title || "sale")
+      .toLowerCase().replace(/[^a-z0-9가-힣]+/g, "_").slice(0, 40);
+    const date = (signal.start_date_raw || new Date().toISOString().split("T")[0]).replace(/-/g, "");
+    return `${platform}_${title}_${date}`;
+  };
+
+  const mapSignalSourceType = (signal: SaleSignal): string => {
+    // Carry the signal's source_type directly to the sale
+    const st = signal.source_type || "";
+    if (st === "community") return "community";
+    if (st === "news") return "news";
+    // homepage, event_hub, detail → keep original for granularity
+    if (st) return st;
+    // Fallback: if from community post, mark as community
+    if (signal.community_post_id) return "community";
+    return "official";
+  };
+
   const handlePromoteToEvent = async (signal: SaleSignal) => {
     try {
       const today = new Date().toISOString().split("T")[0];
       const endDate = new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0];
       const startDate = signal.start_date_raw || today;
       const finalEndDate = signal.end_date_raw || endDate;
+      const eventKey = generateEventKey(signal);
+      const sourceType = mapSignalSourceType(signal);
 
       const matchedEvent = findMatchedEvent(signal);
 
       if (matchedEvent) {
-        // Attach to existing event
         const { error: saleError } = await supabase.from("sales").insert({
           platform: signal.platform || "커뮤니티",
           sale_name: signal.raw_title,
@@ -166,16 +187,16 @@ export default function AdminSignals() {
           publish_status: "draft",
           event_id: matchedEvent.id,
           signal_id: signal.id,
+          source_type: sourceType,
+          event_key: eventKey,
         });
         if (saleError) throw saleError;
 
-        // Increment signal_count manually
         const { data: evRow } = await supabase.from("sale_events").select("signal_count").eq("id", matchedEvent.id).single();
         await supabase.from("sale_events").update({
           signal_count: ((evRow as any)?.signal_count ?? 0) + 1
         }).eq("id", matchedEvent.id);
       } else {
-        // Create new event
         const { data: eventData, error: eventError } = await supabase
           .from("sale_events")
           .insert({
@@ -203,6 +224,8 @@ export default function AdminSignals() {
           publish_status: "draft",
           event_id: eventData.id,
           signal_id: signal.id,
+          source_type: sourceType,
+          event_key: eventKey,
         });
         if (saleError) throw saleError;
       }
@@ -225,6 +248,8 @@ export default function AdminSignals() {
     try {
       const today = new Date().toISOString().split("T")[0];
       const endDate = new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0];
+      const eventKey = generateEventKey(signal);
+      const sourceType = mapSignalSourceType(signal);
 
       const { error: insertError } = await supabase.from("sales").insert({
         platform: signal.platform || "커뮤니티",
@@ -236,6 +261,8 @@ export default function AdminSignals() {
         review_status: "approved",
         publish_status: "draft",
         signal_id: signal.id,
+        source_type: sourceType,
+        event_key: eventKey,
       });
       if (insertError) throw insertError;
 

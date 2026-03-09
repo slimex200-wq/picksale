@@ -33,7 +33,7 @@ export type SourceClass = "official" | "news" | "community" | "unknown";
 
 export function getSourceClass(sale: { source_type?: string | null }): SourceClass {
   const st = sale.source_type ?? "";
-  if (st === "crawler" || st === "official") return "official";
+  if (st === "crawler" || st === "official" || st === "homepage" || st === "event_hub" || st === "detail") return "official";
   if (st === "news") return "news";
   if (st === "community") return "community";
   return "unknown";
