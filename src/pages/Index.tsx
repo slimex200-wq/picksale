@@ -247,31 +247,27 @@ export default function Index() {
               </section>
             )}
 
-            {/* Ending Today + Live — horizontal scroll rows side by side */}
+            {/* Ending Today + Live — coverflow carousels side by side */}
             {(endingTodaySales.length > 0 || liveSales.length > 0) && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
                 {endingTodaySales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+                    <CoverflowCarousel visibleSide={1}>
                       {endingTodaySales.map((sale) => (
-                        <div key={sale.id} className="min-w-[240px] max-w-[260px] flex-1 shrink-0 snap-start">
-                          <SaleCard sale={sale} />
-                        </div>
+                        <SaleCard key={sale.id} sale={sale} />
                       ))}
-                    </div>
+                    </CoverflowCarousel>
                   </section>
                 )}
                 {liveSales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+                    <CoverflowCarousel visibleSide={1}>
                       {liveSales.slice(0, 6).map((sale) => (
-                        <div key={sale.id} className="min-w-[240px] max-w-[260px] flex-1 shrink-0 snap-start">
-                          <SaleCard sale={sale} />
-                        </div>
+                        <SaleCard key={sale.id} sale={sale} />
                       ))}
-                    </div>
+                    </CoverflowCarousel>
                   </section>
                 )}
               </div>
