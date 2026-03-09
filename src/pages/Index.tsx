@@ -247,27 +247,31 @@ export default function Index() {
               </section>
             )}
 
-            {/* Ending Today + Live — coverflow carousels side by side */}
+            {/* Ending Today + Live — side by side, normal card grid */}
             {(endingTodaySales.length > 0 || liveSales.length > 0) && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
                 {endingTodaySales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
-                    <CoverflowCarousel visibleSide={1}>
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                       {endingTodaySales.map((sale) => (
-                        <SaleCard key={sale.id} sale={sale} />
+                        <div key={sale.id} className="min-w-[240px] shrink-0">
+                          <SaleCard sale={sale} />
+                        </div>
                       ))}
-                    </CoverflowCarousel>
+                    </div>
                   </section>
                 )}
                 {liveSales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-                    <CoverflowCarousel visibleSide={1}>
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                       {liveSales.slice(0, 6).map((sale) => (
-                        <SaleCard key={sale.id} sale={sale} />
+                        <div key={sale.id} className="min-w-[240px] shrink-0">
+                          <SaleCard sale={sale} />
+                        </div>
                       ))}
-                    </CoverflowCarousel>
+                    </div>
                   </section>
                 )}
               </div>
