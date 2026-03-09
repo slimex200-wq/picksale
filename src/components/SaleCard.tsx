@@ -106,15 +106,14 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
         </h3>
 
         <p className="text-[11px] text-muted-foreground font-medium tracking-wide">
-          {formatDate(sale.start_date)} — {formatDate(sale.end_date)}
+          {formatDate(sale.start_date)} ~ {formatDate(sale.end_date)}
         </p>
 
         <div className="flex flex-wrap gap-1.5">
           {sale.category.map((cat) => (
             <Badge
               key={cat}
-              variant="secondary"
-              className="text-[10px] font-semibold rounded-full px-2.5 py-0.5 bg-secondary/80"
+              className={`text-[10px] font-semibold rounded-full px-2.5 py-0.5 ${getCategoryColor(cat)}`}
             >
               {cat}
             </Badge>
@@ -131,21 +130,28 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
               navigate(`/sale/${sale.id}`);
             }}
           >
-            {isCardPromo ? "혜택 보기" : "세일 보기"}
+            {isCardPromo ? "혜택 보기" : "세일 바로가기"}
             <ArrowRight className="w-3.5 h-3.5" />
           </Button>
           {!isCardPromo && (
-            <Button
-              size="sm"
-              variant="outline"
-              className="rounded-xl text-xs h-9 w-9 p-0 border-border/70"
-              onClick={(e) => {
-                e.stopPropagation();
-                toast.success("알림이 설정되었습니다! 🔔");
-              }}
-            >
-              <Bell className="w-3.5 h-3.5" />
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-xl text-xs h-9 w-9 p-0 border-border/70"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toast.success("알림이 설정되었습니다! 🔔");
+                    }}
+                  >
+                    <Bell className="w-3.5 h-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>세일 알림 받기</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
       </div>
