@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, Calendar, Bell, X } from "lucide-react";
 import { toast } from "sonner";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
+import SaleBannerImage from "@/components/SaleBannerImage";
 
 function formatDate(d: string) {
   const date = new Date(d);
