@@ -248,6 +248,8 @@ export default function AdminSignals() {
     try {
       const today = new Date().toISOString().split("T")[0];
       const endDate = new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0];
+      const eventKey = generateEventKey(signal);
+      const sourceType = mapSignalSourceType(signal);
 
       const { error: insertError } = await supabase.from("sales").insert({
         platform: signal.platform || "커뮤니티",
@@ -259,6 +261,8 @@ export default function AdminSignals() {
         review_status: "approved",
         publish_status: "draft",
         signal_id: signal.id,
+        source_type: sourceType,
+        event_key: eventKey,
       });
       if (insertError) throw insertError;
 
