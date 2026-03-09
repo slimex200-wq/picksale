@@ -1,7 +1,7 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   Settings, Inbox, List, LogOut, MessageSquare, Send, Radio,
-  Bug, Copy, BarChart3, FlaskConical, EyeOff,
+  Bug, Copy, BarChart3, FlaskConical, EyeOff, XCircle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ const tabDefs = [
   { to: "/admin/review", label: "검토", icon: Inbox, countKey: "review" },
   { to: "/admin/events", label: "이벤트", icon: List, countKey: "events" },
   { to: "/admin/hidden", label: "숨김", icon: EyeOff, countKey: "hidden" },
+  { to: "/admin/rejected", label: "반려", icon: XCircle, countKey: "rejected" },
   { to: "/admin/signals", label: "시그널", icon: Radio, countKey: "signals" },
   { to: "/admin/community", label: "커뮤니티", icon: MessageSquare, countKey: "community" },
   { to: "/admin/submissions", label: "제보", icon: Send, countKey: "submissions" },
