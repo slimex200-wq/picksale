@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
         category: categoryArray,
         author: author || null,
         source_type: source_type || null,
-        review_status: "published",
+        review_status: "pending",
       }).select("id").single();
 
       if (error) return json({ error: error.message }, 500);
