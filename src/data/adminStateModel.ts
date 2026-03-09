@@ -4,7 +4,7 @@
 /* ── Canonical Primary States ── */
 export type SalePrimaryState = "review_pending" | "approved_draft" | "published" | "hidden" | "rejected";
 
-export function getSalePrimaryState(sale: Pick<Sale, "review_status" | "publish_status">): SalePrimaryState {
+export function getSalePrimaryState(sale: { review_status: string; publish_status: string }): SalePrimaryState {
   if (sale.review_status === "rejected") return "rejected";
   if (sale.publish_status === "published") return "published";
   if (sale.publish_status === "hidden") return "hidden";
