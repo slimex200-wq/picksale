@@ -132,9 +132,9 @@ export default function AdminLayout() {
               >
                 <Icon className="w-3.5 h-3.5" />
                 {label}
-                {c && (
-                  <span className={`ml-0.5 text-[10px] font-bold ${c.highlight > 0 ? "text-primary" : "text-muted-foreground"}`}>
-                    {c.highlight}/{c.total}
+                {c && c.highlight > 0 && (
+                  <span className="ml-0.5 text-[10px] font-bold text-primary">
+                    {c.highlight}
                   </span>
                 )}
               </Link>

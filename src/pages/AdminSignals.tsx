@@ -71,16 +71,17 @@ export default function AdminSignals() {
   const queryClient = useQueryClient();
   const [platformFilter, setPlatformFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"pending" | "promoted" | "dismissed" | "all">("pending");
   const [sortBy, setSortBy] = useState<"newest" | "confidence">("newest");
 
   const { data: signals = [], isLoading } = useQuery({
-    queryKey: ["sale_signals", platformFilter, sourceFilter, sortBy],
+    queryKey: ["sale_signals", platformFilter, sourceFilter, statusFilter, sortBy],
     queryFn: async (): Promise<SaleSignal[]> => {
       let q = supabase
         .from("sale_signals")
-        .select("*")
-        .eq("review_status", "pending");
+        .select("*");
 
+      if (statusFilter !== "all") q = q.eq("review_status", statusFilter);
       if (platformFilter && platformFilter !== "all") q = q.eq("platform", platformFilter);
       if (sourceFilter && sourceFilter !== "all") q = q.eq("source_type", sourceFilter);
 
@@ -93,6 +94,22 @@ export default function AdminSignals() {
       const { data, error } = await q;
       if (error) throw error;
       return (data ?? []) as SaleSignal[];
+    },
+  });
+
+  // Fetch total counts by status for summary
+  const { data: statusCounts } = useQuery({
+    queryKey: ["sale_signals_counts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("sale_signals").select("review_status");
+      if (error) throw error;
+      const rows = data ?? [];
+      return {
+        pending: rows.filter(r => r.review_status === "pending").length,
+        promoted: rows.filter(r => r.review_status === "promoted").length,
+        dismissed: rows.filter(r => r.review_status === "dismissed").length,
+        total: rows.length,
+      };
     },
   });
 
@@ -251,8 +268,11 @@ export default function AdminSignals() {
 
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: ["sale_signals"] });
+    queryClient.invalidateQueries({ queryKey: ["sale_signals_counts"] });
+    queryClient.invalidateQueries({ queryKey: ["admin_tab_counts"] });
     queryClient.invalidateQueries({ queryKey: ["sales"] });
     queryClient.invalidateQueries({ queryKey: ["sale_events"] });
+    queryClient.invalidateQueries({ queryKey: ["sale_events_for_match"] });
     queryClient.invalidateQueries({ queryKey: ["sale_events_for_match"] });
   };
 
@@ -272,10 +292,29 @@ export default function AdminSignals() {
         ))}
       </div>
 
-      <p className="text-xs text-muted-foreground">{signals.length}개 대기 중</p>
+      {/* Status summary */}
+      {statusCounts && (
+        <p className="text-xs text-muted-foreground">
+          전체 {statusCounts.total}건 — 대기 {statusCounts.pending} · 승격 {statusCounts.promoted} · 무시 {statusCounts.dismissed}
+        </p>
+      )}
+
+      <p className="text-xs font-medium text-foreground">{signals.length}개 {statusFilter === "pending" ? "대기 중" : statusFilter === "promoted" ? "승격됨" : statusFilter === "dismissed" ? "무시됨" : "전체"}</p>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2 items-end">
+        <div className="space-y-1">
+          <Label className="text-xs">상태</Label>
+          <Select value={statusFilter} onValueChange={(v: any) => setStatusFilter(v)}>
+            <SelectTrigger className="w-[110px] h-8 text-xs"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pending">대기</SelectItem>
+              <SelectItem value="promoted">승격</SelectItem>
+              <SelectItem value="dismissed">무시</SelectItem>
+              <SelectItem value="all">전체</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="space-y-1">
           <Label className="text-xs">플랫폼</Label>
           <Select value={platformFilter} onValueChange={setPlatformFilter}>
@@ -311,7 +350,7 @@ export default function AdminSignals() {
       {isLoading ? (
         <p className="text-sm text-muted-foreground text-center py-12">불러오는 중...</p>
       ) : signals.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-12">대기 중인 시그널이 없습니다.</p>
+        <p className="text-sm text-muted-foreground text-center py-12">시그널이 없습니다.</p>
       ) : (
         <div className="space-y-2">
           {signals.map((sig) => {
