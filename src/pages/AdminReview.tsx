@@ -147,6 +147,7 @@ export default function AdminReview() {
                     {sale.grouped_page_count > 0 && (
                       <span className="text-[10px] text-muted-foreground">· {sale.grouped_page_count}개 페이지</span>
                     )}
+                    <SaleMetaBadges sale={sale} />
                   </div>
                   <p className="text-sm font-semibold text-card-foreground">{sale.sale_name}</p>
                   <p className="text-xs text-muted-foreground">{sale.platform} · {sale.start_date} ~ {sale.end_date}</p>
@@ -154,6 +155,9 @@ export default function AdminReview() {
                     <p className="text-[10px] text-muted-foreground mt-0.5">사유: {sale.filter_reason}</p>
                   )}
                 </div>
+                {sale.image_url && (
+                  <img src={sale.image_url} alt="" className="w-16 h-16 rounded-md object-cover shrink-0" />
+                )}
                 {sale.link && (
                   <a href={sale.link} target="_blank" rel="noopener noreferrer"
                     className="shrink-0 p-1.5 rounded-md hover:bg-muted transition-colors">
@@ -162,16 +166,7 @@ export default function AdminReview() {
                 )}
               </div>
 
-              {sale.source_urls.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {sale.source_urls.map((url, i) => (
-                    <a key={i} href={url} target="_blank" rel="noopener noreferrer"
-                      className="text-[10px] text-primary hover:underline inline-flex items-center gap-0.5">
-                      <ExternalLink className="w-2.5 h-2.5" />출처 {i + 1}
-                    </a>
-                  ))}
-                </div>
-              )}
+              <SaleSourceLinks sale={sale} />
 
               {sale.created_at && (
                 <p className="text-[10px] text-muted-foreground">
