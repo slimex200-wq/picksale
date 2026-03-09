@@ -39,7 +39,7 @@ export default function AdminEvents() {
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const [editForm, setEditForm] = useState({
-    sale_name: "", platform: "", start_date: "", end_date: "",
+    sale_name: "", platform: "", link: "", start_date: "", end_date: "",
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
