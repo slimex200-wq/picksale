@@ -268,8 +268,11 @@ export default function AdminSignals() {
 
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: ["sale_signals"] });
+    queryClient.invalidateQueries({ queryKey: ["sale_signals_counts"] });
+    queryClient.invalidateQueries({ queryKey: ["admin_tab_counts"] });
     queryClient.invalidateQueries({ queryKey: ["sales"] });
     queryClient.invalidateQueries({ queryKey: ["sale_events"] });
+    queryClient.invalidateQueries({ queryKey: ["sale_events_for_match"] });
     queryClient.invalidateQueries({ queryKey: ["sale_events_for_match"] });
   };
 
