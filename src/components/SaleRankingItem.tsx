@@ -8,9 +8,10 @@ const RANK_MEDALS: Record<number, string> = { 1: "🥇", 2: "🥈", 3: "🥉" };
 interface Props {
   sale: Sale;
   rank: number;
+  onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function SaleRankingItem({ sale, rank }: Props) {
+export default function SaleRankingItem({ sale, rank, onOpenDetail }: Props) {
   const navigate = useNavigate();
   const isCardPromo = isCreditCardPromo(sale.sale_name);
   const countdown = countdownText(sale.end_date);
@@ -21,7 +22,7 @@ export default function SaleRankingItem({ sale, rank }: Props) {
 
   return (
     <div
-      onClick={() => navigate(`/sale/${sale.id}`)}
+      onClick={() => onOpenDetail ? onOpenDetail(sale) : navigate(`/sale/${sale.id}`)}
       className={`flex items-center gap-2 px-3 py-2.5 rounded-xl bg-card border border-border/50 hover:shadow-sm hover:-translate-y-px transition-all cursor-pointer ${
         isCardPromo ? "opacity-60" : ""
       }`}
