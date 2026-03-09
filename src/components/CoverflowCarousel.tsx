@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, ReactNode, isValidElement, cloneElement, ReactElement } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Props {
   children: ReactNode[];
@@ -14,6 +15,7 @@ export default function CoverflowCarousel({ children }: Props) {
   const count = children.length;
   const [active, setActive] = useState(Math.floor(count / 2));
   const touchRef = useRef<number | null>(null);
+  const isMobile = useIsMobile();
 
   const go = useCallback(
     (dir: number) =>
@@ -37,24 +39,6 @@ export default function CoverflowCarousel({ children }: Props) {
         if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
       }}
     >
-      {/* Arrows */}
-      {active > 0 && (
-        <button
-          onClick={() => go(-1)}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-card border border-border shadow-lg flex items-center justify-center hover:bg-accent transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4 text-foreground" />
-        </button>
-      )}
-      {active < count - 1 && (
-        <button
-          onClick={() => go(1)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-card border border-border shadow-lg flex items-center justify-center hover:bg-accent transition-colors"
-        >
-          <ChevronRight className="w-4 h-4 text-foreground" />
-        </button>
-      )}
-
       {/* Stage */}
       <div
         style={{
@@ -110,7 +94,12 @@ export default function CoverflowCarousel({ children }: Props) {
                 }}
               >
                 {isValidElement(child)
-                  ? cloneElement(child as ReactElement<any>, { isActive: isCenter })
+                  ? cloneElement(child as ReactElement<any>, {
+                      isActive: isCenter,
+                      onGoPrev: active > 0 ? () => go(-1) : undefined,
+                      onGoNext: active < count - 1 ? () => go(1) : undefined,
+                      isMobile,
+                    })
                   : child}
               </div>
             </div>
