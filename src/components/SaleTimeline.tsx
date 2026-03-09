@@ -6,6 +6,7 @@ import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown"
 
 interface Props {
   sales: Sale[];
+  onOpenDetail?: (sale: Sale) => void;
 }
 
 export default function SaleTimeline({ sales }: Props) {
