@@ -70,8 +70,8 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         onClick={() => navigate(`/sale/${sale.id}`)}
       >
         {/* Platform logo */}
-        <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center shrink-0 p-1.5">
-          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" loading="lazy" />
+        <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 bg-accent">
+          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-cover" loading="lazy" />
         </div>
 
         {/* Info */}
