@@ -1,4 +1,5 @@
-import type { Sale } from "./salesUtils";
+// Canonical Admin State Model
+// Uses loose string types to work with raw DB query results
 
 /* ── Canonical Primary States ── */
 export type SalePrimaryState = "review_pending" | "approved_draft" | "published" | "hidden" | "rejected";
