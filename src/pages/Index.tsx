@@ -29,7 +29,7 @@ import PageMeta from "@/components/PageMeta";
 function SectionHeader({ emoji, title, count, moreLink, moreLabel }: { emoji: string; title: string; count?: number; moreLink?: string; moreLabel?: string }) {
   return (
     <div className="flex items-center justify-between px-1">
-      <h2 className="text-foreground flex items-center gap-2 text-base sm:text-lg font-bold">
+      <h2 className="text-foreground flex items-center gap-2 text-lg sm:text-xl font-extrabold tracking-tight">
         <span>{emoji}</span>
         {title}
         {count !== undefined && (
