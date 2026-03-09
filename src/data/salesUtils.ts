@@ -175,6 +175,27 @@ export function sortByRanking(sales: Sale[]): Sale[] {
   return [...sales].sort((a, b) => calculateRankingScore(b) - calculateRankingScore(a));
 }
 
+/* ── 추천 세일 정렬 (비주얼 완성도 우대) ── */
+export function sortForFeatured(sales: Sale[]): Sale[] {
+  const hasImage = (s: Sale) => !!(s.image_url && s.image_url.trim() && !/\.(mp4|webm|mov|avi)(\?|$)/i.test(s.image_url));
+  return [...sales].sort((a, b) => {
+    let scoreA = calculateRankingScore(a);
+    let scoreB = calculateRankingScore(b);
+
+    // Tier bonus: major +3, minor +0, excluded -3
+    if (a.sale_tier === "major") scoreA += 3;
+    else if (a.sale_tier === "excluded") scoreA -= 3;
+    if (b.sale_tier === "major") scoreB += 3;
+    else if (b.sale_tier === "excluded") scoreB -= 3;
+
+    // Image bonus: +4 for having a valid image
+    if (hasImage(a)) scoreA += 4;
+    if (hasImage(b)) scoreB += 4;
+
+    return scoreB - scoreA;
+  });
+}
+
 /* ── 타임라인 상태 ── */
 export type TimelineStatus = "ending_today" | "starts_today" | "ending_soon" | "live" | "starting_soon";
 

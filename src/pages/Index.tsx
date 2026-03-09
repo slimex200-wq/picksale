@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from "react";
-import { sortByRanking, getSaleStatus, SaleStatus, Sale } from "@/data/salesUtils";
+import { sortByRanking, sortForFeatured, getSaleStatus, SaleStatus, Sale } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
 import SaleCard from "@/components/SaleCard";
 import HeroSaleCard from "@/components/HeroSaleCard";
@@ -89,7 +89,7 @@ export default function Index() {
   const hasActiveFilter = !!heroFilter || !!quickFilter || !!query.trim();
 
   const featuredSales = useMemo(
-    () => sortByRanking(activeSales.filter((s) => {
+    () => sortForFeatured(activeSales.filter((s) => {
       const st = getSaleStatus(s);
       return st === "live" || st === "ending_today";
     })).slice(0, 6),
