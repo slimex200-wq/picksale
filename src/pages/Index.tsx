@@ -245,7 +245,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} moreLink="/radar" />
           <div className="space-y-2">
             {liveSales.slice(0, 3).map((sale) => (
-              <SaleCard key={sale.id} sale={sale} compact />
+              <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
             ))}
           </div>
         </section>
