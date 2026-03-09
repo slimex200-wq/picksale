@@ -84,7 +84,7 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
         {sale.category.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {sale.category.slice(0, 2).map((c) => (
-              <span key={c} className="text-muted-foreground bg-accent rounded px-1.5 py-0.5" style={{ fontSize: 9, fontWeight: 500 }}>{c}</span>
+              <span key={c} className="text-muted-foreground bg-accent rounded px-1.5 py-0.5" style={{ fontSize: 9, fontWeight: 500 }}>{formatCategory(c)}</span>
             ))}
           </div>
         )}

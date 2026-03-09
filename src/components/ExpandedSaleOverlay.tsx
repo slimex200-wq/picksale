@@ -157,7 +157,7 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
                 <div className="flex flex-wrap gap-1.5">
                   {currentSale.category.map((cat) => (
                     <Badge key={cat} variant="secondary" className="text-[11px] font-semibold rounded-full px-3 py-0.5 bg-secondary/80">
-                      {cat}
+                      {formatCategory(cat)}
                     </Badge>
                   ))}
                 </div>
