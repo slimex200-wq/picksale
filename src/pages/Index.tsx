@@ -10,21 +10,30 @@ import PlatformExplorer from "@/components/PlatformExplorer";
 import TrendingCommunity from "@/components/TrendingCommunity";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Search, Trophy } from "lucide-react";
+import { Search, Trophy, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
 
-function SectionHeader({ emoji, title, count }: { emoji: string; title: string; count?: number }) {
+function SectionHeader({ emoji, title, count, moreLink, moreLabel }: { emoji: string; title: string; count?: number; moreLink?: string; moreLabel?: string }) {
   return (
-    <h2 className="text-lg font-extrabold text-foreground px-1 flex items-center gap-2">
-      <span>{emoji}</span>
-      {title}
-      {count !== undefined && (
-        <span className="text-xs text-muted-foreground font-medium ml-1 bg-accent rounded-full px-2 py-0.5">
-          {count}
-        </span>
+    <div className="flex items-center justify-between px-1">
+      <h2 className="text-lg font-extrabold text-foreground flex items-center gap-2">
+        <span>{emoji}</span>
+        {title}
+        {count !== undefined && (
+          <span className="text-xs text-muted-foreground font-medium ml-1 bg-accent rounded-full px-2 py-0.5">
+            {count}
+          </span>
+        )}
+      </h2>
+      {moreLink && (
+        <Link to={moreLink} className="text-xs text-primary font-medium flex items-center gap-0.5 hover:underline">
+          {moreLabel || "더보기"} <ChevronRight className="w-3 h-3" />
+        </Link>
       )}
-    </h2>
+    </div>
   );
 }
 
@@ -33,34 +42,26 @@ export default function Index() {
   const [heroFilter, setHeroFilter] = useState<SaleStatus | null>(null);
   const [quickFilter, setQuickFilter] = useState<string | null>(null);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [mobileTab, setMobileTab] = useState<"featured" | "live" | "ending">("featured");
   const searchRef = useRef<HTMLDivElement>(null);
   const { data: sales = [], isLoading } = useSales();
+  const isMobile = useIsMobile();
 
   const activeSales = useMemo(
     () => sales.filter((s) => getSaleStatus(s) !== "ended"),
     [sales]
   );
 
-  // Apply all filters
   const filtered = useMemo(() => {
     let result = activeSales;
-
-    // Hero status filter
-    if (heroFilter) {
-      result = result.filter((s) => getSaleStatus(s) === heroFilter);
-    }
-
-    // Quick filter (status or category)
+    if (heroFilter) result = result.filter((s) => getSaleStatus(s) === heroFilter);
     if (quickFilter) {
       if (quickFilter === "ending_today") {
         result = result.filter((s) => getSaleStatus(s) === "ending_today");
       } else {
-        // Category filter
         result = result.filter((s) => s.category.some((c) => c.includes(quickFilter)));
       }
     }
-
-    // Search
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       result = result.filter(
@@ -70,13 +71,11 @@ export default function Index() {
           s.category.some((c) => c.toLowerCase().includes(q))
       );
     }
-
     return sortByRanking(result);
   }, [query, activeSales, heroFilter, quickFilter]);
 
   const hasActiveFilter = !!heroFilter || !!quickFilter || !!query.trim();
 
-  // Section data — only when no active filter
   const endingTodaySales = useMemo(
     () => sortByRanking(activeSales.filter((s) => getSaleStatus(s) === "ending_today")),
     [activeSales]
@@ -97,62 +96,62 @@ export default function Index() {
 
   const handleHeroFilter = (filter: SaleStatus | null) => {
     setHeroFilter(filter);
-    setQuickFilter(null); // Clear quick filter when hero filter changes
+    setQuickFilter(null);
   };
 
   const handleQuickFilter = (filter: string | null) => {
     setQuickFilter(filter);
-    setHeroFilter(null); // Clear hero filter when quick filter changes
+    setHeroFilter(null);
   };
 
+  // Mobile limits
+  const mobileCardLimit = 3;
+  const mobileRankingLimit = 3;
+
+  // Mobile tab data
+  const mobileTabSales = mobileTab === "featured" ? featuredSales : mobileTab === "live" ? liveSales : endingTodaySales;
+  const mobileTabDisplay = mobileTabSales.slice(0, mobileCardLimit);
+
+  // Desktop sidebar data
+  const rankingSales = sortByRanking(activeSales).slice(0, 10);
+
   return (
-    <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-10">
-      <PageMeta title="PickSale - 쇼핑 세일 레이더" description="쿠팡, 무신사, 올리브영 등 주요 쇼핑몰의 세일 정보를 한눈에 확인하세요. 실시간 세일 랭킹과 타임라인을 제공합니다." />
+    <div className="max-w-7xl mx-auto px-4 pt-4 pb-24">
+      <PageMeta title="PickSale - 쇼핑 세일 레이더" description="쿠팡, 무신사, 올리브영 등 주요 쇼핑몰의 세일 정보를 한눈에 확인하세요." />
       <CanonicalLink href={window.location.origin + "/"} />
 
-      {/* 1. Hero — Clickable Stats */}
-      {!isLoading && (
-        <HeroStats
-          sales={activeSales}
-          activeFilter={heroFilter}
-          onFilterChange={handleHeroFilter}
-        />
-      )}
-
-      {/* 2. Search + Quick Filters */}
-      <div className="space-y-3">
-        <div className="relative max-w-lg" ref={searchRef}>
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
-            placeholder="세일, 플랫폼, 카테고리 검색"
-            className="pl-9 rounded-xl bg-card border-border h-11"
-          />
-          {searchFocused && !query.trim() && (
-            <SearchSuggestions onSelect={handleSearchSelect} />
-          )}
+      {/* Hero + Search — always full width */}
+      <div className="space-y-4 mb-8">
+        {!isLoading && (
+          <HeroStats sales={activeSales} activeFilter={heroFilter} onFilterChange={handleHeroFilter} />
+        )}
+        <div className="space-y-3">
+          <div className="relative max-w-lg" ref={searchRef}>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+              placeholder="세일, 플랫폼, 카테고리 검색"
+              className="pl-9 rounded-xl bg-card border-border h-11"
+            />
+            {searchFocused && !query.trim() && <SearchSuggestions onSelect={handleSearchSelect} />}
+          </div>
+          <QuickFilters activeFilter={quickFilter} onFilter={handleQuickFilter} />
         </div>
-        <QuickFilters activeFilter={quickFilter} onFilter={handleQuickFilter} />
       </div>
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-40 w-full rounded-lg" />
-          ))}
+          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-40 w-full rounded-lg" />)}
         </div>
       ) : hasActiveFilter ? (
-        /* Filtered results */
         <section className="space-y-4">
           <SectionHeader emoji="🔍" title="검색 결과" count={filtered.length} />
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-              {filtered.map((sale, i) => (
-                <SaleCard key={sale.id} sale={sale} rank={i + 1} />
-              ))}
+              {filtered.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} />)}
             </div>
           ) : (
             <div className="flex flex-col items-center py-12 text-muted-foreground">
@@ -161,61 +160,63 @@ export default function Index() {
             </div>
           )}
         </section>
-      ) : (
-        <>
-          {/* 3. 🔥 오늘 주목 세일 (추천) */}
-          {featuredSales.length > 0 && (
-            <section className="space-y-4">
-              <SectionHeader emoji="🔥" title="오늘 주목 세일" count={featuredSales.length} />
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                {featuredSales.map((sale, i) => (
-                  <SaleCard key={sale.id} sale={sale} rank={i + 1} />
-                ))}
+      ) : isMobile ? (
+        /* ═══ MOBILE LAYOUT ═══ */
+        <div className="space-y-10">
+          {/* Tabbed sections: 추천 / 진행중 / 오늘 종료 */}
+          <section className="space-y-4">
+            <div className="flex items-center bg-muted rounded-xl p-1 gap-0.5">
+              {([
+                { key: "featured", label: "🔥 추천", count: featuredSales.length },
+                { key: "live", label: "🟢 진행중", count: liveSales.length },
+                { key: "ending", label: "⏰ 오늘 종료", count: endingTodaySales.length },
+              ] as const).map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setMobileTab(tab.key)}
+                  className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all ${
+                    mobileTab === tab.key
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {tab.label} <span className="tabular-nums">{tab.count}</span>
+                </button>
+              ))}
+            </div>
+            {mobileTabDisplay.length > 0 ? (
+              <div className="grid grid-cols-1 gap-3">
+                {mobileTabDisplay.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} />)}
               </div>
-            </section>
-          )}
-
-          {/* 4. ⏰ 오늘 종료 세일 */}
-          {endingTodaySales.length > 0 && (
-            <section className="space-y-4">
-              <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                {endingTodaySales.map((sale) => (
-                  <SaleCard key={sale.id} sale={sale} />
-                ))}
+            ) : (
+              <div className="flex flex-col items-center py-8 text-muted-foreground">
+                <p className="text-sm">해당 세일이 없습니다.</p>
               </div>
-            </section>
-          )}
+            )}
+            {mobileTabSales.length > mobileCardLimit && (
+              <Link to="/radar" className="block text-center text-xs text-primary font-medium hover:underline py-2">
+                전체 보기 →
+              </Link>
+            )}
+          </section>
 
-          {/* 5. 🟢 지금 진행중 세일 */}
-          {liveSales.length > 0 && (
-            <section className="space-y-4">
-              <SectionHeader emoji="🟢" title="지금 진행중 세일" count={liveSales.length} />
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                {liveSales.slice(0, 6).map((sale) => (
-                  <SaleCard key={sale.id} sale={sale} />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* 6. 🏆 세일 랭킹 */}
-          {sortByRanking(activeSales).length > 6 && (
-            <section className="space-y-4">
-              <SectionHeader emoji="🏆" title="세일 랭킹" />
+          {/* Ranking — compact, top 3 */}
+          {rankingSales.length > 0 && (
+            <section className="space-y-3">
+              <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
               <div className="space-y-2">
-                {sortByRanking(activeSales).slice(6, 16).map((sale, i) => (
-                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 7} />
+                {rankingSales.slice(0, mobileRankingLimit).map((sale, i) => (
+                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
                 ))}
               </div>
             </section>
           )}
 
-          {/* 7. 🏬 플랫폼별 세일 */}
+          {/* Platform — horizontal carousel */}
           <PlatformExplorer sales={activeSales} />
 
-          {/* 8. 💬 커뮤니티 핫딜 */}
-          <TrendingCommunity maxPosts={3} />
+          {/* Community — compact */}
+          <TrendingCommunity maxPosts={2} />
 
           {activeSales.length === 0 && (
             <div className="flex flex-col items-center py-12 text-muted-foreground">
@@ -223,7 +224,70 @@ export default function Index() {
               <p className="text-sm mt-3">진행 중인 세일이 없습니다.</p>
             </div>
           )}
-        </>
+        </div>
+      ) : (
+        /* ═══ DESKTOP 3-COLUMN LAYOUT ═══ */
+        <div className="grid grid-cols-[220px_1fr_260px] gap-6">
+          {/* Left Sidebar — Ranking */}
+          <aside className="space-y-4">
+            <h3 className="text-sm font-extrabold text-foreground flex items-center gap-1.5 px-1">
+              🏆 세일 랭킹
+            </h3>
+            <div className="space-y-1.5">
+              {rankingSales.map((sale, i) => (
+                <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
+              ))}
+            </div>
+          </aside>
+
+          {/* Center — Main Content */}
+          <main className="space-y-10">
+            {/* Featured */}
+            {featuredSales.length > 0 && (
+              <section className="space-y-4">
+                <SectionHeader emoji="🔥" title="오늘 주목 세일" count={featuredSales.length} />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  {featuredSales.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} />)}
+                </div>
+              </section>
+            )}
+
+            {/* Ending Today */}
+            {endingTodaySales.length > 0 && (
+              <section className="space-y-4">
+                <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  {endingTodaySales.map((sale) => <SaleCard key={sale.id} sale={sale} />)}
+                </div>
+              </section>
+            )}
+
+            {/* Live */}
+            {liveSales.length > 0 && (
+              <section className="space-y-4">
+                <SectionHeader emoji="🟢" title="지금 진행중 세일" count={liveSales.length} />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  {liveSales.slice(0, 6).map((sale) => <SaleCard key={sale.id} sale={sale} />)}
+                </div>
+              </section>
+            )}
+
+            {/* Platform */}
+            <PlatformExplorer sales={activeSales} />
+
+            {activeSales.length === 0 && (
+              <div className="flex flex-col items-center py-12 text-muted-foreground">
+                <Trophy className="w-10 h-10 text-muted-foreground/40" />
+                <p className="text-sm mt-3">진행 중인 세일이 없습니다.</p>
+              </div>
+            )}
+          </main>
+
+          {/* Right Sidebar — Community */}
+          <aside className="space-y-4">
+            <TrendingCommunity maxPosts={5} />
+          </aside>
+        </div>
       )}
     </div>
   );

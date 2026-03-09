@@ -55,7 +55,6 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
   const isCardPromo = isCreditCardPromo(sale.sale_name);
-  const rankingScore = calculateRankingScore(sale);
   const source = getSourceLabel(sale);
   const isEndingToday = status === "ending_today";
 
@@ -70,32 +69,22 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
       }`}
       onClick={() => navigate(`/sale/${sale.id}`)}
     >
-      {/* Header: Status + Countdown */}
-      <div className={`px-4 py-2.5 flex items-center gap-2 ${
-        isEndingToday ? "bg-red-50/60" : "bg-muted/50"
-      }`}>
-        {/* 1순위: 상태 */}
+      {/* Header */}
+      <div className={`px-3 py-2 flex items-center gap-1.5 ${isEndingToday ? "bg-red-50/60" : "bg-muted/50"}`}>
         <Badge variant="outline" className={`text-[10px] font-semibold px-2 py-0.5 ${statusInfo.className}`}>
           {statusInfo.emoji} {statusInfo.label}
         </Badge>
-
-        {/* Source label */}
         <Badge variant="outline" className={`text-[9px] font-semibold px-1.5 py-0 ${source.className}`}>
           {source.label}
         </Badge>
-
         {rank && !isCardPromo && (
           <span className="text-foreground font-extrabold text-[10px] bg-muted rounded-full w-5 h-5 flex items-center justify-center shrink-0">
             {rank}
           </span>
         )}
-
-        {/* 4순위: D-day / 남은 시간 */}
         <span
           className={`ml-auto text-[10px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full ${
-            isUrgent
-              ? "bg-red-100/80 text-red-700"
-              : "bg-muted text-muted-foreground"
+            isUrgent ? "bg-red-100/80 text-red-700" : "bg-muted text-muted-foreground"
           }`}
         >
           {countdown}
@@ -103,15 +92,13 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
       </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col gap-2.5 flex-1">
-        {/* 2순위: 세일 제목 (2줄 제한) */}
-        <h3 className={`font-bold text-[15px] leading-snug tracking-tight line-clamp-2 ${
+      <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
+        <h3 className={`font-bold text-[14px] sm:text-[15px] leading-snug tracking-tight line-clamp-2 ${
           isCardPromo ? "text-muted-foreground" : "text-card-foreground"
         }`}>
           {sale.sale_name}
         </h3>
 
-        {/* 3순위: 플랫폼 + 기간 */}
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded-md bg-white/90 flex items-center justify-center shrink-0 p-0.5">
             <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" />
@@ -122,30 +109,25 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
           </span>
         </div>
 
-        {/* 5순위: 카테고리 */}
-        <div className="flex flex-wrap gap-1.5">
+        {/* Categories — hidden on mobile to save space */}
+        <div className="hidden sm:flex flex-wrap gap-1.5">
           {sale.category.map((cat) => (
-            <Badge
-              key={cat}
-              className={`text-[10px] font-semibold rounded-full px-2.5 py-0.5 ${getCategoryColor(cat)}`}
-            >
+            <Badge key={cat} className={`text-[10px] font-semibold rounded-full px-2.5 py-0.5 ${getCategoryColor(cat)}`}>
               {cat}
             </Badge>
           ))}
         </div>
 
-        {/* Urgent highlight */}
         {isEndingToday && (
           <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-1.5 text-[11px] font-semibold text-red-700 flex items-center gap-1.5">
             ⏰ {countdown === "종료" ? "세일이 종료되었습니다" : `마감까지 ${countdown}`}
           </div>
         )}
 
-        {/* CTA - 통일 */}
-        <div className="mt-auto pt-2">
+        <div className="mt-auto pt-1.5">
           <Button
             size="sm"
-            className="w-full rounded-xl text-xs font-semibold gap-1.5 h-9"
+            className="w-full rounded-xl text-xs font-semibold gap-1.5 h-8 sm:h-9"
             variant={isCardPromo ? "outline" : "default"}
             onClick={(e) => {
               e.stopPropagation();
