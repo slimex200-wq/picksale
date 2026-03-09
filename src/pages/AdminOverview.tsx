@@ -1,14 +1,11 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import { CheckCircle, Eye, EyeOff, Clock, XCircle, MessageSquare } from "lucide-react";
-import { countByPrimaryState } from "@/data/adminStateModel";
-import SourceDistribution from "@/components/admin/SourceDistribution";
+import { CheckCircle, Eye, EyeOff, Clock, XCircle, MessageSquare, Globe, Newspaper, MessageSquare as MsgSq } from "lucide-react";
+import { countByPrimaryState, getSourceClass } from "@/data/adminStateModel";
+import { useMemo } from "react";
 
 export default function AdminOverview() {
-  const [activeSource, setActiveSource] = useState("");
-
   const { data } = useQuery({
     queryKey: ["admin_overview_counts"],
     queryFn: async () => {
@@ -25,8 +22,15 @@ export default function AdminOverview() {
     refetchInterval: 30000,
   });
 
+  const sourceCounts = useMemo(() => {
+    if (!data) return { official: 0, news: 0, community: 0, unknown: 0 };
+    const c = { official: 0, news: 0, community: 0, unknown: 0 };
+    for (const s of data.sales) c[getSourceClass(s)]++;
+    return c;
+  }, [data]);
+
   if (!data) return null;
-  const { states, sales, total, communityPending, communityTotal } = data;
+  const { states, total, communityPending, communityTotal } = data;
 
   const stateCards = [
     { label: "검토 대기", value: states.review_pending, icon: Clock, color: "text-yellow-600", to: "/admin/review" },
@@ -35,6 +39,12 @@ export default function AdminOverview() {
     { label: "숨김", value: states.hidden, icon: EyeOff, color: "text-muted-foreground", to: "/admin/hidden" },
     { label: "반려", value: states.rejected, icon: XCircle, color: "text-destructive", to: "/admin/rejected" },
     { label: "커뮤니티", value: communityPending, icon: MessageSquare, color: "text-blue-600", to: "/admin/community", denominator: communityTotal },
+  ];
+
+  const sourceItems = [
+    { label: "공식", count: sourceCounts.official, icon: Globe, color: "text-blue-600" },
+    { label: "뉴스", count: sourceCounts.news, icon: Newspaper, color: "text-amber-600" },
+    { label: "커뮤니티", count: sourceCounts.community, icon: MsgSq, color: "text-purple-600" },
   ];
 
   return (
@@ -56,13 +66,23 @@ export default function AdminOverview() {
         ))}
       </div>
 
-      <div className="mt-6">
-        <SourceDistribution
-          sales={sales}
-          activeSource={activeSource}
-          onSourceChange={setActiveSource}
-          contextLabel="전체 세일"
-        />
+      {/* Source summary — read-only on overview */}
+      <div className="space-y-1.5 mt-6">
+        <h4 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">소스별 분포 · 전체 세일</h4>
+        <div className="grid grid-cols-3 gap-2">
+          {sourceItems.map(({ label, count, icon: Icon, color }) => (
+            <div
+              key={label}
+              className="bg-card border border-border rounded-lg p-2.5 flex items-center gap-2"
+            >
+              <Icon className={`w-5 h-5 ${color}`} />
+              <div className="text-left">
+                <p className="text-base font-bold text-card-foreground">{count}</p>
+                <p className="text-[10px] text-muted-foreground">{label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -142,7 +142,11 @@ export default function AdminReview() {
       {isLoading ? (
         <p className="text-sm text-muted-foreground text-center py-12">불러오는 중...</p>
       ) : sales.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-12">대기 중인 이벤트가 없습니다.</p>
+        <p className="text-sm text-muted-foreground text-center py-12">
+          {sourceFilter && sourceFilter !== "all"
+            ? `'${sourceFilter === "official" ? "공식" : sourceFilter === "news" ? "뉴스" : "커뮤니티"}' 소스에 해당하는 검토 대기 항목이 없습니다.`
+            : "대기 중인 이벤트가 없습니다."}
+        </p>
       ) : (
         <div className="space-y-2">
           {sales.map((sale) => (
