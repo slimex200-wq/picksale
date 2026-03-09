@@ -11,7 +11,14 @@ import HeroStats from "@/components/HeroStats";
 import QuickFilters from "@/components/QuickFilters";
 import PlatformExplorer from "@/components/PlatformExplorer";
 import TrendingCommunity from "@/components/TrendingCommunity";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+  SaleCardCompactSkeleton,
+  SaleCardSkeleton,
+  RankingItemSkeleton,
+  PlatformCardSkeleton,
+  CommunityPostSkeleton,
+  HeroStatsSkeleton,
+} from "@/components/skeletons/SaleCardSkeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Trophy, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
