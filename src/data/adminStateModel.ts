@@ -85,3 +85,27 @@ export function countBySourceClass(sales: { source_type?: string | null }[]) {
   }
   return counts;
 }
+
+/* ── Recently updated detection ── */
+/** Returns true if the sale was updated by a crawler/ingestion within the last N hours */
+export function isRecentlyUpdated(
+  sale: { updated_at?: string; created_at?: string; matched_by?: string | null },
+  hoursAgo = 24
+): boolean {
+  if (!sale.updated_at || !sale.matched_by) return false;
+  if (sale.matched_by === "none" || sale.matched_by === "") return false;
+  // Only count if updated_at differs from created_at (i.e. actually got an update)
+  if (sale.updated_at === sale.created_at) return false;
+  const cutoff = Date.now() - hoursAgo * 3600 * 1000;
+  return new Date(sale.updated_at).getTime() > cutoff;
+}
+
+/** Count recently updated sales */
+export function countRecentlyUpdated(
+  sales: { updated_at?: string; created_at?: string; matched_by?: string | null }[],
+  hoursAgo = 24
+): number {
+  let count = 0;
+  for (const s of sales) if (isRecentlyUpdated(s, hoursAgo)) count++;
+  return count;
+}

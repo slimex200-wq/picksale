@@ -1,10 +1,11 @@
 // @ts-nocheck
 import { useState, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAdminSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sale, platforms } from "@/data/salesUtils";
-import { getSalePrimaryState, getSourceClass, type SalePrimaryState } from "@/data/adminStateModel";
+import { getSalePrimaryState, getSourceClass, isRecentlyUpdated, type SalePrimaryState } from "@/data/adminStateModel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -28,21 +29,27 @@ const stateOptions: { value: string; label: string }[] = [
 
 export default function AdminAll() {
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
   const [platformFilter, setPlatformFilter] = useState("");
   const [tierFilter, setTierFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
   const [stateFilter, setStateFilter] = useState("");
-  const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
+  const [updatedOnly, setUpdatedOnly] = useState(searchParams.get("updated") === "true");
+  const [sortBy, setSortBy] = useState<"newest" | "importance" | "updated">(
+    searchParams.get("updated") === "true" ? "updated" : "newest"
+  );
 
   const { data: rawSales = [], isLoading } = useAdminSales({ sort: sortBy });
 
   const { duplicatePublished, duplicateDrafts } = useDuplicateMaps(rawSales);
 
-  const { salesBeforeSource, sales, stateCounts } = useMemo(() => {
+  const { salesBeforeSource, sales, stateCounts, recentUpdateCount } = useMemo(() => {
     const counts: Record<string, number> = {};
+    let recentCount = 0;
     for (const s of rawSales) {
       const st = getSalePrimaryState(s);
       counts[st] = (counts[st] || 0) + 1;
+      if (isRecentlyUpdated(s)) recentCount++;
     }
 
     let filtered = [...rawSales];
@@ -55,6 +62,9 @@ export default function AdminAll() {
     if (tierFilter && tierFilter !== "all") {
       filtered = filtered.filter(s => s.sale_tier === tierFilter);
     }
+    if (updatedOnly) {
+      filtered = filtered.filter(s => isRecentlyUpdated(s));
+    }
 
     const beforeSource = filtered;
 
@@ -62,8 +72,13 @@ export default function AdminAll() {
       filtered = filtered.filter(s => getSourceClass(s) === sourceFilter);
     }
 
-    return { salesBeforeSource: beforeSource, sales: filtered, stateCounts: counts };
-  }, [rawSales, platformFilter, tierFilter, sourceFilter, stateFilter]);
+    // Sort by updated_at if selected
+    if (sortBy === "updated") {
+      filtered.sort((a, b) => new Date(b.updated_at || 0).getTime() - new Date(a.updated_at || 0).getTime());
+    }
+
+    return { salesBeforeSource: beforeSource, sales: filtered, stateCounts: counts, recentUpdateCount: recentCount };
+  }, [rawSales, platformFilter, tierFilter, sourceFilter, stateFilter, updatedOnly, sortBy]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
@@ -124,6 +139,17 @@ export default function AdminAll() {
             </button>
           );
         })}
+        {/* Recently updated toggle */}
+        <button
+          onClick={() => setUpdatedOnly(!updatedOnly)}
+          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
+            updatedOnly
+              ? "bg-cyan-600 text-white border-cyan-600"
+              : "bg-card text-muted-foreground border-border hover:bg-accent"
+          }`}
+        >
+          🔄 최근 갱신 {recentUpdateCount}
+        </button>
       </div>
 
       {/* Filters */}
@@ -163,9 +189,9 @@ export default function AdminAll() {
           </Select>
         </div>
         <Button variant="outline" size="sm" className="h-8 gap-1 text-xs"
-          onClick={() => setSortBy(sortBy === "newest" ? "importance" : "newest")}>
+          onClick={() => setSortBy(sortBy === "newest" ? "importance" : sortBy === "importance" ? "updated" : "newest")}>
           <ArrowUpDown className="w-3 h-3" />
-          {sortBy === "newest" ? "최신순" : "중요도순"}
+          {sortBy === "newest" ? "최신순" : sortBy === "importance" ? "중요도순" : "갱신순"}
         </Button>
       </div>
 

@@ -5,7 +5,7 @@ import { useAdminSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sale, platforms } from "@/data/salesUtils";
-import { getSalePrimaryState, getSourceClass } from "@/data/adminStateModel";
+import { getSalePrimaryState, getSourceClass, isRecentlyUpdated } from "@/data/adminStateModel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -24,14 +24,17 @@ export default function AdminEvents() {
   const [platformFilter, setPlatformFilter] = useState(searchParams.get("platform") || "");
   const [tierFilter, setTierFilter] = useState(searchParams.get("tier") || "");
   const [sourceFilter, setSourceFilter] = useState("");
-  const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
+  const [updatedOnly, setUpdatedOnly] = useState(false);
+  const [sortBy, setSortBy] = useState<"newest" | "importance" | "updated">("newest");
 
   const { data: rawSales = [], isLoading } = useAdminSales({ sort: sortBy });
 
   const { duplicatePublished, duplicateDrafts } = useDuplicateMaps(rawSales);
 
-  const { salesBeforeSource, sales } = useMemo(() => {
+  const { salesBeforeSource, sales, recentUpdateCount } = useMemo(() => {
     let filtered = rawSales.filter(s => getSalePrimaryState(s) === "published");
+    let recentCount = 0;
+    for (const s of filtered) if (isRecentlyUpdated(s)) recentCount++;
 
     if (platformFilter && platformFilter !== "all") {
       filtered = filtered.filter(s => s.platform === platformFilter);
@@ -39,14 +42,22 @@ export default function AdminEvents() {
     if (tierFilter && tierFilter !== "all") {
       filtered = filtered.filter(s => s.sale_tier === tierFilter);
     }
+    if (updatedOnly) {
+      filtered = filtered.filter(s => isRecentlyUpdated(s));
+    }
 
     const beforeSource = filtered;
 
     if (sourceFilter && sourceFilter !== "all") {
       filtered = filtered.filter(s => getSourceClass(s) === sourceFilter);
     }
-    return { salesBeforeSource: beforeSource, sales: filtered };
-  }, [rawSales, platformFilter, tierFilter, sourceFilter]);
+
+    if (sortBy === "updated") {
+      filtered.sort((a, b) => new Date(b.updated_at || 0).getTime() - new Date(a.updated_at || 0).getTime());
+    }
+
+    return { salesBeforeSource: beforeSource, sales: filtered, recentUpdateCount: recentCount };
+  }, [rawSales, platformFilter, tierFilter, sourceFilter, updatedOnly, sortBy]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
@@ -86,6 +97,19 @@ export default function AdminEvents() {
 
   return (
     <div className="space-y-4">
+      {/* Recently updated toggle */}
+      <div className="flex flex-wrap gap-1.5">
+        <button
+          onClick={() => setUpdatedOnly(!updatedOnly)}
+          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
+            updatedOnly
+              ? "bg-cyan-600 text-white border-cyan-600"
+              : "bg-card text-muted-foreground border-border hover:bg-accent"
+          }`}
+        >
+          🔄 최근 갱신만 {recentUpdateCount}
+        </button>
+      </div>
       <div className="flex flex-wrap gap-2 items-end">
         <div className="space-y-1">
           <Label className="text-xs">플랫폼</Label>
@@ -122,9 +146,9 @@ export default function AdminEvents() {
           </Select>
         </div>
         <Button variant="outline" size="sm" className="h-8 gap-1 text-xs"
-          onClick={() => setSortBy(sortBy === "newest" ? "importance" : "newest")}>
+          onClick={() => setSortBy(sortBy === "newest" ? "importance" : sortBy === "importance" ? "updated" : "newest")}>
           <ArrowUpDown className="w-3 h-3" />
-          {sortBy === "newest" ? "최신순" : "중요도순"}
+          {sortBy === "newest" ? "최신순" : sortBy === "importance" ? "중요도순" : "갱신순"}
         </Button>
       </div>
 

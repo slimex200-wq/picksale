@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import { CheckCircle, Eye, EyeOff, Clock, XCircle, MessageSquare, Globe, Newspaper, MessageSquare as MsgSq } from "lucide-react";
-import { countByPrimaryState, getSourceClass } from "@/data/adminStateModel";
+import { CheckCircle, Eye, EyeOff, Clock, XCircle, MessageSquare, Globe, Newspaper, MessageSquare as MsgSq, RefreshCw } from "lucide-react";
+import { countByPrimaryState, getSourceClass, isRecentlyUpdated } from "@/data/adminStateModel";
 import { useMemo } from "react";
 
 export default function AdminOverview() {
@@ -10,14 +10,16 @@ export default function AdminOverview() {
     queryKey: ["admin_overview_counts"],
     queryFn: async () => {
       const [salesRes, communityRes] = await Promise.all([
-        supabase.from("sales").select("review_status, publish_status, source_type, end_date"),
+        supabase.from("sales").select("review_status, publish_status, source_type, end_date, updated_at, created_at, matched_by"),
         supabase.from("community_posts").select("review_status", { count: "exact" }),
       ]);
       const sales = salesRes.data ?? [];
       const community = communityRes.data ?? [];
       const states = countByPrimaryState(sales);
       const communityPending = community.filter((p: any) => p.review_status === "pending").length;
-      return { states, sales, total: sales.length, communityPending, communityTotal: community.length };
+      let recentUpdates = 0;
+      for (const s of sales) if (isRecentlyUpdated(s)) recentUpdates++;
+      return { states, sales, total: sales.length, communityPending, communityTotal: community.length, recentUpdates };
     },
     refetchInterval: 30000,
   });
@@ -30,7 +32,7 @@ export default function AdminOverview() {
   }, [data]);
 
   if (!data) return null;
-  const { states, total, communityPending, communityTotal } = data;
+  const { states, total, communityPending, communityTotal, recentUpdates } = data;
 
   const stateCards = [
     { label: "검토 대기", value: states.review_pending, icon: Clock, color: "text-yellow-600", to: "/admin/review" },
@@ -39,6 +41,7 @@ export default function AdminOverview() {
     { label: "숨김", value: states.hidden, icon: EyeOff, color: "text-muted-foreground", to: "/admin/hidden" },
     { label: "반려", value: states.rejected, icon: XCircle, color: "text-destructive", to: "/admin/rejected" },
     { label: "커뮤니티", value: communityPending, icon: MessageSquare, color: "text-blue-600", to: "/admin/community", denominator: communityTotal },
+    { label: "최근 갱신(24h)", value: recentUpdates, icon: RefreshCw, color: "text-cyan-600", to: "/admin/all?updated=true", denominator: total },
   ];
 
   const sourceItems = [

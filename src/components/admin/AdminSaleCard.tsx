@@ -12,6 +12,7 @@ import {
   getSalePrimaryState, primaryStateConfig,
   getSourceClass, sourceClassConfig,
   getUpsertState, upsertStateConfig,
+  isRecentlyUpdated,
 } from "@/data/adminStateModel";
 import { platformLogos } from "@/data/platformLogos";
 import { toast } from "sonner";
@@ -38,6 +39,7 @@ export default memo(function AdminSaleCard({ sale, duplicatePublished, duplicate
   const srcConf = sourceClassConfig[sourceClass];
   const upsertState = getUpsertState(sale);
   const upsertConf = upsertStateConfig[upsertState];
+  const recentlyUpdated = isRecentlyUpdated(sale);
 
   // Use pre-computed maps if available, otherwise fall back to legacy allSales filter
   const sameEventKeyPublishedCount = useMemo(() => {
@@ -113,6 +115,11 @@ export default memo(function AdminSaleCard({ sale, duplicatePublished, duplicate
             {upsertState !== "new" && (
               <Badge variant="outline" className={`text-[10px] h-5 ${upsertConf.className}`}>
                 {upsertConf.label}
+              </Badge>
+            )}
+            {recentlyUpdated && (
+              <Badge variant="outline" className="text-[10px] h-5 bg-cyan-100 text-cyan-700 border-cyan-300 animate-pulse">
+                🔄 최근 갱신
               </Badge>
             )}
             {!hasValidImage && (
@@ -232,7 +239,9 @@ export default memo(function AdminSaleCard({ sale, duplicatePublished, duplicate
       <div className="flex gap-3 text-[10px] text-muted-foreground">
         {sale.created_at && <span>등록 {new Date(sale.created_at).toLocaleDateString("ko-KR")}</span>}
         {sale.updated_at && sale.updated_at !== sale.created_at && (
-          <span>갱신 {new Date(sale.updated_at).toLocaleDateString("ko-KR")}</span>
+          <span className={recentlyUpdated ? "text-cyan-700 font-semibold" : ""}>
+            갱신 {new Date(sale.updated_at).toLocaleString("ko-KR", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+          </span>
         )}
       </div>
 
