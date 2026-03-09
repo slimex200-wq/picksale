@@ -40,25 +40,8 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isActive) return;
-    // Don't intercept CTA button clicks
     if ((e.target as HTMLElement).closest("button")) return;
-
-    if (isMobile) {
-      navigate(`/sale/${sale.id}`);
-      return;
-    }
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const pct = x / rect.width;
-
-    if (pct < 0.2 && onGoPrev) {
-      onGoPrev();
-    } else if (pct > 0.8 && onGoNext) {
-      onGoNext();
-    } else {
-      navigate(`/sale/${sale.id}`);
-    }
+    navigate(`/sale/${sale.id}`);
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
