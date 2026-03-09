@@ -17,6 +17,7 @@ import AdminSaleCard from "@/components/admin/AdminSaleCard";
 import AdminEditDialog from "@/components/admin/AdminEditDialog";
 
 export default function AdminReview() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [platformFilter, setPlatformFilter] = useState<string>("");
   const [tierFilter, setTierFilter] = useState<string>("");
