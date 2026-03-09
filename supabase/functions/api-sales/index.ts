@@ -197,6 +197,10 @@ Deno.serve(async (req) => {
         updates.category = mergedCats;
       }
 
+      // Save matched_by and updated_at
+      updates.matched_by = matchedBy;
+      updates.updated_at = new Date().toISOString();
+
       // DO NOT touch review_status, publish_status
 
       if (Object.keys(updates).length > 0) {
