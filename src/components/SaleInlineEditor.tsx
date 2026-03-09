@@ -62,6 +62,7 @@ export default function SaleInlineEditor({ sale, onSaved, onCancel }: Props) {
     }
 
     toast.success("세일 정보가 수정되었습니다.");
+    queryClient.invalidateQueries({ queryKey: ["sales"] });
     onSaved({
       ...sale,
       sale_name: title.trim(),
