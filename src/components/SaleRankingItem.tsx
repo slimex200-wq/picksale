@@ -8,6 +8,7 @@ const RANK_MEDALS: Record<number, string> = { 1: "🥇", 2: "🥈", 3: "🥉" };
 interface Props {
   sale: Sale;
   rank: number;
+  onOpenDetail?: (sale: Sale) => void;
 }
 
 export default function SaleRankingItem({ sale, rank }: Props) {
