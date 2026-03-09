@@ -54,9 +54,10 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
           gap,
           scrollSnapType: "x mandatory",
           WebkitOverflowScrolling: "touch",
-          paddingLeft: 4,
-          paddingRight: 32,
+          paddingLeft: 8,
+          paddingRight: 8,
           paddingBottom: 8,
+          maxWidth: "100%",
         }}
       >
         {children.map((child, i) => {

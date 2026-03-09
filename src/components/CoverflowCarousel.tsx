@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, ReactNode } from "react";
+import { useState, useCallback, useRef, ReactNode, isValidElement, cloneElement, ReactElement } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
@@ -109,7 +109,9 @@ export default function CoverflowCarousel({ children }: Props) {
                   pointerEvents: isCenter ? "auto" : "none",
                 }}
               >
-                {child}
+                {isValidElement(child)
+                  ? cloneElement(child as ReactElement<any>, { isActive: isCenter })
+                  : child}
               </div>
             </div>
           );
