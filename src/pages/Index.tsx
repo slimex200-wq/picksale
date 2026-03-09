@@ -265,7 +265,7 @@ export default function Index() {
                   </section>
                 )}
                 {liveSales.length > 0 && (
-                  <section className="space-y-3">
+                  <section className="space-y-3 min-w-0 overflow-hidden">
                     <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
                     <PeekCarousel cardWidth={210} gap={12}>
                       {liveSales.slice(0, 6).map((sale) => (
