@@ -14,6 +14,7 @@ interface HeroSaleCardProps {
   onGoPrev?: () => void;
   onGoNext?: () => void;
   isMobile?: boolean;
+  onOpenDetail?: (sale: Sale) => void;
 }
 
 export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, onGoNext, isMobile }: HeroSaleCardProps) {
