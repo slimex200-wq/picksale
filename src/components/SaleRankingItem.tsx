@@ -32,8 +32,8 @@ export default function SaleRankingItem({ sale, rank }: Props) {
       </span>
 
       {/* Logo */}
-      <div className="w-7 h-7 rounded-lg bg-accent border border-border/40 flex items-center justify-center shrink-0 p-1">
-        <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded" loading="lazy" />
+      <div className="w-7 h-7 rounded-lg overflow-hidden shrink-0 bg-accent">
+        <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-cover" loading="lazy" />
       </div>
 
       {/* Info */}
