@@ -53,7 +53,7 @@ export default function RadarPage() {
       ) : (
         <>
           {/* 1. Status Exploration */}
-          <StatusExploration sales={activeSales} />
+          <StatusExploration sales={activeSales} onOpenDetail={setSelectedSale} />
 
           {/* 2. Sale Timeline */}
           <Suspense fallback={<TimelineSkeleton />}>
