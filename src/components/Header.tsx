@@ -7,6 +7,7 @@ import logo from "@/assets/logo.png";
 const baseNavItems = [
   { to: "/home", label: "홈", icon: Home },
   { to: "/radar", label: "레이더", icon: Radar },
+  { to: "/community", label: "커뮤니티", icon: MessageSquare },
   { to: "/calendar", label: "캘린더", icon: CalendarDays },
 ];
 
