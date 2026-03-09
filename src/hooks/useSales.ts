@@ -56,6 +56,10 @@ export function useAdminSales(filters?: {
       if (error) throw error;
       return (data ?? []).map(mapRow);
     },
+    staleTime: 2 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false,
   });
 }
 
