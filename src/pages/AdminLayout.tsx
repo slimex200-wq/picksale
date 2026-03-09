@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 const tabDefs = [
   { to: "/admin", label: "개요", icon: Settings, exact: true },
   { to: "/admin/review", label: "검토", icon: Inbox, countKey: "review" },
-  { to: "/admin/events", label: "이벤트", icon: List, countKey: "events" },
+  { to: "/admin/events", label: "게시됨", icon: List, countKey: "events" },
   { to: "/admin/hidden", label: "숨김", icon: EyeOff, countKey: "hidden" },
   { to: "/admin/rejected", label: "반려", icon: XCircle, countKey: "rejected" },
   { to: "/admin/signals", label: "시그널", icon: Radio, countKey: "signals" },
