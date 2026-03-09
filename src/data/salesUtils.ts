@@ -135,9 +135,10 @@ export const saleStatusConfig: Record<SaleStatus, { label: string; emoji: string
 
 /* ── 랭킹 점수 계산 ── */
 export function calculateRankingScore(sale: Sale): number {
-  const now = new Date();
-  const todayStr = fmt(now);
+  const todayStr = getTodayKST();
   let score = sale.importance_score;
+
+  const daysBetween = (a: string, b: string) => Math.round((new Date(a + "T00:00:00+09:00").getTime() - new Date(b + "T00:00:00+09:00").getTime()) / 86400000);
 
   // 카드 프로모션 패널티
   if (isCreditCardPromo(sale.sale_name)) {
@@ -148,11 +149,11 @@ export function calculateRankingScore(sale: Sale): number {
   if (sale.start_date <= todayStr && sale.end_date >= todayStr) score += 3;
 
   // 곧 시작 보너스 (3일 이내)
-  const startDiff = Math.ceil((new Date(sale.start_date).getTime() - now.getTime()) / 86400000);
+  const startDiff = daysBetween(sale.start_date, todayStr);
   if (startDiff > 0 && startDiff <= 3) score += 2;
 
   // 종료 임박 보너스 (2일 이내)
-  const endDiff = Math.ceil((new Date(sale.end_date).getTime() - now.getTime()) / 86400000);
+  const endDiff = daysBetween(sale.end_date, todayStr);
   if (endDiff >= 0 && endDiff <= 2) score += 2;
 
   // 플랫폼 가중치
