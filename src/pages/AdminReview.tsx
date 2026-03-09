@@ -62,7 +62,7 @@ export default function AdminReview() {
     if (!editingSale) return;
     const { error } = await supabase.from("sales").update({
       sale_name: editForm.sale_name, platform: editForm.platform,
-      start_date: editForm.start_date, end_date: editForm.end_date,
+      link: editForm.link, start_date: editForm.start_date, end_date: editForm.end_date,
     }).eq("id", editingSale.id);
     if (error) { toast.error(error.message); return; }
     toast.success("수정되었습니다.");
