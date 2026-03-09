@@ -5,9 +5,9 @@ interface Props {
   children: ReactNode[];
 }
 
-const CARD_W = 260;
-const CARD_H = 320;
-const SIDE_OFFSET = 200; // px from center to side card center
+const CARD_W = 300;
+const CARD_H = 360;
+const SIDE_OFFSET = 220; // px from center to side card center
 const VISIBLE = 2; // cards visible on each side
 
 export default function CoverflowCarousel({ children }: Props) {
