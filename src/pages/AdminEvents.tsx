@@ -31,8 +31,10 @@ export default function AdminEvents() {
 
   const { duplicatePublished, duplicateDrafts } = useDuplicateMaps(rawSales);
 
-  const { salesBeforeSource, sales } = useMemo(() => {
+  const { salesBeforeSource, sales, recentUpdateCount } = useMemo(() => {
     let filtered = rawSales.filter(s => getSalePrimaryState(s) === "published");
+    let recentCount = 0;
+    for (const s of filtered) if (isRecentlyUpdated(s)) recentCount++;
 
     if (platformFilter && platformFilter !== "all") {
       filtered = filtered.filter(s => s.platform === platformFilter);
@@ -40,14 +42,22 @@ export default function AdminEvents() {
     if (tierFilter && tierFilter !== "all") {
       filtered = filtered.filter(s => s.sale_tier === tierFilter);
     }
+    if (updatedOnly) {
+      filtered = filtered.filter(s => isRecentlyUpdated(s));
+    }
 
     const beforeSource = filtered;
 
     if (sourceFilter && sourceFilter !== "all") {
       filtered = filtered.filter(s => getSourceClass(s) === sourceFilter);
     }
-    return { salesBeforeSource: beforeSource, sales: filtered };
-  }, [rawSales, platformFilter, tierFilter, sourceFilter]);
+
+    if (sortBy === "updated") {
+      filtered.sort((a, b) => new Date(b.updated_at || 0).getTime() - new Date(a.updated_at || 0).getTime());
+    }
+
+    return { salesBeforeSource: beforeSource, sales: filtered, recentUpdateCount: recentCount };
+  }, [rawSales, platformFilter, tierFilter, sourceFilter, updatedOnly, sortBy]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
