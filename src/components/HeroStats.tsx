@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import { Sale, getSaleStatus, SaleStatus } from "@/data/salesUtils";
 import { Radar, TrendingUp, Clock } from "lucide-react";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
@@ -8,11 +9,18 @@ interface Props {
   onFilterChange: (filter: SaleStatus | null) => void;
 }
 
-export default function HeroStats({ sales, activeFilter, onFilterChange }: Props) {
+export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: Props) {
   const bp = useBreakpoint();
-  const liveSales = sales.filter((s) => getSaleStatus(s) === "live");
-  const startingSoon = sales.filter((s) => getSaleStatus(s) === "starting_soon");
-  const endingToday = sales.filter((s) => getSaleStatus(s) === "ending_today");
+  const { liveCount, startingSoonCount, endingTodayCount } = useMemo(() => {
+    let live = 0, soon = 0, ending = 0;
+    for (const s of sales) {
+      const st = getSaleStatus(s);
+      if (st === "live") live++;
+      else if (st === "starting_soon") soon++;
+      else if (st === "ending_today") ending++;
+    }
+    return { liveCount: live, startingSoonCount: soon, endingTodayCount: ending };
+  }, [sales]);
 
   const stats = [
     { key: "live" as SaleStatus, label: "진행중", count: liveCount, color: "text-green-600", bg: "bg-green-100/80", activeBorder: "border-green-400", icon: TrendingUp, emoji: "🟢" },
