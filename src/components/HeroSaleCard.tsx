@@ -63,18 +63,29 @@ export default function HeroSaleCard({ sale, rank, isActive = true }: HeroSaleCa
       </div>
 
       {/* Title */}
-      <div className="px-3 py-1.5 flex-1 min-h-0">
+      <div className="px-3 pt-1">
         <h3
           className={`line-clamp-2 ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
-          style={{ fontSize: "14px", fontWeight: "700", lineHeight: "1.4" }}
+          style={{ fontSize: "13px", fontWeight: "700", lineHeight: "1.35" }}
         >
           {rank && (
-            <span className="text-primary mr-1" style={{ fontSize: "13px" }}>
+            <span className="text-primary mr-1" style={{ fontSize: "12px" }}>
               #{rank}
             </span>
           )}
           {sale.sale_name}
         </h3>
+      </div>
+
+      {/* Brand Logo — visual center */}
+      <div className="flex-1 flex items-center justify-center px-4 py-2 min-h-0">
+        <img
+          src={platformLogos[sale.platform]}
+          alt={sale.platform}
+          className="object-contain"
+          style={{ maxHeight: 120, maxWidth: "80%", opacity: 0.9 }}
+          loading="lazy"
+        />
       </div>
 
       {/* Meta: date + countdown */}
