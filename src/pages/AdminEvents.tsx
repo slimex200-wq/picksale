@@ -135,6 +135,13 @@ export default function AdminEvents() {
         </Button>
       </div>
 
+      <SourceDistribution
+        sales={sales}
+        activeSource={sourceFilter}
+        onSourceChange={setSourceFilter}
+        contextLabel={`게시됨 ${sales.length}건`}
+      />
+
       <p className="text-xs text-muted-foreground">{sales.length}개 게시 이벤트</p>
 
       {isLoading ? (

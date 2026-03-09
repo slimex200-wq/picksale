@@ -134,6 +134,13 @@ export default function AdminReview() {
         </Button>
       </div>
 
+      <SourceDistribution
+        sales={sales}
+        activeSource={sourceFilter}
+        onSourceChange={setSourceFilter}
+        contextLabel={`검토 대기 ${sales.length}건`}
+      />
+
       <p className="text-xs text-muted-foreground">{sales.length}개 검토 대기</p>
 
       {isLoading ? (

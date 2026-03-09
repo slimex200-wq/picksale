@@ -134,7 +134,7 @@ export default function AdminLayout() {
                 {label}
                 {c && c.highlight > 0 && (
                   <span className="ml-0.5 text-[10px] font-bold text-primary">
-                    {c.highlight}
+                    {countKey === "signals" ? c.highlight : `${c.highlight}/${c.total}`}
                   </span>
                 )}
               </Link>
