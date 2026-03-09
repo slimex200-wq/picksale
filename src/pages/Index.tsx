@@ -250,7 +250,7 @@ export default function Index() {
 
             {/* Ending Today + Live — horizontal scroll rows side by side */}
             {(endingTodaySales.length > 0 || liveSales.length > 0) && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
                 {endingTodaySales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
