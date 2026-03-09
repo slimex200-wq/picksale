@@ -36,19 +36,19 @@ export default function TrendingCommunity({ maxPosts = 5 }: Props) {
             to={`/community/${post.id}`}
             className="flex items-center gap-3 p-2.5 bg-card border border-border rounded-xl hover:shadow-sm transition-shadow"
           >
-            <span className="text-sm font-bold text-muted-foreground w-5 text-center shrink-0">
+            <span className="font-bold text-muted-foreground w-5 text-center shrink-0" style={{ fontSize: '14px', fontWeight: '700' }}>
               {i + 1}
             </span>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1 mb-0.5">
                 {post.category.map((c) => (
-                  <span key={c} className="text-[10px]">{categoryEmoji[c] || "📋"}</span>
-                ))}
-                {post.platform && (
-                  <span className="text-[10px] text-muted-foreground">{post.platform}</span>
-                )}
-              </div>
-              <p className="text-sm font-medium text-card-foreground truncate">{post.title}</p>
+                   <span key={c} style={{ fontSize: '11px' }}>{categoryEmoji[c] || "📋"}</span>
+                 ))}
+                 {post.platform && (
+                   <span className="text-muted-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>{post.platform}</span>
+                 )}
+               </div>
+              <p className="font-semibold text-card-foreground truncate" style={{ fontSize: '14px', fontWeight: '600', lineHeight: '1.45' }}>{post.title}</p>
             </div>
             <div className="flex items-center gap-2 shrink-0 text-[11px] text-muted-foreground">
               <span className="flex items-center gap-0.5">
