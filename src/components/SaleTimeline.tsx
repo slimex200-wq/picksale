@@ -48,18 +48,17 @@ export default function SaleTimeline({ sales }: Props) {
               const statusInfo = saleStatusConfig[status];
               const countdown = countdownText(sale.end_date);
               const isUrgent = isUrgentCountdown(countdown);
+              const isEndingToday = status === "ending_today";
               return (
                 <div
                   key={sale.id}
                   onClick={() => navigate(`/sale/${sale.id}`)}
                   className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-accent/50 cursor-pointer transition-colors"
                 >
-                  {/* Platform indicator */}
                   <div className="w-7 h-7 rounded-lg overflow-hidden shrink-0 bg-accent p-1">
                     <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain" />
                   </div>
 
-                  {/* Info */}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-card-foreground truncate tracking-tight">{sale.sale_name}</p>
                     <div className="flex items-center gap-2 mt-0.5">
@@ -70,9 +69,8 @@ export default function SaleTimeline({ sales }: Props) {
                     </div>
                   </div>
 
-                  {/* Status + D-day */}
                   <div className="flex flex-col items-end gap-1 shrink-0">
-                    {status === "ending_today" ? (
+                    {isEndingToday ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-closing-today-bg text-closing-today" style={{ fontSize: '9px', fontWeight: 700, padding: '1px 6px' }}>
                         <span className="w-1 h-1 rounded-full bg-closing-today animate-closing-pulse" />
                         오늘 마감
@@ -82,7 +80,7 @@ export default function SaleTimeline({ sales }: Props) {
                         {statusInfo.emoji} {statusInfo.label}
                       </span>
                     )}
-                    <span className={`text-[10px] ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
+                    <span className={`text-[10px] ${isEndingToday ? "text-muted-foreground/40 font-normal" : isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
                       {countdown}
                     </span>
                   </div>

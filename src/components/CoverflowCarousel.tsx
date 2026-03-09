@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef, ReactNode, isValidElement, cloneElement, ReactElement } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Props {
@@ -39,7 +38,6 @@ export default function CoverflowCarousel({ children }: Props) {
         if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
       }}
     >
-      {/* Stage */}
       <div
         style={{
           position: "relative",
@@ -61,7 +59,8 @@ export default function CoverflowCarousel({ children }: Props) {
           const rotateY = isCenter ? 0 : offset < 0 ? 10 : -10;
           const tx = offset * SIDE_OFFSET;
           const z = 20 - abs;
-          const opacity = isCenter ? 1 : Math.max(0.3, 0.55 - (abs - 1) * 0.15);
+          // Improved: side cards much more visible (0.75 min instead of 0.3)
+          const opacity = isCenter ? 1 : Math.max(0.75, 0.85 - (abs - 1) * 0.1);
 
           return (
             <div
@@ -107,7 +106,6 @@ export default function CoverflowCarousel({ children }: Props) {
         })}
       </div>
 
-      {/* Dots */}
       {count > 1 && (
         <div className="flex justify-center gap-1.5 mt-3 pb-1">
           {children.map((_, i) => (

@@ -12,7 +12,6 @@ import PageMeta from "@/components/PageMeta";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
-/** Map platform to its Tailwind dot color class (bg-sale-xxx) */
 const platformDotColors: Record<Platform, string> = {
   "쿠팡": "bg-sale-coupang",
   "올리브영": "bg-sale-oliveyoung",
@@ -24,6 +23,11 @@ const platformDotColors: Record<Platform, string> = {
   "WCONCEPT": "bg-sale-wconcept",
   "커뮤니티 핫딜": "bg-sale-community",
 };
+
+function shortDate(dateStr: string) {
+  const d = new Date(dateStr);
+  return `${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+}
 
 export default function SaleCalendar() {
   const navigate = useNavigate();
@@ -74,11 +78,9 @@ export default function SaleCalendar() {
     <div className="max-w-lg mx-auto px-4 pt-4 pb-24 overflow-x-hidden">
       <PageMeta title={`${year}년 ${month + 1}월 세일 캘린더 | PickSale`} description={`${year}년 ${month + 1}월 쇼핑몰 세일 일정을 캘린더로 확인하세요.`} />
       <CanonicalLink href={window.location.origin + "/calendar"} />
-      {/* Glassmorphism Calendar Container */}
       <div className="rounded-3xl border border-white/40 bg-white/30 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] p-4"
         style={{ WebkitBackdropFilter: 'blur(40px)', backdropFilter: 'blur(40px)' }}
       >
-        {/* Month Navigation */}
         <div className="flex items-center justify-between mb-4">
           <Button variant="ghost" size="icon" onClick={prev} className="h-8 w-8 rounded-full hover:bg-white/40">
             <ChevronLeft className="w-5 h-5" />
@@ -91,7 +93,6 @@ export default function SaleCalendar() {
           </Button>
         </div>
 
-        {/* Day Headers */}
         <div className="grid grid-cols-7 mb-1">
           {DAYS.map((d, i) => (
             <div
@@ -105,7 +106,6 @@ export default function SaleCalendar() {
           ))}
         </div>
 
-        {/* Calendar Grid */}
         <div className="grid grid-cols-7 gap-0.5">
         {cells.map((day, i) => {
           if (day === null) return <div key={`empty-${i}`} />;
@@ -113,8 +113,6 @@ export default function SaleCalendar() {
           const isToday = isCurrentMonth && day === new Date().getDate();
           const isSelected = day === selectedDay;
           const dayOfWeek = (firstDay + day - 1) % 7;
-
-          // Unique platforms for dots (max 4)
           const uniquePlatforms = [...new Set(daySales.map((s) => s.platform))].slice(0, 4);
 
           return (
@@ -141,7 +139,6 @@ export default function SaleCalendar() {
                 {day}
               </span>
 
-              {/* Dot indicators */}
               {uniquePlatforms.length > 0 && (
                 <div className="flex gap-0.5 mt-1.5">
                   {uniquePlatforms.map((p) => (
@@ -153,7 +150,6 @@ export default function SaleCalendar() {
                 </div>
               )}
 
-              {/* Sale count badge */}
               {daySales.length > 0 && (
                 <span className="text-[9px] text-muted-foreground mt-0.5 font-medium">
                   {daySales.length}
@@ -165,7 +161,6 @@ export default function SaleCalendar() {
         </div>
       </div>
 
-      {/* Selected Day Detail Panel */}
       {selectedDay && (
         <div className="mt-6 animate-fade-in">
           <h3 className="text-sm font-bold text-foreground mb-3">
@@ -191,6 +186,7 @@ export default function SaleCalendar() {
 function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => void }) {
   const status = getSaleStatus(sale);
   const statusConf = saleStatusConfig[status];
+  const isEndingToday = status === "ending_today";
 
   return (
     <div
@@ -200,17 +196,24 @@ function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => 
       <img
         src={platformLogos[sale.platform]}
         alt={sale.platform}
-        className="w-9 h-9 rounded-lg object-cover flex-shrink-0"
+        className="w-9 h-9 rounded-lg object-contain bg-accent p-1 flex-shrink-0"
       />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground truncate">{sale.sale_name}</p>
         <div className="flex items-center gap-2 mt-0.5">
           <span className="text-[11px] text-muted-foreground">
-            {sale.start_date} ~ {sale.end_date}
+            {shortDate(sale.start_date)} ~ {shortDate(sale.end_date)}
           </span>
-          <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-medium ${statusConf.className}`}>
-            {statusConf.emoji} {statusConf.label}
-          </span>
+          {isEndingToday ? (
+            <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: '10px', fontWeight: 700, padding: '1px 5px' }}>
+              <span className="w-1 h-1 rounded-full bg-closing-today animate-closing-pulse" />
+              오늘 마감
+            </span>
+          ) : (
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-medium ${statusConf.className}`}>
+              {statusConf.emoji} {statusConf.label}
+            </span>
+          )}
         </div>
       </div>
       <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0" />
