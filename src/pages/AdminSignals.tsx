@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -66,6 +67,7 @@ const confidenceTiers: Record<string, { label: string; base: number }> = {
 };
 
 export default function AdminSignals() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [platformFilter, setPlatformFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
@@ -193,7 +195,9 @@ export default function AdminSignals() {
         .update({ review_status: "promoted", processed: true })
         .eq("id", signal.id);
 
-      toast.success(matchedEvent ? "기존 이벤트에 연결했습니다." : "새 이벤트로 승격되었습니다.");
+      toast.success(matchedEvent ? "기존 이벤트에 연결했습니다." : "새 이벤트로 승격되었습니다.", {
+        action: { label: "승인(초안) 확인 →", onClick: () => navigate("/admin/drafts") },
+      });
       invalidateAll();
     } catch (err: any) {
       toast.error(err.message || "승격에 실패했습니다.");
@@ -223,7 +227,9 @@ export default function AdminSignals() {
         .update({ review_status: "promoted", processed: true })
         .eq("id", signal.id);
 
-      toast.success("세일로 승격되었습니다.");
+      toast.success("세일로 승격되었습니다.", {
+        action: { label: "승인(초안) 확인 →", onClick: () => navigate("/admin/drafts") },
+      });
       invalidateAll();
     } catch (err: any) {
       toast.error(err.message || "승격에 실패했습니다.");
