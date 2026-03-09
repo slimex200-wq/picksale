@@ -350,7 +350,7 @@ export default function AdminSignals() {
       {isLoading ? (
         <p className="text-sm text-muted-foreground text-center py-12">불러오는 중...</p>
       ) : signals.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-12">대기 중인 시그널이 없습니다.</p>
+        <p className="text-sm text-muted-foreground text-center py-12">시그널이 없습니다.</p>
       ) : (
         <div className="space-y-2">
           {signals.map((sig) => {
