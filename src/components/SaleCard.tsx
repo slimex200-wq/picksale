@@ -111,11 +111,11 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
 
         {/* Categories — hidden on mobile to save space */}
         <div className="hidden sm:flex flex-wrap gap-1.5">
-          {sale.category.map((cat) => (
-            <Badge key={cat} className={`text-[10px] font-semibold rounded-full px-2.5 py-0.5 ${getCategoryColor(cat)}`}>
-              {cat}
-            </Badge>
-          ))}
+           {sale.category.map((cat) => (
+             <Badge key={cat} className={`rounded-full px-2.5 py-0.5 ${getCategoryColor(cat)}`} style={{ fontSize: '11px', fontWeight: '600' }}>
+               {cat}
+             </Badge>
+           ))}
         </div>
 
         {isEndingToday && (
