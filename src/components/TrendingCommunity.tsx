@@ -50,14 +50,14 @@ export default function TrendingCommunity({ maxPosts = 5 }: Props) {
                </div>
               <p className="font-semibold text-card-foreground truncate" style={{ fontSize: '14px', fontWeight: '600', lineHeight: '1.45' }}>{post.title}</p>
             </div>
-            <div className="flex items-center gap-2 shrink-0 text-[11px] text-muted-foreground">
-              <span className="flex items-center gap-0.5">
-                <ThumbsUp className="w-3 h-3" />{post.upvotes}
-              </span>
-              <span className="flex items-center gap-0.5">
-                <MessageSquare className="w-3 h-3" />{post.comments_count}
-              </span>
-            </div>
+             <div className="flex items-center gap-2 shrink-0 text-muted-foreground" style={{ fontSize: '11px' }}>
+               <span className="flex items-center gap-0.5">
+                 <ThumbsUp className="w-3 h-3" />{post.upvotes}
+               </span>
+               <span className="flex items-center gap-0.5">
+                 <MessageSquare className="w-3 h-3" />{post.comments_count}
+               </span>
+             </div>
           </Link>
         ))}
       </div>

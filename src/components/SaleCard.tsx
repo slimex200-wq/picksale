@@ -71,10 +71,10 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
     >
       {/* Header */}
       <div className={`px-3 py-2 flex items-center gap-1.5 ${isEndingToday ? "bg-red-50/60" : "bg-muted/50"}`}>
-        <Badge variant="outline" className={`text-[10px] font-semibold px-2 py-0.5 ${statusInfo.className}`}>
+        <Badge variant="outline" className={`px-2 py-0.5 ${statusInfo.className}`} style={{ fontSize: '11px', fontWeight: '600', padding: '3px 8px' }}>
           {statusInfo.emoji} {statusInfo.label}
         </Badge>
-        <Badge variant="outline" className={`text-[9px] font-semibold px-1.5 py-0 ${source.className}`}>
+        <Badge variant="outline" className={`px-1.5 py-0 ${source.className}`} style={{ fontSize: '11px', fontWeight: '600', padding: '3px 8px' }}>
           {source.label}
         </Badge>
         {rank && !isCardPromo && (
