@@ -257,7 +257,7 @@ export default function Index() {
                 {endingTodaySales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
-                    <PeekCarousel cardWidth={210} gap={12}>
+                    <PeekCarousel cardWidth={240} gap={16}>
                       {endingTodaySales.map((sale) => (
                         <SaleCard key={sale.id} sale={sale} />
                       ))}
@@ -267,7 +267,7 @@ export default function Index() {
                 {liveSales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-                    <PeekCarousel cardWidth={210} gap={12}>
+                    <PeekCarousel cardWidth={240} gap={16}>
                       {liveSales.slice(0, 6).map((sale) => (
                         <SaleCard key={sale.id} sale={sale} />
                       ))}
