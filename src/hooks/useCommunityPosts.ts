@@ -55,8 +55,9 @@ export function useCommunityPosts(options?: {
       if (error) throw error;
       return (data ?? []) as CommunityPost[];
     },
-    staleTime: 60 * 1000, // 1 min
-    gcTime: 3 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 }
 
