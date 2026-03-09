@@ -29,7 +29,7 @@ export default function RadarPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-20 sm:pb-24 space-y-6">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-8 pb-20 sm:pb-24 space-y-6">
       <PageMeta title="세일 레이더 - PickSale" description="상태별, 타임라인별, 플랫폼별로 세일을 탐색하세요." />
       <CanonicalLink href={window.location.origin + "/radar"} />
 

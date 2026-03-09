@@ -107,7 +107,7 @@ export default function CoverflowCarousel({ children }: Props) {
       </div>
 
       {count > 1 && (
-        <div className="flex justify-center gap-1.5 mt-3 pb-1">
+        <div className="flex justify-center gap-1.5 mt-3 pb-4">
           {children.map((_, i) => (
             <button
               key={i}

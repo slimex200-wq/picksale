@@ -119,7 +119,7 @@ export default function DealCard({ post }: { post: CommunityPost }) {
               }`}
             >
               <ThumbsUp className="w-3.5 h-3.5" />
-              {post.upvotes}
+              {post.upvotes > 0 ? post.upvotes : "첫 추천"}
             </button>
           </div>
         </div>

@@ -159,7 +159,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         {/* Row 2: Title */}
         <h3
           className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
-          style={{ fontSize: '15px', fontWeight: '600', lineHeight: '1.35' }}
+          style={{ fontSize: '15px', fontWeight: '700', lineHeight: '1.35' }}
         >
           {sale.sale_name}
         </h3>
