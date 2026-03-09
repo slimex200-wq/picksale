@@ -187,6 +187,13 @@ export default function AdminEvents() {
                     <span>{sale.platform}</span>
                     <span>·</span>
                     <span className="font-mono">{sale.start_date} ~ {sale.end_date}</span>
+                    {sale.link && (
+                      <a href={sale.link} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-0.5 text-primary hover:underline"
+                        onClick={e => e.stopPropagation()}>
+                        <ExternalLink className="w-3 h-3" /> 링크
+                      </a>
+                    )}
                     {sale.signal_id && (
                       <Badge variant="outline" className="text-[9px] h-4 px-1 bg-blue-50 text-blue-600 border-blue-200">
                         시그널 연결
