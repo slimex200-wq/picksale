@@ -424,7 +424,7 @@ function MobileLoadingSkeleton() {
         {[1, 2, 3, 4].map((i) => <SaleCardCompactSkeleton key={i} />)}
       </section>
       <section className="space-y-2">
-        <SectionHeader emoji="⏰" title="오늘 종료 세일" />
+        <SectionHeader emoji="⏰" title="오늘 마감 세일" />
         {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
       </section>
       <section className="space-y-2">
