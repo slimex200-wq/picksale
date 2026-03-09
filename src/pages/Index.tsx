@@ -19,11 +19,11 @@ import PageMeta from "@/components/PageMeta";
 function SectionHeader({ emoji, title, count, moreLink, moreLabel }: { emoji: string; title: string; count?: number; moreLink?: string; moreLabel?: string }) {
   return (
     <div className="flex items-center justify-between px-1">
-      <h2 className="text-lg font-extrabold text-foreground flex items-center gap-2">
+      <h2 className="text-5xl font-bold text-foreground flex items-center gap-2" style={{ fontSize: '20px', fontWeight: '700' }}>
         <span>{emoji}</span>
         {title}
         {count !== undefined && (
-          <span className="text-xs text-muted-foreground font-medium ml-1 bg-accent rounded-full px-2 py-0.5">
+          <span className="text-[11px] text-muted-foreground font-semibold ml-1 bg-accent rounded-full px-2 py-0.5">
             {count}
           </span>
         )}

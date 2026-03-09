@@ -71,10 +71,10 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
     >
       {/* Header */}
       <div className={`px-3 py-2 flex items-center gap-1.5 ${isEndingToday ? "bg-red-50/60" : "bg-muted/50"}`}>
-        <Badge variant="outline" className={`text-[10px] font-semibold px-2 py-0.5 ${statusInfo.className}`}>
+        <Badge variant="outline" className={`px-2 py-0.5 ${statusInfo.className}`} style={{ fontSize: '11px', fontWeight: '600', padding: '3px 8px' }}>
           {statusInfo.emoji} {statusInfo.label}
         </Badge>
-        <Badge variant="outline" className={`text-[9px] font-semibold px-1.5 py-0 ${source.className}`}>
+        <Badge variant="outline" className={`px-1.5 py-0 ${source.className}`} style={{ fontSize: '11px', fontWeight: '600', padding: '3px 8px' }}>
           {source.label}
         </Badge>
         {rank && !isCardPromo && (
@@ -93,9 +93,9 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
 
       {/* Content */}
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
-        <h3 className={`font-bold text-[14px] sm:text-[15px] leading-snug tracking-tight line-clamp-2 ${
+        <h3 className={`font-semibold leading-[1.3] line-clamp-2 ${
           isCardPromo ? "text-muted-foreground" : "text-card-foreground"
-        }`}>
+        }`} style={{ fontSize: '18px', fontWeight: '600' }}>
           {sale.sale_name}
         </h3>
 
@@ -103,19 +103,19 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
           <div className="w-5 h-5 rounded-md bg-white/90 flex items-center justify-center shrink-0 p-0.5">
             <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" />
           </div>
-          <span className="text-[11px] font-bold text-foreground">{sale.platform}</span>
-          <span className="text-[10px] text-muted-foreground font-medium">
+           <span className="font-medium text-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>{sale.platform}</span>
+           <span className="text-muted-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>
             {formatDate(sale.start_date)} ~ {formatDate(sale.end_date)}
-          </span>
+           </span>
         </div>
 
         {/* Categories — hidden on mobile to save space */}
         <div className="hidden sm:flex flex-wrap gap-1.5">
-          {sale.category.map((cat) => (
-            <Badge key={cat} className={`text-[10px] font-semibold rounded-full px-2.5 py-0.5 ${getCategoryColor(cat)}`}>
-              {cat}
-            </Badge>
-          ))}
+           {sale.category.map((cat) => (
+             <Badge key={cat} className={`rounded-full px-2.5 py-0.5 ${getCategoryColor(cat)}`} style={{ fontSize: '11px', fontWeight: '600' }}>
+               {cat}
+             </Badge>
+           ))}
         </div>
 
         {isEndingToday && (

@@ -29,8 +29,8 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
       <div className="flex items-center gap-2.5">
         <Radar className="w-5 h-5 text-primary" />
         <div>
-          <h1 className="text-lg font-extrabold text-foreground tracking-tight">세일 레이더</h1>
-          <p className="text-xs text-muted-foreground">주요 쇼핑몰 세일을 실시간으로 탐지합니다</p>
+        <h1 className="text-foreground tracking-tight" style={{ fontSize: '24px', fontWeight: '700' }}>세일 레이더</h1>
+          <p className="text-muted-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>주요 쇼핑몰 세일을 실시간으로 탐지합니다</p>
         </div>
       </div>
 

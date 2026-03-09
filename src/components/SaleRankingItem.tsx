@@ -34,37 +34,37 @@ export default function SaleRankingItem({ sale, rank }: Props) {
         isCardPromo ? "opacity-70" : ""
       }`}
     >
-      {/* Rank */}
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className={`text-sm font-extrabold w-6 text-center shrink-0 ${
-              rank <= 3 ? "text-primary" : "text-muted-foreground"
-            }`}>
-              #{rank}
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>{rank}위</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+       {/* Rank */}
+       <TooltipProvider>
+         <Tooltip>
+           <TooltipTrigger asChild>
+             <span className={`font-bold w-6 text-center shrink-0 ${
+               rank <= 3 ? "text-primary" : "text-muted-foreground"
+             }`} style={{ fontSize: '14px', fontWeight: '700' }}>
+               #{rank}
+             </span>
+           </TooltipTrigger>
+           <TooltipContent>{rank}위</TooltipContent>
+         </Tooltip>
+       </TooltipProvider>
 
       {/* Logo */}
       <div className="w-9 h-9 rounded-lg bg-white/90 border border-border/50 flex items-center justify-center shrink-0 p-1">
         <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded" />
       </div>
 
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <h4 className="text-[13px] font-bold text-card-foreground truncate leading-tight">
-          {sale.sale_name}
-        </h4>
-        <div className="flex items-center gap-1.5 mt-0.5">
-          <span className="text-[10px] text-muted-foreground font-medium">{sale.platform}</span>
-          <Badge variant="outline" className={`text-[9px] px-1.5 py-0 h-4 ${statusInfo.className}`}>
-            {statusInfo.emoji} {statusInfo.label}
-          </Badge>
-        </div>
-      </div>
+       {/* Info */}
+       <div className="flex-1 min-w-0">
+         <h4 className="font-semibold text-card-foreground truncate" style={{ fontSize: '14px', fontWeight: '600', lineHeight: '1.45' }}>
+           {sale.sale_name}
+         </h4>
+         <div className="flex items-center gap-1.5 mt-0.5">
+           <span className="text-muted-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>{sale.platform}</span>
+           <Badge variant="outline" className={`px-1.5 py-0 h-4 ${statusInfo.className}`} style={{ fontSize: '11px', fontWeight: '600' }}>
+             {statusInfo.emoji} {statusInfo.label}
+           </Badge>
+         </div>
+       </div>
 
       {/* Countdown */}
       <span className={`text-[11px] font-bold whitespace-nowrap shrink-0 px-2 py-1 rounded-lg ${
