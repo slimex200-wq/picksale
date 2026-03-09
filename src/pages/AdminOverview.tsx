@@ -10,7 +10,7 @@ export default function AdminOverview() {
     queryKey: ["admin_overview_counts"],
     queryFn: async () => {
       const [salesRes, communityRes] = await Promise.all([
-        supabase.from("sales").select("review_status, publish_status, source_type, end_date"),
+        supabase.from("sales").select("review_status, publish_status, source_type, end_date, updated_at, created_at, matched_by"),
         supabase.from("community_posts").select("review_status", { count: "exact" }),
       ]);
       const sales = salesRes.data ?? [];
