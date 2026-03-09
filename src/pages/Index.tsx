@@ -221,7 +221,7 @@ export default function Index() {
       ) : (
         /* ═══ DESKTOP 2-COLUMN LAYOUT ═══ */
         <div className="grid grid-cols-[1fr_280px] gap-6 min-w-0">
-          <main className="space-y-8">
+          <main className="space-y-8 min-w-0 overflow-hidden">
             {/* Ranking */}
             {rankingSales.length > 0 && (
               <section className="space-y-3">
