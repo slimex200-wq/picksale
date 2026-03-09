@@ -20,6 +20,19 @@ function formatDate(d: string) {
   return `${date.getMonth() + 1}.${date.getDate()}`;
 }
 
+function getCategoryColor(category: string): string {
+  const colorMap: { [key: string]: string } = {
+    "패션": "bg-pink-100 text-pink-700",
+    "뷰티": "bg-purple-100 text-purple-700",
+    "리빙": "bg-blue-100 text-blue-700",
+    "식품": "bg-orange-100 text-orange-700",
+    "전자": "bg-cyan-100 text-cyan-700",
+    "스포츠": "bg-green-100 text-green-700",
+    "도서": "bg-amber-100 text-amber-700",
+  };
+  return colorMap[category] || "bg-secondary/80 text-secondary-foreground";
+}
+
 interface SaleCardProps {
   sale: Sale;
   rank?: number;
