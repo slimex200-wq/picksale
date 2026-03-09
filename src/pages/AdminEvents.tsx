@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
-  Eye, EyeOff, Pencil, Trash2, ArrowUpDown, CheckCircle, XCircle, Clock,
+  Eye, EyeOff, Pencil, Trash2, ArrowUpDown, CheckCircle, XCircle, Clock, ExternalLink,
 } from "lucide-react";
 
 export default function AdminEvents() {
