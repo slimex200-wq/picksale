@@ -135,6 +135,17 @@ export default function AdminAll() {
             </button>
           );
         })}
+        {/* Recently updated toggle */}
+        <button
+          onClick={() => setUpdatedOnly(!updatedOnly)}
+          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
+            updatedOnly
+              ? "bg-cyan-600 text-white border-cyan-600"
+              : "bg-card text-muted-foreground border-border hover:bg-accent"
+          }`}
+        >
+          🔄 최근 갱신 {recentUpdateCount}
+        </button>
       </div>
 
       {/* Filters */}
