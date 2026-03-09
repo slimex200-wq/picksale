@@ -230,7 +230,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
       {/* Ending Today — compact list */}
       {endingTodaySales.length > 0 && (
         <section className="space-y-2">
-          <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
+          <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
           <div className="space-y-2">
             {endingTodaySales.slice(0, 3).map((sale) => (
               <SaleCard key={sale.id} sale={sale} compact />
