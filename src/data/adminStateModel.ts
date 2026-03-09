@@ -4,10 +4,18 @@
 /* ── Canonical Primary States ── */
 export type SalePrimaryState = "review_pending" | "approved_draft" | "published" | "hidden" | "rejected";
 
-export function getSalePrimaryState(sale: { review_status: string; publish_status: string }): SalePrimaryState {
+/** Returns today in KST as YYYY-MM-DD for expiry check */
+function todayKST(): string {
+  const d = new Date(Date.now() + 9 * 3600 * 1000);
+  return d.toISOString().slice(0, 10);
+}
+
+export function getSalePrimaryState(sale: { review_status: string; publish_status: string; end_date?: string }): SalePrimaryState {
   if (sale.review_status === "rejected") return "rejected";
-  if (sale.publish_status === "published") return "published";
   if (sale.publish_status === "hidden") return "hidden";
+  // Expired published items → hidden
+  if (sale.publish_status === "published" && sale.end_date && sale.end_date < todayKST()) return "hidden";
+  if (sale.publish_status === "published") return "published";
   if (sale.review_status === "approved" && sale.publish_status === "draft") return "approved_draft";
   return "review_pending";
 }
