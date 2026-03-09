@@ -20,10 +20,10 @@ export default function TrendingCommunity({ maxPosts = 5 }: Props) {
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between px-1">
-        <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-          <Flame className="w-4.5 h-4.5 text-primary" />
-          커뮤니티 트렌딩
-        </h2>
+         <h2 className="text-foreground flex items-center gap-2" style={{ fontSize: '20px', fontWeight: '700' }}>
+           <Flame className="w-4.5 h-4.5 text-primary" />
+           커뮤니티 트렌딩
+         </h2>
         <Link to="/community" className="text-xs text-primary font-medium flex items-center gap-0.5 hover:underline">
           더보기 <ChevronRight className="w-3 h-3" />
         </Link>
