@@ -11,7 +11,8 @@ const SIDE_OFFSET = 200;
 const VISIBLE = 2;
 
 export default function CoverflowCarousel({ children }: Props) {
-  const [active, setActive] = useState(0);
+  const count = children.length;
+  const [active, setActive] = useState(Math.floor(count / 2));
   const touchRef = useRef<number | null>(null);
   const count = children.length;
 
