@@ -179,7 +179,7 @@ export default function CommunityDetail() {
   const authorAvatar = postAuthor?.avatar_url;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-4 pb-24 space-y-4">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-20 sm:pb-24 space-y-4">
       <PageMeta
         title={`${post.title} | PickSale 커뮤니티`}
         description={post.content?.slice(0, 150) || `${post.title} - PickSale 커뮤니티 게시글`}
