@@ -3,6 +3,7 @@ import { CalendarDays, Radar, Settings, Home, User, LogOut } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import logo from "@/assets/logo.png";
+import ViewModeToggle from "@/components/ViewModeToggle";
 
 const baseNavItems = [
   { to: "/home", label: "홈", icon: Home },
