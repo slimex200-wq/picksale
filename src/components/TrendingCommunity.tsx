@@ -34,11 +34,21 @@ export default function TrendingCommunity({ maxPosts = 5 }: Props) {
           <Link
             key={post.id}
             to={`/community/${post.id}`}
-            className="flex items-center gap-2.5 p-2.5 bg-card border border-border rounded-xl hover:shadow-sm transition-shadow"
+            className="flex items-center gap-3 p-2.5 bg-card border border-border rounded-xl hover:shadow-sm transition-shadow"
           >
             <span className="font-bold text-muted-foreground w-5 text-center shrink-0" style={{ fontSize: '13px', fontWeight: '700' }}>
               {i + 1}
             </span>
+
+            {/* Thumbnail placeholder */}
+            <div className="w-10 h-10 rounded-md bg-accent shrink-0 flex items-center justify-center overflow-hidden">
+              {post.platform ? (
+                <span className="text-lg">{categoryEmoji[post.category?.[0]] || "📋"}</span>
+              ) : (
+                <span className="text-lg">{categoryEmoji[post.category?.[0]] || "📋"}</span>
+              )}
+            </div>
+
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1 mb-0.5">
                 {post.category.map((c) => (

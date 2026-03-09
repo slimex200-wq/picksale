@@ -61,7 +61,7 @@ export default function CoverflowCarousel({ children }: Props) {
           const rotateY = isCenter ? 0 : offset < 0 ? 10 : -10;
           const tx = offset * SIDE_OFFSET;
           const z = 20 - abs;
-          const opacity = isCenter ? 1 : Math.max(0.3, 0.55 - (abs - 1) * 0.15);
+          const opacity = isCenter ? 1 : Math.max(0.5, 0.75 - (abs - 1) * 0.1);
 
           return (
             <div

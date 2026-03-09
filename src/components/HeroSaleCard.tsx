@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
+import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 
 interface HeroSaleCardProps {
   sale: Sale;
@@ -30,11 +31,6 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
     navigate(`/sale/${sale.id}`);
   };
 
-  const handleMouseMove = () => {
-    if (!isActive || isMobile) return;
-    setHoverZone("center");
-  };
-
   return (
     <div
       className={`relative w-full h-full bg-card flex flex-col overflow-hidden ${
@@ -42,7 +38,7 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
       }`}
       style={{ cursor: isActive ? "pointer" : undefined }}
       onClick={handleCardClick}
-      onMouseMove={handleMouseMove}
+      onMouseMove={() => { if (isActive && !isMobile) setHoverZone("center"); }}
       onMouseLeave={() => setHoverZone(null)}
     >
       {/* Top: Platform banner */}
@@ -54,10 +50,7 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
           {sale.platform}
         </span>
         {status === "ending_today" ? (
-          <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today ml-auto" style={{ fontSize: "10px", fontWeight: 700, padding: "1px 6px" }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
-            오늘 마감
-          </span>
+          <span className="ml-auto"><ClosingTodayBadge size="sm" /></span>
         ) : (
           <Badge variant="outline" className={`${statusInfo.className} border-0 ml-auto`} style={{ fontSize: "10px", fontWeight: "600", padding: "1px 6px" }}>
             {statusInfo.emoji} {statusInfo.label}
@@ -78,8 +71,8 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
         </h3>
       </div>
 
-      {/* Brand Logo — visual center with proper sizing */}
-      <div className="flex-1 flex items-center justify-center p-8 min-h-0">
+      {/* Brand Logo — contained with padding */}
+      <div className="flex-1 flex items-center justify-center p-6 min-h-0">
         <img
           src={platformLogos[sale.platform]}
           alt={sale.platform}
@@ -94,8 +87,8 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
           {formatDate(sale.start_date)} – {formatDate(sale.end_date)}
         </span>
         <span
-          className={`${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
-          style={{ fontSize: "11px" }}
+          className={`${status === "ending_today" ? "text-muted-foreground/50 font-normal" : isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
+          style={{ fontSize: status === "ending_today" ? "10px" : "11px" }}
         >
           {countdown}
         </span>

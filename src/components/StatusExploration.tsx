@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import { Sale, getSaleStatus, sortByRanking, saleStatusConfig, type SaleStatus } from "@/data/salesUtils";
+import { Sale, getSaleStatus, sortByRanking, type SaleStatus } from "@/data/salesUtils";
 import SaleRankingItem from "./SaleRankingItem";
+import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 
 interface Props {
   sales: Sale[];
@@ -49,10 +50,7 @@ export default function StatusExploration({ sales }: Props) {
               <div className="flex items-center justify-between px-1">
                 <h3 className="text-sm font-bold text-foreground flex items-center gap-1.5 tracking-tight">
                   {section.status === "ending_today" ? (
-                    <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: "12px", fontWeight: 700, padding: "2px 6px" }}>
-                      <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
-                      오늘 마감
-                    </span>
+                    <ClosingTodayBadge size="sm" />
                   ) : (
                     <>
                       <span>{section.emoji}</span>
