@@ -22,7 +22,7 @@ export default function SaleRankingItem({ sale, rank, onOpenDetail }: Props) {
 
   return (
     <div
-      onClick={() => navigate(`/sale/${sale.id}`)}
+      onClick={() => onOpenDetail ? onOpenDetail(sale) : navigate(`/sale/${sale.id}`)}
       className={`flex items-center gap-2 px-3 py-2.5 rounded-xl bg-card border border-border/50 hover:shadow-sm hover:-translate-y-px transition-all cursor-pointer ${
         isCardPromo ? "opacity-60" : ""
       }`}
