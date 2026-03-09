@@ -73,6 +73,7 @@ function mapRow(row: any): Sale {
     publish_status: (row.publish_status ?? "draft") as PublishStatus,
     source_urls: row.source_urls ?? [],
     grouped_page_count: row.grouped_page_count ?? 0,
+    image_url: row.image_url ?? "",
     event_id: row.event_id ?? null,
     signal_id: row.signal_id ?? null,
     created_at: row.created_at,
