@@ -220,8 +220,8 @@ export default function Index() {
         </div>
       ) : (
         /* ═══ DESKTOP 2-COLUMN LAYOUT ═══ */
-        <div className="grid grid-cols-[1fr_280px] gap-6">
-          <main className="space-y-8">
+        <div className="grid grid-cols-[1fr_280px] gap-6 min-w-0">
+          <main className="space-y-8 min-w-0 overflow-hidden">
             {/* Ranking */}
             {rankingSales.length > 0 && (
               <section className="space-y-3">
@@ -238,9 +238,9 @@ export default function Index() {
             {featuredSales.length > 0 && (
               <section className="space-y-3">
                 <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
-                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
                   {featuredSales.map((sale, i) => (
-                    <div key={sale.id} className="w-[280px] shrink-0">
+                    <div key={sale.id} className="min-w-[260px] max-w-[280px] flex-1 shrink-0 snap-start">
                       <SaleCard sale={sale} rank={i + 1} />
                     </div>
                   ))}
@@ -250,13 +250,13 @@ export default function Index() {
 
             {/* Ending Today + Live — horizontal scroll rows side by side */}
             {(endingTodaySales.length > 0 || liveSales.length > 0) && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
                 {endingTodaySales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
-                    <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
                       {endingTodaySales.map((sale) => (
-                        <div key={sale.id} className="w-[260px] shrink-0">
+                        <div key={sale.id} className="min-w-[240px] max-w-[260px] flex-1 shrink-0 snap-start">
                           <SaleCard sale={sale} />
                         </div>
                       ))}
@@ -266,9 +266,9 @@ export default function Index() {
                 {liveSales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-                    <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
                       {liveSales.slice(0, 6).map((sale) => (
-                        <div key={sale.id} className="w-[260px] shrink-0">
+                        <div key={sale.id} className="min-w-[240px] max-w-[260px] flex-1 shrink-0 snap-start">
                           <SaleCard sale={sale} />
                         </div>
                       ))}

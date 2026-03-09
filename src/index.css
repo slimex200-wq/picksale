@@ -137,6 +137,12 @@
   }
 }
 
+@layer base {
+  html, body {
+    overflow-x: hidden;
+  }
+}
+
 @layer utilities {
   .hide-scrollbar::-webkit-scrollbar,
   .scrollbar-hide::-webkit-scrollbar {
