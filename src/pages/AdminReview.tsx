@@ -25,12 +25,22 @@ export default function AdminReview() {
   const [tierFilter, setTierFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
-  const { data: sales = [], isLoading } = useAdminSales({
+  // Fetch pending + approved(draft) sales for review
+  const { data: pendingSales = [], isLoading: l1 } = useAdminSales({
     review_status: "pending",
     platform: platformFilter || undefined,
     sale_tier: tierFilter || undefined,
     sort: sortBy,
   });
+  const { data: approvedDraftSales = [], isLoading: l2 } = useAdminSales({
+    review_status: "approved",
+    publish_status: "draft",
+    platform: platformFilter || undefined,
+    sale_tier: tierFilter || undefined,
+    sort: sortBy,
+  });
+  const sales = [...pendingSales, ...approvedDraftSales];
+  const isLoading = l1 || l2;
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const [editForm, setEditForm] = useState({
