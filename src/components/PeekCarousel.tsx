@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback, ReactNode } from "react";
+import { useRef, useState, useEffect, useCallback, ReactNode, isValidElement, cloneElement, ReactElement } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
@@ -61,28 +61,36 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
         }}
       >
         {children.map((child, i) => {
-          const isActive = i === activeIndex;
-          return (
-            <div
-              key={i}
-              style={{
-                minWidth: cardWidth,
-                width: cardWidth,
-                scrollSnapAlign: "start",
-                transform: isActive ? "scale(1)" : "scale(0.94)",
-                opacity: isActive ? 1 : 0.8,
-                boxShadow: isActive
-                  ? "0 4px 16px -4px hsl(var(--foreground) / 0.1)"
-                  : "0 1px 4px -1px hsl(var(--foreground) / 0.06)",
-                transition: "transform 0.28s ease, opacity 0.28s ease, box-shadow 0.28s ease",
-                borderRadius: 12,
-              }}
-              className="shrink-0"
-            >
-              {child}
-            </div>
-          );
-        })}
+           const isActive = i === activeIndex;
+           const onGoPrev = i > 0 ? () => scrollTo(i - 1) : undefined;
+           const onGoNext = i < count - 1 ? () => scrollTo(i + 1) : undefined;
+           
+           return (
+             <div
+               key={i}
+               style={{
+                 minWidth: cardWidth,
+                 width: cardWidth,
+                 scrollSnapAlign: "start",
+                 transform: isActive ? "scale(1)" : "scale(0.94)",
+                 opacity: isActive ? 1 : 0.8,
+                 boxShadow: isActive
+                   ? "0 4px 16px -4px hsl(var(--foreground) / 0.1)"
+                   : "0 1px 4px -1px hsl(var(--foreground) / 0.06)",
+                 transition: "transform 0.28s ease, opacity 0.28s ease, box-shadow 0.28s ease",
+                 borderRadius: 12,
+               }}
+               className="shrink-0"
+             >
+               {isValidElement(child)
+                 ? cloneElement(child as ReactElement<any>, {
+                     onGoPrev,
+                     onGoNext,
+                   })
+                 : child}
+             </div>
+           );
+         })}
       </div>
 
       {/* Left arrow */}

@@ -1,9 +1,10 @@
 import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useState } from "react";
 
 function countdownText(endDate: string) {
   const diffMs = new Date(endDate).getTime() - Date.now();
@@ -23,24 +24,73 @@ function formatDate(d: string) {
 interface SaleCardProps {
   sale: Sale;
   rank?: number;
+  onGoPrev?: () => void;
+  onGoNext?: () => void;
 }
 
-export default function SaleCard({ sale, rank }: SaleCardProps) {
+export default function SaleCard({ sale, rank, onGoPrev, onGoNext }: SaleCardProps) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
   const countdown = countdownText(sale.end_date);
   const isUrgent = countdown.includes("시간") || countdown === "D-1" || countdown === "종료";
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
   const isCardPromo = isCreditCardPromo(sale.sale_name);
 
+  const hasZoneNav = !!(onGoPrev || onGoNext);
+
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).closest("button")) return;
+
+    if (isMobile || !hasZoneNav) {
+      navigate(`/sale/${sale.id}`);
+      return;
+    }
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const pct = x / rect.width;
+
+    if (pct < 0.2 && onGoPrev) {
+      onGoPrev();
+    } else if (pct > 0.8 && onGoNext) {
+      onGoNext();
+    } else {
+      navigate(`/sale/${sale.id}`);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!hasZoneNav || isMobile) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const pct = x / rect.width;
+    if (pct < 0.2 && onGoPrev) setHoverZone("left");
+    else if (pct > 0.8 && onGoNext) setHoverZone("right");
+    else setHoverZone("center");
+  };
+
   return (
     <div
-      className={`w-full bg-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden border ${
+      className={`relative w-full bg-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden border ${
         isCardPromo ? "border-border opacity-60" : "border-border/60"
       }`}
-      onClick={() => navigate(`/sale/${sale.id}`)}
+      onClick={handleCardClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => setHoverZone(null)}
     >
+      {/* Hover zone indicators — desktop only */}
+      {hasZoneNav && !isMobile && hoverZone === "left" && onGoPrev && (
+        <div className="absolute left-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-l-xl transition-opacity">
+          <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+        </div>
+      )}
+      {hasZoneNav && !isMobile && hoverZone === "right" && onGoNext && (
+        <div className="absolute right-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-r-xl transition-opacity">
+          <ChevronRight className="w-5 h-5 text-muted-foreground" />
+        </div>
+      )}
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
         {/* Row 1: Status badge + countdown */}
         <div className="flex items-center justify-between">

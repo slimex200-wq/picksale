@@ -40,35 +40,13 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isActive) return;
-    // Don't intercept CTA button clicks
     if ((e.target as HTMLElement).closest("button")) return;
-
-    if (isMobile) {
-      navigate(`/sale/${sale.id}`);
-      return;
-    }
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const pct = x / rect.width;
-
-    if (pct < 0.2 && onGoPrev) {
-      onGoPrev();
-    } else if (pct > 0.8 && onGoNext) {
-      onGoNext();
-    } else {
-      navigate(`/sale/${sale.id}`);
-    }
+    navigate(`/sale/${sale.id}`);
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = () => {
     if (!isActive || isMobile) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const pct = x / rect.width;
-    if (pct < 0.2 && onGoPrev) setHoverZone("left");
-    else if (pct > 0.8 && onGoNext) setHoverZone("right");
-    else setHoverZone("center");
+    setHoverZone("center");
   };
 
   return (
@@ -81,17 +59,6 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setHoverZone(null)}
     >
-      {/* Hover zone indicators — desktop only */}
-      {isActive && !isMobile && hoverZone === "left" && onGoPrev && (
-        <div className="absolute left-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-l-xl transition-opacity">
-          <ChevronLeft className="w-5 h-5 text-muted-foreground" />
-        </div>
-      )}
-      {isActive && !isMobile && hoverZone === "right" && onGoNext && (
-        <div className="absolute right-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-r-xl transition-opacity">
-          <ChevronRight className="w-5 h-5 text-muted-foreground" />
-        </div>
-      )}
 
       {/* Top: Platform banner */}
       <div className="flex items-center gap-2 px-3 pt-3 pb-1.5">
