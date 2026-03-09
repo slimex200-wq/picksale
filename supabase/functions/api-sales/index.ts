@@ -151,8 +151,9 @@ Deno.serve(async (req) => {
         updates.event_key = event_key;
       }
 
-      // Update image_url if new value provided and existing is empty
-      if (image_url && (!existing.image_url || existing.image_url === '')) {
+      // Update image_url: always prefer a non-empty image_url
+      // Priority: incoming image_url > existing image_url
+      if (image_url && image_url.trim() !== '') {
         updates.image_url = image_url;
       }
 
