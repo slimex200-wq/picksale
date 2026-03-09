@@ -145,7 +145,7 @@ export default function AdminHidden() {
             <AdminSaleCard
               key={sale.id}
               sale={sale}
-              actions={["restore"]}
+              actions={["restore", "delete"]}
               onAction={handleAction}
             />
           ))}
