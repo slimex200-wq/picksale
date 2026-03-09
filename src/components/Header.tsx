@@ -1,18 +1,23 @@
 import { Link, useLocation } from "react-router-dom";
 import { CalendarDays, Flame, Settings, Home, User, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import logo from "@/assets/logo.png";
 
-const navItems = [
+const baseNavItems = [
   { to: "/home", label: "홈", icon: Home },
   { to: "/community", label: "레이더", icon: Flame },
   { to: "/calendar", label: "캘린더", icon: CalendarDays },
-  { to: "/admin", label: "관리", icon: Settings },
 ];
+
+const adminNavItem = { to: "/admin", label: "관리", icon: Settings };
 
 export default function Header() {
   const { pathname } = useLocation();
   const { user, profile, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
+
+  const navItems = isAdmin ? [...baseNavItems, adminNavItem] : baseNavItems;
 
   return (
     <>
