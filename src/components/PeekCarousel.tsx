@@ -68,6 +68,7 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
            return (
              <div
                key={i}
+               onClick={!isActive ? (e: React.MouseEvent) => { e.stopPropagation(); scrollTo(i); } : undefined}
                style={{
                  minWidth: cardWidth,
                  width: cardWidth,
@@ -79,13 +80,15 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
                    : "0 1px 4px -1px hsl(var(--foreground) / 0.06)",
                  transition: "transform 0.28s ease, opacity 0.28s ease, box-shadow 0.28s ease",
                  borderRadius: 12,
+                 cursor: isActive ? undefined : "pointer",
                }}
                className="shrink-0"
              >
                {isValidElement(child)
                  ? cloneElement(child as ReactElement<any>, {
-                     onGoPrev,
-                     onGoNext,
+                     isActive,
+                     onGoPrev: isActive ? onGoPrev : undefined,
+                     onGoNext: isActive ? onGoNext : undefined,
                    })
                  : child}
              </div>
