@@ -109,7 +109,9 @@ export default function CoverflowCarousel({ children }: Props) {
                   pointerEvents: isCenter ? "auto" : "none",
                 }}
               >
-                {child}
+                {isValidElement(child)
+                  ? cloneElement(child as ReactElement<any>, { isActive: isCenter })
+                  : child}
               </div>
             </div>
           );
