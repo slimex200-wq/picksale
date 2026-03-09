@@ -5,15 +5,17 @@ import type { Sale, Platform, SaleTier, ReviewStatus, PublishStatus } from "@/da
 /** Columns needed for card/list views (no description, source_urls, filter_reason) */
 const LIST_COLUMNS = "id,platform,sale_name,start_date,end_date,category,link,sale_tier,importance_score,review_status,publish_status,grouped_page_count,event_id,signal_id,created_at,image_url";
 
-/** Public hook – only returns published sales */
+/** Public hook – only returns published & non-expired sales */
 export function useSales() {
   return useQuery({
     queryKey: ["sales", "published"],
     queryFn: async (): Promise<Sale[]> => {
+      const today = new Date().toISOString().split("T")[0];
       const { data, error } = await supabase
         .from("sales")
         .select(LIST_COLUMNS)
         .eq("publish_status", "published")
+        .gte("end_date", today)
         .order("start_date", { ascending: true });
 
       if (error) throw error;
