@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAdminSales } from "@/hooks/useSales";
+import { getTodayKST } from "@/data/salesUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sale, platforms } from "@/data/salesUtils";
@@ -30,13 +31,18 @@ export default function AdminEvents() {
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
 
-  const { data: sales = [], isLoading } = useAdminSales({
+  const today = getTodayKST();
+
+  // Filter out expired sales from events tab (they belong in hidden tab)
+  const { data: rawSales = [], isLoading } = useAdminSales({
     platform: platformFilter || undefined,
     sale_tier: tierFilter || undefined,
     review_status: reviewFilter || undefined,
     publish_status: publishFilter || undefined,
     sort: sortBy,
   });
+
+  const sales = rawSales.filter(s => s.end_date >= today);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const [editForm, setEditForm] = useState({
