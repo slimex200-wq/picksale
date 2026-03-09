@@ -30,6 +30,8 @@ export interface Sale {
   source_type?: string;
   signal_type?: string;
   confidence_score?: number;
+  updated_at?: string;
+  matched_by?: string;
 }
 
 export const platforms: Platform[] = ["쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM", "WCONCEPT", "커뮤니티 핫딜"];

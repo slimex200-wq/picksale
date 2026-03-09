@@ -86,5 +86,7 @@ function mapRow(row: any): Sale {
     source_type: row.source_type ?? "",
     signal_type: row.signal_type ?? "",
     confidence_score: row.confidence_score ?? 0,
+    updated_at: row.updated_at ?? "",
+    matched_by: row.matched_by ?? "",
   };
 }
