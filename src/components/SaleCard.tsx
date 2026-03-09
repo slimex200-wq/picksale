@@ -103,10 +103,10 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
           <div className="w-5 h-5 rounded-md bg-white/90 flex items-center justify-center shrink-0 p-0.5">
             <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" />
           </div>
-          <span className="text-[11px] font-bold text-foreground">{sale.platform}</span>
-          <span className="text-[10px] text-muted-foreground font-medium">
+           <span className="font-medium text-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>{sale.platform}</span>
+           <span className="text-muted-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>
             {formatDate(sale.start_date)} ~ {formatDate(sale.end_date)}
-          </span>
+           </span>
         </div>
 
         {/* Categories — hidden on mobile to save space */}
