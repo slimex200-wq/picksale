@@ -29,7 +29,16 @@ import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSignalSimulator from "./pages/AdminSignalSimulator";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      placeholderData: keepPreviousData,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

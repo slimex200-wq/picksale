@@ -123,7 +123,7 @@ export default function Index() {
 
       {/* Hero + Search */}
       <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
-        {isLoading ? (
+        {isLoading && !sales.length ? (
           <HeroStatsSkeleton />
         ) : (
           <HeroStats sales={activeSales} activeFilter={heroFilter} onFilterChange={handleHeroFilter} />
