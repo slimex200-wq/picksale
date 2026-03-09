@@ -41,7 +41,7 @@ export const sourceClassConfig: Record<SourceClass, { label: string; emoji: stri
 /* ── Upsert/Ingestion State ── */
 export type UpsertState = "new" | "updated" | "duplicate";
 
-export function getUpsertState(sale: Pick<Sale, "matched_by">): UpsertState {
+export function getUpsertState(sale: { matched_by?: string | null }): UpsertState {
   if (!sale.matched_by || sale.matched_by === "" || sale.matched_by === "none") return "new";
   return "updated";
 }
