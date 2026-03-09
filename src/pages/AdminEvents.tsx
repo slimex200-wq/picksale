@@ -97,7 +97,19 @@ export default function AdminEvents() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-2 items-end">
+      {/* Recently updated toggle */}
+      <div className="flex flex-wrap gap-1.5">
+        <button
+          onClick={() => setUpdatedOnly(!updatedOnly)}
+          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
+            updatedOnly
+              ? "bg-cyan-600 text-white border-cyan-600"
+              : "bg-card text-muted-foreground border-border hover:bg-accent"
+          }`}
+        >
+          🔄 최근 갱신만 {recentUpdateCount}
+        </button>
+      </div>
         <div className="space-y-1">
           <Label className="text-xs">플랫폼</Label>
           <Select value={platformFilter} onValueChange={setPlatformFilter}>
