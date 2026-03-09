@@ -49,6 +49,7 @@ const App = () => (
             <Route path="/platform/:slug" element={<><Header /><PlatformSales /></>} />
             <Route path="/calendar" element={<><Header /><SaleCalendar /></>} />
             <Route path="/event/:eventId" element={<><Header /><EventDetail /></>} />
+            <Route path="/radar" element={<><Header /><RadarPage /></>} />
             <Route path="/community" element={<><Header /><CommunityPage /></>} />
             <Route path="/community/:id" element={<><Header /><CommunityDetail /></>} />
             <Route path="/submit" element={<><Header /><SubmitSale /></>} />

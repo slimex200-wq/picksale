@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 import { useCommunityPosts } from "@/hooks/useCommunityPosts";
 import { ThumbsUp, MessageSquare, ChevronRight, Flame } from "lucide-react";
 
-export default function TrendingCommunity() {
-  const { data: posts = [] } = useCommunityPosts({ sort: "trending", limit: 5 });
+interface Props {
+  maxPosts?: number;
+}
+
+export default function TrendingCommunity({ maxPosts = 5 }: Props) {
+  const { data: posts = [] } = useCommunityPosts({ sort: "trending", limit: maxPosts });
 
   if (posts.length === 0) return null;
 
