@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Header from "@/components/Header";
 import LandingPage from "./pages/LandingPage";
@@ -40,7 +40,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Landing — no header */}
-            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/" element={<LandingPage />} />
             {/* Login — no header */}
             <Route path="/login" element={<><Header /><LoginPage /></>} />
             {/* All other pages — with header */}
