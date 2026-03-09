@@ -39,11 +39,13 @@ export default function AdminAll() {
 
   const { duplicatePublished, duplicateDrafts } = useDuplicateMaps(rawSales);
 
-  const { salesBeforeSource, sales, stateCounts } = useMemo(() => {
+  const { salesBeforeSource, sales, stateCounts, recentUpdateCount } = useMemo(() => {
     const counts: Record<string, number> = {};
+    let recentCount = 0;
     for (const s of rawSales) {
       const st = getSalePrimaryState(s);
       counts[st] = (counts[st] || 0) + 1;
+      if (isRecentlyUpdated(s)) recentCount++;
     }
 
     let filtered = [...rawSales];
@@ -56,6 +58,9 @@ export default function AdminAll() {
     if (tierFilter && tierFilter !== "all") {
       filtered = filtered.filter(s => s.sale_tier === tierFilter);
     }
+    if (updatedOnly) {
+      filtered = filtered.filter(s => isRecentlyUpdated(s));
+    }
 
     const beforeSource = filtered;
 
@@ -63,8 +68,13 @@ export default function AdminAll() {
       filtered = filtered.filter(s => getSourceClass(s) === sourceFilter);
     }
 
-    return { salesBeforeSource: beforeSource, sales: filtered, stateCounts: counts };
-  }, [rawSales, platformFilter, tierFilter, sourceFilter, stateFilter]);
+    // Sort by updated_at if selected
+    if (sortBy === "updated") {
+      filtered.sort((a, b) => new Date(b.updated_at || 0).getTime() - new Date(a.updated_at || 0).getTime());
+    }
+
+    return { salesBeforeSource: beforeSource, sales: filtered, stateCounts: counts, recentUpdateCount: recentCount };
+  }, [rawSales, platformFilter, tierFilter, sourceFilter, stateFilter, updatedOnly, sortBy]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
