@@ -149,8 +149,8 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             </Badge>
           )}
           <span
-            className={`whitespace-nowrap ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
-            style={{ fontSize: '11px' }}
+            className={`whitespace-nowrap ${status === "ending_today" ? "text-muted-foreground/40 font-normal" : isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
+            style={{ fontSize: status === "ending_today" ? '10px' : '11px' }}
           >
             {countdown}
           </span>
