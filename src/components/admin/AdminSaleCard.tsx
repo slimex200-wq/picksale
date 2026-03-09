@@ -101,7 +101,7 @@ export default function AdminSaleCard({ sale, allSales = [], actions = [], onAct
                 {upsertConf.label}
               </Badge>
             )}
-            {!hasImage && (
+            {!hasValidImage && (
               <Badge variant="outline" className="text-[10px] h-5 bg-orange-50 text-orange-600 border-orange-200">
                 <ImageIcon className="w-2.5 h-2.5 mr-0.5" />이미지 없음
               </Badge>
