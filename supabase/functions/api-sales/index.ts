@@ -141,7 +141,6 @@ Deno.serve(async (req) => {
         if (!existing.latest_pub_date || new Date(pubDate) > new Date(existing.latest_pub_date)) {
           updates.latest_pub_date = pubDate;
           if (link) updates.latest_source_url = link;
-          // Update main link to latest article
           if (link) updates.link = link;
         }
       }
@@ -152,22 +151,48 @@ Deno.serve(async (req) => {
       }
 
       // Update image_url: always prefer a non-empty image_url
-      // Priority: incoming image_url > existing image_url
       if (image_url && image_url.trim() !== '') {
         updates.image_url = image_url;
       }
 
-      // Update dates: replace if existing is single-day (article pub date) and new has real range,
-      // or if new range is wider than existing
+      // ── Cross-row image propagation within same event_key ──
+      // If after update this row still has no image, check sibling rows
+      const finalEventKey = event_key || existing.event_key || "";
+      const finalImageUrl = (image_url && image_url.trim() !== '') ? image_url : (existing.image_url || "");
+      if (!finalImageUrl && finalEventKey) {
+        const { data: siblings } = await supabase
+          .from("sales")
+          .select("image_url")
+          .eq("platform", platform)
+          .eq("event_key", finalEventKey)
+          .neq("id", existing.id)
+          .not("image_url", "eq", "")
+          .not("image_url", "is", null)
+          .limit(1);
+        if (siblings && siblings.length > 0 && siblings[0].image_url) {
+          updates.image_url = siblings[0].image_url;
+        }
+      }
+      // Also propagate: if THIS row now has image_url, update siblings that don't
+      const resolvedImage = updates.image_url || finalImageUrl;
+      if (resolvedImage && finalEventKey) {
+        await supabase
+          .from("sales")
+          .update({ image_url: resolvedImage })
+          .eq("platform", platform)
+          .eq("event_key", finalEventKey)
+          .neq("id", existing.id)
+          .or("image_url.eq.,image_url.is.null");
+      }
+
+      // Update dates
       const existingIsSingleDay = existing.start_date && existing.end_date && existing.start_date === existing.end_date;
       const newHasRange = start_date && end_date && start_date !== end_date;
 
       if (existingIsSingleDay && newHasRange) {
-        // Existing was likely set from article pub_date; replace with actual event period
         updates.start_date = start_date;
         updates.end_date = end_date;
       } else {
-        // Widen range: use earlier start and later end
         if (start_date && (!existing.start_date || start_date < existing.start_date)) {
           updates.start_date = start_date;
         }
@@ -217,7 +242,7 @@ Deno.serve(async (req) => {
         duplicate: false,
         matched_by: matchedBy,
         existing_id: existing.id,
-        final_event_key: event_key || existing.event_key || "",
+        final_event_key: finalEventKey,
       });
     }
 
