@@ -11,7 +11,7 @@ interface Props {
   onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function SaleRankingItem({ sale, rank }: Props) {
+export default function SaleRankingItem({ sale, rank, onOpenDetail }: Props) {
   const navigate = useNavigate();
   const isCardPromo = isCreditCardPromo(sale.sale_name);
   const countdown = countdownText(sale.end_date);
