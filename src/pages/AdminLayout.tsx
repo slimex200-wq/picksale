@@ -1,7 +1,7 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   Settings, Inbox, List, LogOut, MessageSquare, Send, Radio,
-  Bug, Copy, BarChart3, FlaskConical, EyeOff,
+  Bug, Copy, BarChart3, FlaskConical, EyeOff, XCircle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ const tabDefs = [
   { to: "/admin/review", label: "검토", icon: Inbox, countKey: "review" },
   { to: "/admin/events", label: "이벤트", icon: List, countKey: "events" },
   { to: "/admin/hidden", label: "숨김", icon: EyeOff, countKey: "hidden" },
+  { to: "/admin/rejected", label: "반려", icon: XCircle, countKey: "rejected" },
   { to: "/admin/signals", label: "시그널", icon: Radio, countKey: "signals" },
   { to: "/admin/community", label: "커뮤니티", icon: MessageSquare, countKey: "community" },
   { to: "/admin/submissions", label: "제보", icon: Send, countKey: "submissions" },
@@ -41,7 +42,8 @@ export default function AdminLayout() {
       const community = communityRes.data ?? [];
       const submissions = submissionsRes.data ?? [];
 
-      const reviewPending = sales.filter(s => s.review_status === "pending").length;
+      const reviewCount = sales.filter(s => s.review_status === "pending").length;
+      const approvedDraft = sales.filter(s => s.review_status === "approved" && s.publish_status !== "published" && s.publish_status !== "hidden").length;
       const reviewTotal = sales.length;
       const signalsPending = signals.filter(s => s.review_status === "pending").length;
       const signalsTotal = signals.length;
@@ -51,11 +53,13 @@ export default function AdminLayout() {
       const subsTotal = submissions.length;
       const eventsPublished = sales.filter(s => s.publish_status === "published").length;
       const hiddenCount = sales.filter(s => s.publish_status === "hidden").length;
+      const rejectedCount = sales.filter(s => s.review_status === "rejected").length;
 
       return {
-        review: { highlight: reviewPending, total: reviewTotal },
+        review: { highlight: reviewCount + approvedDraft, total: reviewTotal },
         events: { highlight: eventsPublished, total: reviewTotal },
         hidden: { highlight: hiddenCount, total: reviewTotal },
+        rejected: { highlight: rejectedCount, total: reviewTotal },
         signals: { highlight: signalsPending, total: signalsTotal },
         community: { highlight: communityPublished, total: communityTotal },
         submissions: { highlight: subsPending, total: subsTotal },

@@ -16,31 +16,19 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
-  CheckCircle, XCircle, Eye, Pencil, ExternalLink, ArrowUpDown,
+  Eye, Pencil, Trash2, ExternalLink, ArrowUpDown,
 } from "lucide-react";
 
-export default function AdminReview() {
+export default function AdminRejected() {
   const queryClient = useQueryClient();
-  const [platformFilter, setPlatformFilter] = useState<string>("");
-  const [tierFilter, setTierFilter] = useState<string>("");
+  const [platformFilter, setPlatformFilter] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
-  // Fetch pending + approved(draft) sales for review
-  const { data: pendingSales = [], isLoading: l1 } = useAdminSales({
-    review_status: "pending",
+  const { data: sales = [], isLoading } = useAdminSales({
+    review_status: "rejected",
     platform: platformFilter || undefined,
-    sale_tier: tierFilter || undefined,
     sort: sortBy,
   });
-  const { data: approvedDraftSales = [], isLoading: l2 } = useAdminSales({
-    review_status: "approved",
-    publish_status: "draft",
-    platform: platformFilter || undefined,
-    sale_tier: tierFilter || undefined,
-    sort: sortBy,
-  });
-  const sales = [...pendingSales, ...approvedDraftSales];
-  const isLoading = l1 || l2;
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const [editForm, setEditForm] = useState({
@@ -49,17 +37,26 @@ export default function AdminReview() {
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
 
-  const handleAction = async (id: string, action: "approve" | "reject" | "publish" | "hide") => {
-    const updates: Record<string, string> = {};
-    if (action === "approve") { updates.review_status = "approved"; updates.publish_status = "draft"; }
-    else if (action === "reject") { updates.review_status = "rejected"; }
-    else if (action === "publish") { updates.review_status = "approved"; updates.publish_status = "published"; }
-    else if (action === "hide") { updates.publish_status = "hidden"; }
-
-    const { error } = await supabase.from("sales").update(updates).eq("id", id);
+  const handleRestore = async (id: string) => {
+    const { error } = await supabase.from("sales").update({ review_status: "pending" }).eq("id", id);
     if (error) { toast.error(error.message); return; }
-    const msg = { approve: "승인되었습니다.", reject: "반려되었습니다.", publish: "게시되었습니다.", hide: "숨김 처리되었습니다." };
-    toast.success(msg[action]);
+    toast.success("검토 대기로 복원되었습니다.");
+    invalidate();
+  };
+
+  const handlePublish = async (id: string) => {
+    const { error } = await supabase.from("sales").update({ review_status: "approved", publish_status: "published" }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("게시되었습니다.");
+    invalidate();
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+    const { data, error } = await supabase.from("sales").delete().eq("id", id).select("id");
+    if (error) { toast.error(error.message); return; }
+    if (!data || data.length === 0) { toast.error("삭제에 실패했습니다."); return; }
+    toast.success("삭제되었습니다.");
     invalidate();
   };
 
@@ -80,21 +77,8 @@ export default function AdminReview() {
     invalidate();
   };
 
-  const tierColor = (tier: string) => {
-    if (tier === "major") return "bg-primary/15 text-primary border-primary/30";
-    if (tier === "minor") return "bg-secondary text-secondary-foreground";
-    return "bg-muted text-muted-foreground";
-  };
-
-  const tierLabel = (tier: string) => {
-    if (tier === "major") return "주요";
-    if (tier === "minor") return "일반";
-    return "제외";
-  };
-
   return (
     <div className="space-y-4">
-      {/* 필터 */}
       <div className="flex flex-wrap gap-2 items-end">
         <div className="space-y-1">
           <Label className="text-xs">플랫폼</Label>
@@ -106,18 +90,6 @@ export default function AdminReview() {
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-1">
-          <Label className="text-xs">등급</Label>
-          <Select value={tierFilter} onValueChange={setTierFilter}>
-            <SelectTrigger className="w-[110px] h-8 text-xs"><SelectValue placeholder="전체" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">전체</SelectItem>
-              <SelectItem value="major">주요</SelectItem>
-              <SelectItem value="minor">일반</SelectItem>
-              <SelectItem value="excluded">제외</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
         <Button variant="outline" size="sm" className="h-8 gap-1 text-xs"
           onClick={() => setSortBy(sortBy === "newest" ? "importance" : "newest")}>
           <ArrowUpDown className="w-3 h-3" />
@@ -125,11 +97,12 @@ export default function AdminReview() {
         </Button>
       </div>
 
-      {/* 목록 */}
+      <p className="text-xs text-muted-foreground">{sales.length}개 반려된 이벤트</p>
+
       {isLoading ? (
         <p className="text-sm text-muted-foreground text-center py-12">불러오는 중...</p>
       ) : sales.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-12">대기 중인 이벤트가 없습니다.</p>
+        <p className="text-sm text-muted-foreground text-center py-12">반려된 이벤트가 없습니다.</p>
       ) : (
         <div className="space-y-2">
           {sales.map((sale) => (
@@ -137,18 +110,13 @@ export default function AdminReview() {
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 flex-wrap mb-1">
-                    <Badge variant="outline" className={`text-[10px] ${tierColor(sale.sale_tier)}`}>
-                      {tierLabel(sale.sale_tier)}
+                    <Badge variant="outline" className="text-[10px] bg-destructive/10 text-destructive border-destructive/30">
+                      반려됨
                     </Badge>
-                    <span className="text-[10px] text-muted-foreground font-mono">
-                      중요도: {sale.importance_score}
-                    </span>
-                    {sale.grouped_page_count > 0 && (
-                      <span className="text-[10px] text-muted-foreground">· {sale.grouped_page_count}개 페이지</span>
-                    )}
+                    <span className="text-[10px] text-muted-foreground font-mono">{sale.platform}</span>
                   </div>
                   <p className="text-sm font-semibold text-card-foreground">{sale.sale_name}</p>
-                  <p className="text-xs text-muted-foreground">{sale.platform} · {sale.start_date} ~ {sale.end_date}</p>
+                  <p className="text-xs text-muted-foreground font-mono">{sale.start_date} ~ {sale.end_date}</p>
                   {sale.filter_reason && (
                     <p className="text-[10px] text-muted-foreground mt-0.5">사유: {sale.filter_reason}</p>
                   )}
@@ -160,37 +128,21 @@ export default function AdminReview() {
                   </a>
                 )}
               </div>
-
-              {sale.source_urls.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {sale.source_urls.map((url, i) => (
-                    <a key={i} href={url} target="_blank" rel="noopener noreferrer"
-                      className="text-[10px] text-primary hover:underline inline-flex items-center gap-0.5">
-                      <ExternalLink className="w-2.5 h-2.5" />출처 {i + 1}
-                    </a>
-                  ))}
-                </div>
-              )}
-
-              {sale.created_at && (
-                <p className="text-[10px] text-muted-foreground">
-                  등록일: {new Date(sale.created_at).toLocaleString("ko-KR")}
-                </p>
-              )}
-
               <div className="flex gap-1.5 pt-1 flex-wrap">
-                <Button size="sm" className="gap-1 text-xs h-7" onClick={() => handleAction(sale.id, "approve")}>
-                  <CheckCircle className="w-3 h-3" />승인
+                <Button size="sm" variant="outline" className="gap-1 text-xs h-7"
+                  onClick={() => handleRestore(sale.id)}>
+                  검토로 복원
                 </Button>
-                <Button size="sm" variant="default" className="gap-1 text-xs h-7 bg-green-600 hover:bg-green-700"
-                  onClick={() => handleAction(sale.id, "publish")}>
-                  <Eye className="w-3 h-3" />게시
-                </Button>
-                <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => handleAction(sale.id, "reject")}>
-                  <XCircle className="w-3 h-3" />반려
+                <Button size="sm" className="gap-1 text-xs h-7 bg-green-600 hover:bg-green-700"
+                  onClick={() => handlePublish(sale.id)}>
+                  <Eye className="w-3 h-3" /> 게시
                 </Button>
                 <Button size="sm" variant="ghost" className="text-xs h-7" onClick={() => openEdit(sale)}>
-                  <Pencil className="w-3 h-3" />수정
+                  <Pencil className="w-3 h-3" /> 수정
+                </Button>
+                <Button size="sm" variant="ghost" className="text-xs h-7 text-destructive hover:text-destructive"
+                  onClick={() => handleDelete(sale.id)}>
+                  <Trash2 className="w-3 h-3" /> 삭제
                 </Button>
               </div>
             </div>
@@ -198,7 +150,6 @@ export default function AdminReview() {
         </div>
       )}
 
-      {/* 수정 다이얼로그 */}
       <Dialog open={!!editingSale} onOpenChange={(o) => !o && setEditingSale(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>이벤트 수정</DialogTitle></DialogHeader>
@@ -216,7 +167,7 @@ export default function AdminReview() {
             </div>
             <div className="space-y-1">
               <Label className="text-sm">링크</Label>
-              <Input type="url" placeholder="https://www.musinsa.com/app/plan/..." value={editForm.link} onChange={(e) => setEditForm((f) => ({ ...f, link: e.target.value }))} />
+              <Input type="url" placeholder="https://..." value={editForm.link} onChange={(e) => setEditForm((f) => ({ ...f, link: e.target.value }))} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">

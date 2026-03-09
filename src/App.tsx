@@ -29,6 +29,7 @@ import AdminDuplicates from "./pages/AdminDuplicates";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSignalSimulator from "./pages/AdminSignalSimulator";
 import AdminHidden from "./pages/AdminHidden";
+import AdminRejected from "./pages/AdminRejected";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -69,6 +70,7 @@ const App = () => (
               <Route path="review" element={<AdminReview />} />
               <Route path="events" element={<AdminEvents />} />
               <Route path="hidden" element={<AdminHidden />} />
+              <Route path="rejected" element={<AdminRejected />} />
               <Route path="community" element={<AdminCommunity />} />
               <Route path="submissions" element={<AdminSubmissions />} />
               <Route path="signals" element={<AdminSignals />} />
