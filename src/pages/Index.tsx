@@ -242,8 +242,6 @@ export default function Index() {
               </section>
             )}
 
-          {/* Center — Main Content */}
-          <main className="space-y-10">
             {/* Featured */}
             {featuredSales.length > 0 && (
               <section className="space-y-4">
@@ -286,7 +284,7 @@ export default function Index() {
           </main>
 
           {/* Right Sidebar — Community */}
-          <aside className="space-y-4">
+          <aside className="space-y-4 sticky top-4">
             <TrendingCommunity maxPosts={5} />
           </aside>
         </div>
