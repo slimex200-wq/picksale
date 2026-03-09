@@ -20,10 +20,10 @@ export default function TrendingCommunity({ maxPosts = 5 }: Props) {
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between px-1">
-         <h2 className="text-foreground flex items-center gap-2" style={{ fontSize: '20px', fontWeight: '700' }}>
-           <Flame className="w-4.5 h-4.5 text-primary" />
-           커뮤니티 트렌딩
-         </h2>
+        <h2 className="text-foreground flex items-center gap-2" style={{ fontSize: '20px', fontWeight: '700' }}>
+          <Flame className="w-4.5 h-4.5 text-primary" />
+          커뮤니티 트렌딩
+        </h2>
         <Link to="/community" className="text-xs text-primary font-medium flex items-center gap-0.5 hover:underline">
           더보기 <ChevronRight className="w-3 h-3" />
         </Link>
@@ -34,30 +34,34 @@ export default function TrendingCommunity({ maxPosts = 5 }: Props) {
           <Link
             key={post.id}
             to={`/community/${post.id}`}
-            className="flex items-center gap-3 p-2.5 bg-card border border-border rounded-xl hover:shadow-sm transition-shadow"
+            className="flex items-center gap-2.5 p-2.5 bg-card border border-border rounded-xl hover:shadow-sm transition-shadow"
           >
-            <span className="font-bold text-muted-foreground w-5 text-center shrink-0" style={{ fontSize: '14px', fontWeight: '700' }}>
+            <span className="font-bold text-muted-foreground w-5 text-center shrink-0" style={{ fontSize: '13px', fontWeight: '700' }}>
               {i + 1}
             </span>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1 mb-0.5">
                 {post.category.map((c) => (
-                   <span key={c} style={{ fontSize: '11px' }}>{categoryEmoji[c] || "📋"}</span>
-                 ))}
-                 {post.platform && (
-                   <span className="text-muted-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>{post.platform}</span>
-                 )}
-               </div>
-              <p className="font-semibold text-card-foreground truncate" style={{ fontSize: '14px', fontWeight: '600', lineHeight: '1.45' }}>{post.title}</p>
+                  <span key={c} style={{ fontSize: '11px' }}>{categoryEmoji[c] || "📋"}</span>
+                ))}
+                {post.platform && (
+                  <span className="text-muted-foreground" style={{ fontSize: '12px', fontWeight: '500' }}>{post.platform}</span>
+                )}
+              </div>
+              <p className="text-card-foreground truncate" style={{ fontSize: '13px', fontWeight: '600', lineHeight: '1.45' }}>{post.title}</p>
             </div>
-             <div className="flex items-center gap-2 shrink-0 text-muted-foreground" style={{ fontSize: '11px' }}>
-               <span className="flex items-center gap-0.5">
-                 <ThumbsUp className="w-3 h-3" />{post.upvotes}
-               </span>
-               <span className="flex items-center gap-0.5">
-                 <MessageSquare className="w-3 h-3" />{post.comments_count}
-               </span>
-             </div>
+            <div className="flex items-center gap-2 shrink-0 text-muted-foreground" style={{ fontSize: '11px' }}>
+              {post.upvotes > 0 && (
+                <span className="flex items-center gap-0.5">
+                  <ThumbsUp className="w-3 h-3" />{post.upvotes}
+                </span>
+              )}
+              {post.comments_count > 0 && (
+                <span className="flex items-center gap-0.5">
+                  <MessageSquare className="w-3 h-3" />{post.comments_count}
+                </span>
+              )}
+            </div>
           </Link>
         ))}
       </div>

@@ -3,6 +3,7 @@ import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function countdownText(endDate: string) {
   const diffMs = new Date(endDate).getTime() - Date.now();
@@ -26,88 +27,82 @@ interface SaleCardProps {
 
 export default function SaleCard({ sale, rank }: SaleCardProps) {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const countdown = countdownText(sale.end_date);
   const isUrgent = countdown.includes("시간") || countdown === "D-1" || countdown === "종료";
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
   const isCardPromo = isCreditCardPromo(sale.sale_name);
-  const isEndingToday = status === "ending_today";
 
   return (
     <div
-      className={`w-full bg-card rounded-2xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex flex-col overflow-hidden border ${
-        isEndingToday
-          ? "border-destructive/25 bg-destructive/[0.03]"
-          : isCardPromo
-            ? "border-border opacity-60"
-            : "border-border/60"
+      className={`w-full bg-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden border ${
+        isCardPromo ? "border-border opacity-60" : "border-border/60"
       }`}
       onClick={() => navigate(`/sale/${sale.id}`)}
     >
-      {/* Content */}
-      <div className="p-4 sm:p-5 flex flex-col gap-3 flex-1">
-        {/* Top row: status + countdown */}
+      <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
+        {/* Row 1: Status badge + countdown */}
         <div className="flex items-center justify-between">
           <Badge
             variant="outline"
             className={`${statusInfo.className} border-0`}
-            style={{ fontSize: '11px', fontWeight: '600', padding: '2px 8px', letterSpacing: '0.01em' }}
+            style={{ fontSize: '11px', fontWeight: '600', padding: '2px 8px' }}
           >
             {statusInfo.emoji} {statusInfo.label}
           </Badge>
           <span
-            className={`font-semibold whitespace-nowrap px-2 py-0.5 rounded-full ${
-              isUrgent ? "bg-destructive/10 text-destructive" : "text-muted-foreground"
+            className={`font-semibold whitespace-nowrap ${
+              isUrgent ? "text-destructive" : "text-muted-foreground"
             }`}
-            style={{ fontSize: '12px' }}
+            style={{ fontSize: '11px' }}
           >
             {countdown}
           </span>
         </div>
 
-        {/* Title */}
+        {/* Row 2: Title */}
         <h3
-          className={`leading-snug line-clamp-2 ${
-            isCardPromo ? "text-muted-foreground" : "text-card-foreground"
-          }`}
-          style={{ fontSize: '16px', fontWeight: '650', lineHeight: '1.4' }}
+          className={`line-clamp-2 ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
+          style={{ fontSize: '15px', fontWeight: '650', lineHeight: '1.35' }}
         >
           {sale.sale_name}
         </h3>
 
-        {/* Platform + Date */}
+        {/* Row 3: Platform + Date */}
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-md bg-accent flex items-center justify-center shrink-0 p-0.5">
+          <div className="w-4.5 h-4.5 rounded bg-accent flex items-center justify-center shrink-0 p-0.5">
             <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" loading="lazy" />
           </div>
-          <span className="text-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>
+          <span className="text-foreground" style={{ fontSize: '12px', fontWeight: '500' }}>
             {sale.platform}
           </span>
-          <span className="text-muted-foreground" style={{ fontSize: '12px' }}>
+          <span className="text-muted-foreground" style={{ fontSize: '11px' }}>
             {formatDate(sale.start_date)} – {formatDate(sale.end_date)}
           </span>
         </div>
 
-        {/* Urgency banner */}
-        {isEndingToday && (
-          <div
-            className="bg-destructive/5 border border-destructive/15 rounded-lg px-3 py-2 text-destructive flex items-center gap-1.5"
-            style={{ fontSize: '12px', fontWeight: '600' }}
-          >
-            ⏰ {countdown === "종료" ? "세일이 종료되었습니다" : `마감까지 ${countdown}`}
+        {/* Row 4: Categories (desktop only) */}
+        {!isMobile && sale.category.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {sale.category.slice(0, 3).map((c) => (
+              <span key={c} className="text-muted-foreground bg-accent rounded px-1.5 py-0.5" style={{ fontSize: '10px', fontWeight: '500' }}>
+                {c}
+              </span>
+            ))}
           </div>
         )}
 
         {/* CTA */}
         <button
-          className="mt-auto w-full rounded-xl text-xs font-semibold h-9 flex items-center justify-center gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          className="mt-auto w-full rounded-lg text-xs font-semibold h-8 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
           onClick={(e) => {
             e.stopPropagation();
             navigate(`/sale/${sale.id}`);
           }}
         >
           세일 보러가기
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3 h-3" />
         </button>
       </div>
     </div>
