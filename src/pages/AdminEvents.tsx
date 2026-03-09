@@ -1,11 +1,11 @@
 // @ts-nocheck
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAdminSales } from "@/hooks/useSales";
-import { getTodayKST } from "@/data/salesUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sale, platforms } from "@/data/salesUtils";
+import { getSalePrimaryState } from "@/data/adminStateModel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -24,25 +24,35 @@ export default function AdminEvents() {
   const [sourceFilter, setSourceFilter] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
-  const today = getTodayKST();
-
   const { data: rawSales = [], isLoading } = useAdminSales({
-    publish_status: "published",
-    platform: platformFilter || undefined,
-    sale_tier: tierFilter || undefined,
     sort: sortBy,
   });
 
-  let sales = rawSales.filter(s => s.end_date >= today);
-  if (sourceFilter && sourceFilter !== "all") {
-    sales = sales.filter(s => {
-      const st = s.source_type || "";
-      if (sourceFilter === "official") return st === "crawler" || st === "official";
-      if (sourceFilter === "news") return st === "news";
-      if (sourceFilter === "community") return st === "community";
-      return true;
-    });
-  }
+  // CANONICAL STATE FILTER FIRST, then additional filters
+  const sales = useMemo(() => {
+    // Step 1: canonical state — only published
+    let filtered = rawSales.filter(s => getSalePrimaryState(s) === "published");
+
+    // Step 2: platform
+    if (platformFilter && platformFilter !== "all") {
+      filtered = filtered.filter(s => s.platform === platformFilter);
+    }
+    // Step 3: tier
+    if (tierFilter && tierFilter !== "all") {
+      filtered = filtered.filter(s => s.sale_tier === tierFilter);
+    }
+    // Step 4: source
+    if (sourceFilter && sourceFilter !== "all") {
+      filtered = filtered.filter(s => {
+        const st = s.source_type || "";
+        if (sourceFilter === "official") return st === "crawler" || st === "official";
+        if (sourceFilter === "news") return st === "news";
+        if (sourceFilter === "community") return st === "community";
+        return true;
+      });
+    }
+    return filtered;
+  }, [rawSales, platformFilter, tierFilter, sourceFilter]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });

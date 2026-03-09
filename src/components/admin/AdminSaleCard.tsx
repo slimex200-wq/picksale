@@ -159,9 +159,18 @@ export default function AdminSaleCard({ sale, allSales = [], actions = [], onAct
 
         {/* Thumbnail + external link */}
         <div className="flex items-start gap-1 shrink-0">
-          {hasImage && (
-            <img src={sale.image_url} alt="" className="w-16 h-16 rounded-md object-cover" />
-          )}
+          {hasValidImage ? (
+            <img
+              src={sale.image_url}
+              alt=""
+              className="w-16 h-16 rounded-md object-cover"
+              onError={() => setImgBroken(true)}
+            />
+          ) : logoSrc ? (
+            <div className="w-16 h-16 rounded-md bg-accent/40 flex items-center justify-center">
+              <img src={logoSrc} alt={sale.platform} className="max-w-[40px] max-h-[28px] object-contain" />
+            </div>
+          ) : null}
           {sale.link && (
             <a href={sale.link} target="_blank" rel="noopener noreferrer"
               className="p-1.5 rounded-md hover:bg-muted transition-colors">

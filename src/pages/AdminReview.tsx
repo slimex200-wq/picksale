@@ -1,9 +1,10 @@
 // @ts-nocheck
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAdminSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sale, platforms } from "@/data/salesUtils";
+import { getSalePrimaryState } from "@/data/adminStateModel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -21,34 +22,39 @@ export default function AdminReview() {
   const [sourceFilter, setSourceFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
-  const { data: pendingSales = [], isLoading: l1 } = useAdminSales({
-    review_status: "pending",
-    platform: platformFilter || undefined,
-    sale_tier: tierFilter || undefined,
+  // Fetch broadly — pending & draft sales
+  const { data: rawSales = [], isLoading } = useAdminSales({
     sort: sortBy,
   });
-  const { data: approvedDraftSales = [], isLoading: l2 } = useAdminSales({
-    review_status: "approved",
-    publish_status: "draft",
-    platform: platformFilter || undefined,
-    sale_tier: tierFilter || undefined,
-    sort: sortBy,
-  });
-
-  let sales = [...pendingSales, ...approvedDraftSales];
-  if (sourceFilter && sourceFilter !== "all") {
-    sales = sales.filter(s => {
-      const st = s.source_type || "";
-      if (sourceFilter === "official") return st === "crawler" || st === "official";
-      if (sourceFilter === "news") return st === "news";
-      if (sourceFilter === "community") return st === "community";
-      return true;
-    });
-  }
-  const isLoading = l1 || l2;
 
   // Fetch all sales for duplicate warning
   const { data: allSales = [] } = useAdminSales();
+
+  // CANONICAL STATE FILTER FIRST, then additional filters
+  const sales = useMemo(() => {
+    // Step 1: canonical state filter — ONLY review_pending
+    let filtered = rawSales.filter(s => getSalePrimaryState(s) === "review_pending");
+
+    // Step 2: platform filter
+    if (platformFilter && platformFilter !== "all") {
+      filtered = filtered.filter(s => s.platform === platformFilter);
+    }
+    // Step 3: tier filter
+    if (tierFilter && tierFilter !== "all") {
+      filtered = filtered.filter(s => s.sale_tier === tierFilter);
+    }
+    // Step 4: source filter
+    if (sourceFilter && sourceFilter !== "all") {
+      filtered = filtered.filter(s => {
+        const st = s.source_type || "";
+        if (sourceFilter === "official") return st === "crawler" || st === "official";
+        if (sourceFilter === "news") return st === "news";
+        if (sourceFilter === "community") return st === "community";
+        return true;
+      });
+    }
+    return filtered;
+  }, [rawSales, platformFilter, tierFilter, sourceFilter]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
 
