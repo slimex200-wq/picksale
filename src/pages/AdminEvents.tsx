@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { ArrowUpDown } from "lucide-react";
 import AdminSaleCard from "@/components/admin/AdminSaleCard";
 import AdminEditDialog from "@/components/admin/AdminEditDialog";
+import SourceDistribution from "@/components/admin/SourceDistribution";
 
 export default function AdminEvents() {
   const queryClient = useQueryClient();
@@ -29,7 +30,7 @@ export default function AdminEvents() {
   });
 
   // CANONICAL STATE FILTER FIRST, then additional filters
-  const sales = useMemo(() => {
+  const { salesBeforeSource, sales } = useMemo(() => {
     // Step 1: canonical state — only published
     let filtered = rawSales.filter(s => getSalePrimaryState(s) === "published");
 
@@ -41,6 +42,9 @@ export default function AdminEvents() {
     if (tierFilter && tierFilter !== "all") {
       filtered = filtered.filter(s => s.sale_tier === tierFilter);
     }
+
+    const beforeSource = filtered;
+
     // Step 4: source
     if (sourceFilter && sourceFilter !== "all") {
       filtered = filtered.filter(s => {
@@ -51,7 +55,7 @@ export default function AdminEvents() {
         return true;
       });
     }
-    return filtered;
+    return { salesBeforeSource: beforeSource, sales: filtered };
   }, [rawSales, platformFilter, tierFilter, sourceFilter]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
@@ -133,6 +137,13 @@ export default function AdminEvents() {
           {sortBy === "newest" ? "최신순" : "중요도순"}
         </Button>
       </div>
+
+      <SourceDistribution
+        sales={salesBeforeSource}
+        activeSource={sourceFilter}
+        onSourceChange={setSourceFilter}
+        contextLabel={`게시됨 ${salesBeforeSource.length}건`}
+      />
 
       <p className="text-xs text-muted-foreground">{sales.length}개 게시 이벤트</p>
 

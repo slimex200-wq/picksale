@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { ArrowUpDown } from "lucide-react";
 import AdminSaleCard from "@/components/admin/AdminSaleCard";
 import AdminEditDialog from "@/components/admin/AdminEditDialog";
+import SourceDistribution from "@/components/admin/SourceDistribution";
 
 export default function AdminReview() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export default function AdminReview() {
   const { data: allSales = [] } = useAdminSales();
 
   // CANONICAL STATE FILTER FIRST, then additional filters
-  const sales = useMemo(() => {
+  const { salesBeforeSource, sales } = useMemo(() => {
     // Step 1: canonical state filter — ONLY review_pending
     let filtered = rawSales.filter(s => getSalePrimaryState(s) === "review_pending");
 
@@ -45,6 +46,9 @@ export default function AdminReview() {
     if (tierFilter && tierFilter !== "all") {
       filtered = filtered.filter(s => s.sale_tier === tierFilter);
     }
+
+    const beforeSource = filtered;
+
     // Step 4: source filter
     if (sourceFilter && sourceFilter !== "all") {
       filtered = filtered.filter(s => {
@@ -55,7 +59,7 @@ export default function AdminReview() {
         return true;
       });
     }
-    return filtered;
+    return { salesBeforeSource: beforeSource, sales: filtered };
   }, [rawSales, platformFilter, tierFilter, sourceFilter]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
@@ -132,6 +136,13 @@ export default function AdminReview() {
           {sortBy === "newest" ? "최신순" : "중요도순"}
         </Button>
       </div>
+
+      <SourceDistribution
+        sales={salesBeforeSource}
+        activeSource={sourceFilter}
+        onSourceChange={setSourceFilter}
+        contextLabel={`검토 대기 ${salesBeforeSource.length}건`}
+      />
 
       <p className="text-xs text-muted-foreground">{sales.length}개 검토 대기</p>
 
