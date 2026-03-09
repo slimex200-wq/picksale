@@ -80,6 +80,7 @@ export default function AdminLayout() {
       const subsTotal = submissions.length;
 
       return {
+        all: { highlight: salesTotal, total: salesTotal },
         review: { highlight: states.review_pending, total: salesTotal },
         drafts: { highlight: states.approved_draft, total: salesTotal },
         events: { highlight: states.published, total: salesTotal },
