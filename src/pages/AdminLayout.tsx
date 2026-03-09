@@ -12,6 +12,7 @@ import { countByPrimaryState } from "@/data/adminStateModel";
 
 const tabDefs = [
   { to: "/admin", label: "개요", icon: Settings, exact: true },
+  { to: "/admin/all", label: "전체", icon: List, countKey: "all" },
   { to: "/admin/review", label: "검토", icon: Inbox, countKey: "review" },
   { to: "/admin/drafts", label: "승인(초안)", icon: List, countKey: "drafts" },
   { to: "/admin/events", label: "게시됨", icon: List, countKey: "events" },
@@ -79,6 +80,7 @@ export default function AdminLayout() {
       const subsTotal = submissions.length;
 
       return {
+        all: { highlight: salesTotal, total: salesTotal },
         review: { highlight: states.review_pending, total: salesTotal },
         drafts: { highlight: states.approved_draft, total: salesTotal },
         events: { highlight: states.published, total: salesTotal },
@@ -134,7 +136,9 @@ export default function AdminLayout() {
                 {label}
                 {c && c.highlight > 0 && (
                   <span className="ml-0.5 text-[10px] font-bold text-primary">
-                    {countKey === "signals" ? c.highlight : `${c.highlight}/${c.total}`}
+                    {countKey === "signals" || countKey === "all"
+                      ? c.highlight
+                      : `${c.highlight}/${c.total}`}
                   </span>
                 )}
               </Link>
