@@ -55,7 +55,7 @@ export default function AdminReview() {
 
   const openEdit = (sale: Sale) => {
     setEditingSale(sale);
-    setEditForm({ sale_name: sale.sale_name, platform: sale.platform, start_date: sale.start_date, end_date: sale.end_date });
+    setEditForm({ sale_name: sale.sale_name, platform: sale.platform, link: sale.link || "", start_date: sale.start_date, end_date: sale.end_date });
   };
 
   const handleEditSubmit = async () => {
