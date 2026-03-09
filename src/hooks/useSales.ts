@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Sale, Platform, SaleTier, ReviewStatus, PublishStatus } from "@/data/salesUtils";
 
 /** Columns needed for card/list views (no description, source_urls, filter_reason) */
-const LIST_COLUMNS = "id,platform,sale_name,start_date,end_date,category,link,sale_tier,importance_score,review_status,publish_status,grouped_page_count,event_id,signal_id,created_at";
+const LIST_COLUMNS = "id,platform,sale_name,start_date,end_date,category,link,sale_tier,importance_score,review_status,publish_status,grouped_page_count,event_id,signal_id,created_at,image_url";
 
 /** Public hook – only returns published sales */
 export function useSales() {
@@ -73,6 +73,7 @@ function mapRow(row: any): Sale {
     publish_status: (row.publish_status ?? "draft") as PublishStatus,
     source_urls: row.source_urls ?? [],
     grouped_page_count: row.grouped_page_count ?? 0,
+    image_url: row.image_url ?? "",
     event_id: row.event_id ?? null,
     signal_id: row.signal_id ?? null,
     created_at: row.created_at,

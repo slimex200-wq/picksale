@@ -20,6 +20,7 @@ export interface Sale {
   publish_status: PublishStatus;
   source_urls: string[];
   grouped_page_count: number;
+  image_url?: string;
   event_id?: string | null;
   signal_id?: string | null;
   created_at?: string;

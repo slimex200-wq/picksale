@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
+import SaleBannerImage from "@/components/SaleBannerImage";
 
 interface SaleCardProps {
   sale: Sale;
@@ -144,6 +145,8 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
           <ChevronRight className="w-5 h-5 text-muted-foreground" />
         </div>
       )}
+      {/* Banner image */}
+      <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} heightClass="h-32" className="rounded-t-xl" />
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
         {/* Row 1: Status badge + countdown */}
         <div className="flex items-center justify-between">
