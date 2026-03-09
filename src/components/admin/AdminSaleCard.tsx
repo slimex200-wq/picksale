@@ -28,6 +28,7 @@ interface AdminSaleCardProps {
 
 export default function AdminSaleCard({ sale, allSales = [], actions = [], onAction, onEdit }: AdminSaleCardProps) {
   const [sourcesOpen, setSourcesOpen] = useState(false);
+  const [imgBroken, setImgBroken] = useState(false);
 
   const primaryState = getSalePrimaryState(sale);
   const stateConf = primaryStateConfig[primaryState];
