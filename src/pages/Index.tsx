@@ -1,11 +1,12 @@
 import { useState, useMemo, useRef } from "react";
-import { sortByRanking, Platform, getSaleStatus } from "@/data/salesUtils";
+import { sortByRanking, getSaleStatus, SaleStatus } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
 import SaleCard from "@/components/SaleCard";
 import SaleRankingItem from "@/components/SaleRankingItem";
-import SaleStatusFilter, { type StatusFilter } from "@/components/SaleStatusFilter";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
+import QuickFilters from "@/components/QuickFilters";
+import PlatformExplorer from "@/components/PlatformExplorer";
 import TrendingCommunity from "@/components/TrendingCommunity";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
@@ -29,7 +30,8 @@ function SectionHeader({ emoji, title, count }: { emoji: string; title: string; 
 
 export default function Index() {
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [heroFilter, setHeroFilter] = useState<SaleStatus | null>(null);
+  const [quickFilter, setQuickFilter] = useState<string | null>(null);
   const [searchFocused, setSearchFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const { data: sales = [], isLoading } = useSales();
@@ -39,16 +41,26 @@ export default function Index() {
     [sales]
   );
 
-  // Live sales section
-  const liveSales = useMemo(
-    () => sortByRanking(activeSales.filter((s) => getSaleStatus(s) === "live")),
-    [activeSales]
-  );
-
-  // Filtered ranking
-  const ranked = useMemo(() => {
+  // Apply all filters
+  const filtered = useMemo(() => {
     let result = activeSales;
 
+    // Hero status filter
+    if (heroFilter) {
+      result = result.filter((s) => getSaleStatus(s) === heroFilter);
+    }
+
+    // Quick filter (status or category)
+    if (quickFilter) {
+      if (quickFilter === "ending_today") {
+        result = result.filter((s) => getSaleStatus(s) === "ending_today");
+      } else {
+        // Category filter
+        result = result.filter((s) => s.category.some((c) => c.includes(quickFilter)));
+      }
+    }
+
+    // Search
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       result = result.filter(
@@ -59,43 +71,71 @@ export default function Index() {
       );
     }
 
-    if (statusFilter !== "all") {
-      result = result.filter((s) => getSaleStatus(s) === statusFilter);
-    }
-
     return sortByRanking(result);
-  }, [query, activeSales, statusFilter]);
+  }, [query, activeSales, heroFilter, quickFilter]);
 
-  const featuredSales = ranked.slice(0, 6);
-  const rankingSales = ranked.slice(6);
+  const hasActiveFilter = !!heroFilter || !!quickFilter || !!query.trim();
+
+  // Section data — only when no active filter
+  const endingTodaySales = useMemo(
+    () => sortByRanking(activeSales.filter((s) => getSaleStatus(s) === "ending_today")),
+    [activeSales]
+  );
+  const liveSales = useMemo(
+    () => sortByRanking(activeSales.filter((s) => getSaleStatus(s) === "live")),
+    [activeSales]
+  );
+  const featuredSales = useMemo(
+    () => sortByRanking(activeSales).slice(0, 6),
+    [activeSales]
+  );
 
   const handleSearchSelect = (keyword: string) => {
     setQuery(keyword);
     setSearchFocused(false);
   };
 
+  const handleHeroFilter = (filter: SaleStatus | null) => {
+    setHeroFilter(filter);
+    setQuickFilter(null); // Clear quick filter when hero filter changes
+  };
+
+  const handleQuickFilter = (filter: string | null) => {
+    setQuickFilter(filter);
+    setHeroFilter(null); // Clear hero filter when quick filter changes
+  };
+
   return (
-    <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-12">
+    <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-10">
       <PageMeta title="PickSale - 쇼핑 세일 레이더" description="쿠팡, 무신사, 올리브영 등 주요 쇼핑몰의 세일 정보를 한눈에 확인하세요. 실시간 세일 랭킹과 타임라인을 제공합니다." />
       <CanonicalLink href={window.location.origin + "/"} />
 
-      {/* 1. Hero — Identity + Stats */}
-      {!isLoading && <HeroStats sales={activeSales} />}
-
-      {/* 2. Search */}
-      <div className="relative max-w-lg" ref={searchRef}>
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setSearchFocused(true)}
-          onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
-          placeholder="세일, 플랫폼, 카테고리 검색"
-          className="pl-9 rounded-xl bg-card border-border h-11"
+      {/* 1. Hero — Clickable Stats */}
+      {!isLoading && (
+        <HeroStats
+          sales={activeSales}
+          activeFilter={heroFilter}
+          onFilterChange={handleHeroFilter}
         />
-        {searchFocused && !query.trim() && (
-          <SearchSuggestions onSelect={handleSearchSelect} />
-        )}
+      )}
+
+      {/* 2. Search + Quick Filters */}
+      <div className="space-y-3">
+        <div className="relative max-w-lg" ref={searchRef}>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+            placeholder="세일, 플랫폼, 카테고리 검색"
+            className="pl-9 rounded-xl bg-card border-border h-11"
+          />
+          {searchFocused && !query.trim() && (
+            <SearchSuggestions onSelect={handleSearchSelect} />
+          )}
+        </div>
+        <QuickFilters activeFilter={quickFilter} onFilter={handleQuickFilter} />
       </div>
 
       {isLoading ? (
@@ -104,68 +144,85 @@ export default function Index() {
             <Skeleton key={i} className="h-40 w-full rounded-lg" />
           ))}
         </div>
+      ) : hasActiveFilter ? (
+        /* Filtered results */
+        <section className="space-y-4">
+          <SectionHeader emoji="🔍" title="검색 결과" count={filtered.length} />
+          {filtered.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+              {filtered.map((sale, i) => (
+                <SaleCard key={sale.id} sale={sale} rank={i + 1} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center py-12 text-muted-foreground">
+              <Search className="w-8 h-8 text-muted-foreground/40" />
+              <p className="text-sm mt-3">검색 결과가 없습니다.</p>
+            </div>
+          )}
+        </section>
       ) : (
         <>
-          {/* 3. 진행중 세일 */}
-          {liveSales.length > 0 && !query.trim() && statusFilter === "all" && (
+          {/* 3. 🔥 오늘 주목 세일 (추천) */}
+          {featuredSales.length > 0 && (
             <section className="space-y-4">
-              <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
+              <SectionHeader emoji="🔥" title="오늘 주목 세일" count={featuredSales.length} />
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                {liveSales.slice(0, 3).map((sale, i) => (
+                {featuredSales.map((sale, i) => (
                   <SaleCard key={sale.id} sale={sale} rank={i + 1} />
                 ))}
               </div>
             </section>
           )}
 
-          {/* 4. 추천 세일 + 필터 */}
-          <section className="space-y-4">
-            <div className="space-y-3">
-              <SaleStatusFilter value={statusFilter} onChange={setStatusFilter} />
-            </div>
-
-            {featuredSales.length > 0 && (
-              <div className="space-y-4">
-                <SectionHeader emoji="⚡" title="추천 세일" count={featuredSales.length} />
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                  {featuredSales.map((sale, i) => (
-                    <SaleCard key={sale.id} sale={sale} rank={i + 1} />
-                  ))}
-                </div>
+          {/* 4. ⏰ 오늘 종료 세일 */}
+          {endingTodaySales.length > 0 && (
+            <section className="space-y-4">
+              <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                {endingTodaySales.map((sale) => (
+                  <SaleCard key={sale.id} sale={sale} />
+                ))}
               </div>
-            )}
+            </section>
+          )}
 
-            {/* 5. 세일 랭킹 */}
-            {rankingSales.length > 0 && (
-              <div className="space-y-4">
-                <SectionHeader emoji="🏆" title="세일 랭킹" count={rankingSales.length} />
-                <div className="space-y-2">
-                  {rankingSales.map((sale, i) => (
-                    <SaleRankingItem key={sale.id} sale={sale} rank={i + 7} />
-                  ))}
-                </div>
+          {/* 5. 🟢 지금 진행중 세일 */}
+          {liveSales.length > 0 && (
+            <section className="space-y-4">
+              <SectionHeader emoji="🟢" title="지금 진행중 세일" count={liveSales.length} />
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                {liveSales.slice(0, 6).map((sale) => (
+                  <SaleCard key={sale.id} sale={sale} />
+                ))}
               </div>
-            )}
+            </section>
+          )}
 
-            {ranked.length === 0 && (
-              <div className="flex flex-col items-center py-12 text-muted-foreground">
-                {query.trim() || statusFilter !== "all" ? (
-                  <>
-                    <Search className="w-8 h-8 text-muted-foreground/40" />
-                    <p className="text-sm mt-3">검색 결과가 없습니다.</p>
-                  </>
-                ) : (
-                  <>
-                    <Trophy className="w-10 h-10 text-muted-foreground/40" />
-                    <p className="text-sm mt-3">진행 중인 세일이 없습니다.</p>
-                  </>
-                )}
+          {/* 6. 🏆 세일 랭킹 */}
+          {sortByRanking(activeSales).length > 6 && (
+            <section className="space-y-4">
+              <SectionHeader emoji="🏆" title="세일 랭킹" />
+              <div className="space-y-2">
+                {sortByRanking(activeSales).slice(6, 16).map((sale, i) => (
+                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 7} />
+                ))}
               </div>
-            )}
-          </section>
+            </section>
+          )}
 
-          {/* 6. Small community preview */}
+          {/* 7. 🏬 플랫폼별 세일 */}
+          <PlatformExplorer sales={activeSales} />
+
+          {/* 8. 💬 커뮤니티 핫딜 */}
           <TrendingCommunity maxPosts={3} />
+
+          {activeSales.length === 0 && (
+            <div className="flex flex-col items-center py-12 text-muted-foreground">
+              <Trophy className="w-10 h-10 text-muted-foreground/40" />
+              <p className="text-sm mt-3">진행 중인 세일이 없습니다.</p>
+            </div>
+          )}
         </>
       )}
     </div>
