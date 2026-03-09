@@ -1,4 +1,5 @@
 import { Sale, getSaleStatus, saleStatusConfig, platformColors, platformEmojis } from "@/data/salesUtils";
+import { formatCategory } from "@/utils/categoryFormat";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
