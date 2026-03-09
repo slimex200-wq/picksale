@@ -30,44 +30,32 @@ export default function SaleRankingItem({ sale, rank }: Props) {
   return (
     <div
       onClick={() => navigate(`/sale/${sale.id}`)}
-      className={`flex items-center gap-3 px-3 py-3 rounded-xl bg-card border border-border/50 hover:shadow-card-hover hover:-translate-y-px transition-all cursor-pointer ${
+      className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-card border border-border/50 hover:shadow-card-hover hover:-translate-y-px transition-all cursor-pointer ${
         isCardPromo ? "opacity-70" : ""
       }`}
     >
        {/* Rank */}
-       <TooltipProvider>
-         <Tooltip>
-           <TooltipTrigger asChild>
-             <span className={`font-bold w-6 text-center shrink-0 ${
-               rank <= 3 ? "text-primary" : "text-muted-foreground"
-             }`} style={{ fontSize: '14px', fontWeight: '700' }}>
-               #{rank}
-             </span>
-           </TooltipTrigger>
-           <TooltipContent>{rank}위</TooltipContent>
-         </Tooltip>
-       </TooltipProvider>
+       <span className={`font-bold w-5 text-center shrink-0 ${
+         rank <= 3 ? "text-primary" : "text-muted-foreground"
+       }`} style={{ fontSize: '14px', fontWeight: '700' }}>
+         {rank}
+       </span>
 
       {/* Logo */}
-      <div className="w-9 h-9 rounded-lg bg-white/90 border border-border/50 flex items-center justify-center shrink-0 p-1">
+      <div className="w-7 h-7 rounded-md bg-white/90 border border-border/50 flex items-center justify-center shrink-0 p-0.5">
         <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded" />
       </div>
 
        {/* Info */}
        <div className="flex-1 min-w-0">
-         <h4 className="font-semibold text-card-foreground truncate" style={{ fontSize: '14px', fontWeight: '600', lineHeight: '1.45' }}>
+         <h4 className="font-semibold text-card-foreground truncate" style={{ fontSize: '13px', fontWeight: '600', lineHeight: '1.4' }}>
            {sale.sale_name}
          </h4>
-         <div className="flex items-center gap-1.5 mt-0.5">
-           <span className="text-muted-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>{sale.platform}</span>
-           <Badge variant="outline" className={`px-1.5 py-0 h-4 ${statusInfo.className}`} style={{ fontSize: '11px', fontWeight: '600' }}>
-             {statusInfo.emoji} {statusInfo.label}
-           </Badge>
-         </div>
+         <span className="text-muted-foreground truncate block" style={{ fontSize: '11px', fontWeight: '500' }}>{sale.platform}</span>
        </div>
 
       {/* Countdown */}
-      <span className={`text-[11px] font-bold whitespace-nowrap shrink-0 px-2 py-1 rounded-lg ${
+      <span className={`text-[10px] font-bold whitespace-nowrap shrink-0 px-1.5 py-0.5 rounded-md ${
         isUrgent
           ? "bg-destructive/10 text-destructive"
           : "bg-accent text-accent-foreground"
