@@ -1,7 +1,7 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   Settings, Inbox, List, LogOut, MessageSquare, Send, Radio,
-  Bug, Copy, BarChart3, FlaskConical,
+  Bug, Copy, BarChart3, FlaskConical, EyeOff,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
