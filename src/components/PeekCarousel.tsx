@@ -42,7 +42,7 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
 
   return (
     <div
-      className="relative group"
+      className="relative group overflow-hidden"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
