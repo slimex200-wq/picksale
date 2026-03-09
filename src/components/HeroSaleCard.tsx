@@ -118,7 +118,7 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
         <div className="px-3 pb-3 pt-2 mt-auto relative z-30">
           <button
             className="w-full rounded-lg text-xs font-semibold h-7 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            onClick={(e) => { e.stopPropagation(); navigate(`/sale/${sale.id}`); }}
+            onClick={(e) => { e.stopPropagation(); handleOpen(); }}
           >
             세일 보러가기
             <ArrowRight className="w-3 h-3" />
