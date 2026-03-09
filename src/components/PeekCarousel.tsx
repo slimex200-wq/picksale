@@ -17,8 +17,20 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
     const el = scrollRef.current;
     if (!el) return;
     const scrollLeft = el.scrollLeft;
-    const idx = Math.round(scrollLeft / (cardWidth + gap));
-    setActiveIndex(Math.max(0, Math.min(count - 1, idx)));
+    const step = cardWidth + gap;
+    // Find the closest card to the current scroll position
+    let best = 0;
+    let bestDist = Infinity;
+    for (let i = 0; i < count; i++) {
+      const dist = Math.abs(scrollLeft - i * step);
+      if (dist < bestDist) { bestDist = dist; best = i; }
+    }
+    // If scrolled near the end, activate the last visible card
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll > 0 && scrollLeft >= maxScroll - 10) {
+      best = count - 1;
+    }
+    setActiveIndex(best);
   }, [cardWidth, gap, count]);
 
   useEffect(() => {
