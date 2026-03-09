@@ -19,11 +19,11 @@ import PageMeta from "@/components/PageMeta";
 function SectionHeader({ emoji, title, count, moreLink, moreLabel }: { emoji: string; title: string; count?: number; moreLink?: string; moreLabel?: string }) {
   return (
     <div className="flex items-center justify-between px-1">
-      <h2 className="text-5xl font-bold text-foreground flex items-center gap-2" style={{ fontSize: '20px', fontWeight: '700' }}>
+      <h2 className="text-foreground flex items-center gap-2" style={{ fontSize: '20px', fontWeight: '700' }}>
         <span>{emoji}</span>
         {title}
         {count !== undefined && (
-          <span className="text-[11px] text-muted-foreground font-semibold ml-1 bg-accent rounded-full px-2 py-0.5">
+          <span className="text-muted-foreground bg-accent rounded-full px-2 py-0.5" style={{ fontSize: '11px', fontWeight: '600' }}>
             {count}
           </span>
         )}
@@ -76,6 +76,14 @@ export default function Index() {
 
   const hasActiveFilter = !!heroFilter || !!quickFilter || !!query.trim();
 
+  // Featured: only live + ending_today (no ended)
+  const featuredSales = useMemo(
+    () => sortByRanking(activeSales.filter((s) => {
+      const st = getSaleStatus(s);
+      return st === "live" || st === "ending_today";
+    })).slice(0, 6),
+    [activeSales]
+  );
   const endingTodaySales = useMemo(
     () => sortByRanking(activeSales.filter((s) => getSaleStatus(s) === "ending_today")),
     [activeSales]
@@ -84,35 +92,23 @@ export default function Index() {
     () => sortByRanking(activeSales.filter((s) => getSaleStatus(s) === "live")),
     [activeSales]
   );
-  const featuredSales = useMemo(
-    () => sortByRanking(activeSales).slice(0, 6),
-    [activeSales]
-  );
 
   const handleSearchSelect = (keyword: string) => {
     setQuery(keyword);
     setSearchFocused(false);
   };
-
   const handleHeroFilter = (filter: SaleStatus | null) => {
     setHeroFilter(filter);
     setQuickFilter(null);
   };
-
   const handleQuickFilter = (filter: string | null) => {
     setQuickFilter(filter);
     setHeroFilter(null);
   };
 
-  // Mobile limits
   const mobileCardLimit = 3;
-  const mobileRankingLimit = 3;
-
-  // Mobile tab data
   const mobileTabSales = mobileTab === "featured" ? featuredSales : mobileTab === "live" ? liveSales : endingTodaySales;
   const mobileTabDisplay = mobileTabSales.slice(0, mobileCardLimit);
-
-  // Desktop sidebar data
   const rankingSales = sortByRanking(activeSales).slice(0, 10);
 
   return (
@@ -120,12 +116,12 @@ export default function Index() {
       <PageMeta title="PickSale - 쇼핑 세일 레이더" description="쿠팡, 무신사, 올리브영 등 주요 쇼핑몰의 세일 정보를 한눈에 확인하세요." />
       <CanonicalLink href={window.location.origin + "/"} />
 
-      {/* Hero + Search — always full width */}
-      <div className="space-y-4 mb-8">
+      {/* Hero + Search */}
+      <div className="space-y-3 mb-6">
         {!isLoading && (
           <HeroStats sales={activeSales} activeFilter={heroFilter} onFilterChange={handleHeroFilter} />
         )}
-        <div className="space-y-3">
+        <div className="space-y-2">
           <div className="relative max-w-lg" ref={searchRef}>
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -134,7 +130,7 @@ export default function Index() {
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
               placeholder="세일, 플랫폼, 카테고리 검색"
-              className="pl-9 rounded-xl bg-card border-border h-11"
+              className="pl-9 rounded-xl bg-card border-border h-10"
             />
             {searchFocused && !query.trim() && <SearchSuggestions onSelect={handleSearchSelect} />}
           </div>
@@ -144,27 +140,27 @@ export default function Index() {
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-40 w-full rounded-lg" />)}
+          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-32 w-full rounded-lg" />)}
         </div>
       ) : hasActiveFilter ? (
-        <section className="space-y-4">
+        <section className="space-y-3">
           <SectionHeader emoji="🔍" title="검색 결과" count={filtered.length} />
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
               {filtered.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} />)}
             </div>
           ) : (
-            <div className="flex flex-col items-center py-12 text-muted-foreground">
-              <Search className="w-8 h-8 text-muted-foreground/40" />
-              <p className="text-sm mt-3">검색 결과가 없습니다.</p>
+            <div className="flex flex-col items-center py-10 text-muted-foreground">
+              <Search className="w-7 h-7 text-muted-foreground/40" />
+              <p className="text-sm mt-2">검색 결과가 없습니다.</p>
             </div>
           )}
         </section>
       ) : isMobile ? (
         /* ═══ MOBILE LAYOUT ═══ */
-        <div className="space-y-10">
-          {/* Tabbed sections: 추천 / 진행중 / 오늘 종료 */}
-          <section className="space-y-4">
+        <div className="space-y-8">
+          {/* Tabbed sections */}
+          <section className="space-y-3">
             <div className="flex items-center bg-muted rounded-xl p-1 gap-0.5">
               {([
                 { key: "featured", label: "🔥 추천", count: featuredSales.length },
@@ -185,56 +181,52 @@ export default function Index() {
               ))}
             </div>
             {mobileTabDisplay.length > 0 ? (
-              <div className="grid grid-cols-1 gap-3">
+              <div className="grid grid-cols-1 gap-2">
                 {mobileTabDisplay.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} />)}
               </div>
             ) : (
-              <div className="flex flex-col items-center py-8 text-muted-foreground">
+              <div className="flex flex-col items-center py-6 text-muted-foreground">
                 <p className="text-sm">해당 세일이 없습니다.</p>
               </div>
             )}
             {mobileTabSales.length > mobileCardLimit && (
-              <Link to="/radar" className="block text-center text-xs text-primary font-medium hover:underline py-2">
+              <Link to="/radar" className="block text-center text-xs text-primary font-medium hover:underline py-1">
                 전체 보기 →
               </Link>
             )}
           </section>
 
-          {/* Ranking — compact, top 3 */}
+          {/* Ranking — top 3 */}
           {rankingSales.length > 0 && (
-            <section className="space-y-3">
+            <section className="space-y-2">
               <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
-              <div className="space-y-2">
-                {rankingSales.slice(0, mobileRankingLimit).map((sale, i) => (
+              <div className="space-y-1.5">
+                {rankingSales.slice(0, 3).map((sale, i) => (
                   <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
                 ))}
               </div>
             </section>
           )}
 
-          {/* Platform — horizontal carousel */}
           <PlatformExplorer sales={activeSales} />
-
-          {/* Community — compact */}
           <TrendingCommunity maxPosts={2} />
 
           {activeSales.length === 0 && (
-            <div className="flex flex-col items-center py-12 text-muted-foreground">
-              <Trophy className="w-10 h-10 text-muted-foreground/40" />
-              <p className="text-sm mt-3">진행 중인 세일이 없습니다.</p>
+            <div className="flex flex-col items-center py-10 text-muted-foreground">
+              <Trophy className="w-8 h-8 text-muted-foreground/40" />
+              <p className="text-sm mt-2">진행 중인 세일이 없습니다.</p>
             </div>
           )}
         </div>
       ) : (
         /* ═══ DESKTOP 2-COLUMN LAYOUT ═══ */
         <div className="grid grid-cols-[1fr_280px] gap-6">
-          {/* Center — Main Content */}
-          <main className="space-y-10">
-            {/* Ranking — horizontal compact */}
+          <main className="space-y-8">
+            {/* Ranking */}
             {rankingSales.length > 0 && (
-              <section className="space-y-4">
+              <section className="space-y-3">
                 <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-1.5">
                   {rankingSales.slice(0, 6).map((sale, i) => (
                     <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
                   ))}
@@ -244,8 +236,8 @@ export default function Index() {
 
             {/* Featured */}
             {featuredSales.length > 0 && (
-              <section className="space-y-4">
-                <SectionHeader emoji="🔥" title="오늘 주목 세일" count={featuredSales.length} />
+              <section className="space-y-3">
+                <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   {featuredSales.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} />)}
                 </div>
@@ -254,7 +246,7 @@ export default function Index() {
 
             {/* Ending Today */}
             {endingTodaySales.length > 0 && (
-              <section className="space-y-4">
+              <section className="space-y-3">
                 <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   {endingTodaySales.map((sale) => <SaleCard key={sale.id} sale={sale} />)}
@@ -264,26 +256,24 @@ export default function Index() {
 
             {/* Live */}
             {liveSales.length > 0 && (
-              <section className="space-y-4">
-                <SectionHeader emoji="🟢" title="지금 진행중 세일" count={liveSales.length} />
+              <section className="space-y-3">
+                <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   {liveSales.slice(0, 6).map((sale) => <SaleCard key={sale.id} sale={sale} />)}
                 </div>
               </section>
             )}
 
-            {/* Platform */}
             <PlatformExplorer sales={activeSales} />
 
             {activeSales.length === 0 && (
-              <div className="flex flex-col items-center py-12 text-muted-foreground">
-                <Trophy className="w-10 h-10 text-muted-foreground/40" />
-                <p className="text-sm mt-3">진행 중인 세일이 없습니다.</p>
+              <div className="flex flex-col items-center py-10 text-muted-foreground">
+                <Trophy className="w-8 h-8 text-muted-foreground/40" />
+                <p className="text-sm mt-2">진행 중인 세일이 없습니다.</p>
               </div>
             )}
           </main>
 
-          {/* Right Sidebar — Community */}
           <aside className="space-y-4 sticky top-4">
             <TrendingCommunity maxPosts={5} />
           </aside>

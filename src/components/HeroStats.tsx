@@ -15,9 +15,9 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
   const endingToday = sales.filter((s) => getSaleStatus(s) === "ending_today");
 
   const stats = [
-    { key: "live" as SaleStatus, label: "진행중", count: liveSales.length, color: "text-green-600", bg: "bg-green-100/80", activeBorder: "border-green-400", icon: TrendingUp },
-    { key: "starting_soon" as SaleStatus, label: "예정", count: startingSoon.length, color: "text-yellow-600", bg: "bg-yellow-100/80", activeBorder: "border-yellow-400", icon: Clock },
-    { key: "ending_today" as SaleStatus, label: "오늘 종료", count: endingToday.length, color: "text-red-600", bg: "bg-red-100/80", activeBorder: "border-red-400", icon: AlertTriangle },
+    { key: "live" as SaleStatus, label: "진행중", count: liveSales.length, color: "text-green-600", bg: "bg-green-100/80", activeBorder: "border-green-400", icon: TrendingUp, emoji: "🟢" },
+    { key: "starting_soon" as SaleStatus, label: "예정", count: startingSoon.length, color: "text-yellow-600", bg: "bg-yellow-100/80", activeBorder: "border-yellow-400", icon: Clock, emoji: "⏰" },
+    { key: "ending_today" as SaleStatus, label: "오늘 종료", count: endingToday.length, color: "text-red-600", bg: "bg-red-100/80", activeBorder: "border-red-400", icon: AlertTriangle, emoji: "🔴" },
   ];
 
   const handleClick = (key: SaleStatus) => {
@@ -29,13 +29,12 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
       <div className="flex items-center gap-2.5">
         <Radar className="w-5 h-5 text-primary" />
         <div>
-        <h1 className="text-foreground tracking-tight" style={{ fontSize: '24px', fontWeight: '700' }}>세일 레이더</h1>
+          <h1 className="text-foreground tracking-tight" style={{ fontSize: '24px', fontWeight: '700' }}>세일 레이더</h1>
           <p className="text-muted-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>주요 쇼핑몰 세일을 실시간으로 탐지합니다</p>
         </div>
       </div>
 
       {isMobile ? (
-        /* Mobile: compact inline bar */
         <div className="flex items-center bg-card border border-border rounded-xl px-1 py-1 gap-0.5">
           {stats.map((stat) => {
             const isActive = activeFilter === stat.key;
@@ -43,22 +42,22 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
               <button
                 key={stat.key}
                 onClick={() => handleClick(stat.key)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   isActive
                     ? `${stat.bg} ${stat.color} shadow-sm`
                     : "text-muted-foreground hover:bg-accent"
                 }`}
               >
-                <span className={`font-extrabold text-sm tabular-nums ${isActive ? stat.color : "text-foreground"}`}>
+                <span style={{ fontSize: '12px' }}>{stat.emoji}</span>
+                <span className="whitespace-nowrap" style={{ fontSize: '11px' }}>{stat.label}</span>
+                <span className={`font-extrabold tabular-nums ${isActive ? stat.color : "text-foreground"}`} style={{ fontSize: '13px' }}>
                   {stat.count}
                 </span>
-                <span className="whitespace-nowrap">{stat.label}</span>
               </button>
             );
           })}
         </div>
       ) : (
-        /* Desktop: cards */
         <div className="grid grid-cols-3 gap-2">
           {stats.map((stat) => {
             const isActive = activeFilter === stat.key;

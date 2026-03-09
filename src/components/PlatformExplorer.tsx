@@ -14,7 +14,10 @@ export default function PlatformExplorer({ sales }: Props) {
     .filter((p) => p !== "커뮤니티 핫딜")
     .map((p) => {
       const platSales = sales.filter((s) => s.platform === p);
-      const live = platSales.filter((s) => getSaleStatus(s) === "live" || getSaleStatus(s) === "ending_today").length;
+      const live = platSales.filter((s) => {
+        const st = getSaleStatus(s);
+        return st === "live" || st === "ending_today";
+      }).length;
       const ending = platSales.filter((s) => getSaleStatus(s) === "ending_today").length;
       return { platform: p, live, ending };
     });
@@ -22,18 +25,18 @@ export default function PlatformExplorer({ sales }: Props) {
   const PlatformCard = ({ platform, live, ending }: { platform: Platform; live: number; ending: number }) => (
     <Link
       to={`/platform/${platformSlugs[platform]}`}
-      className="bg-card border border-border rounded-xl px-3 py-3 flex items-center gap-2.5 hover:shadow-md transition-shadow group shrink-0"
-      style={isMobile ? { minWidth: "200px" } : undefined}
+      className="bg-card border border-border rounded-xl px-3 py-2.5 flex items-center gap-2.5 hover:shadow-md transition-shadow group shrink-0"
+      style={isMobile ? { minWidth: "180px" } : undefined}
     >
-      <div className="w-9 h-9 rounded-lg bg-accent/60 border border-border/50 flex items-center justify-center p-1 shrink-0">
+      <div className="w-8 h-8 rounded-lg bg-accent/60 border border-border/50 flex items-center justify-center p-1 shrink-0">
         <img src={platformLogos[platform]} alt={platform} className="w-full h-full object-contain rounded" loading="lazy" />
       </div>
       <div className="flex-1 min-w-0">
-        <span className="text-xs font-bold text-card-foreground block">{platform}</span>
-        <div className="flex items-center gap-2 mt-0.5">
-          {live > 0 && <span className="text-[10px] text-green-600 font-semibold">진행중 {live}</span>}
-          {ending > 0 && <span className="text-[10px] text-red-600 font-semibold">오늘종료 {ending}</span>}
-          {live === 0 && ending === 0 && <span className="text-[10px] text-muted-foreground">세일 없음</span>}
+        <span className="text-card-foreground block" style={{ fontSize: '13px', fontWeight: '700' }}>{platform}</span>
+        <div className="flex items-center gap-1.5 mt-0.5">
+          {live > 0 && <span className="text-green-600" style={{ fontSize: '10px', fontWeight: '600' }}>진행중 {live}</span>}
+          {ending > 0 && <span className="text-destructive" style={{ fontSize: '10px', fontWeight: '600' }}>오늘종료 {ending}</span>}
+          {live === 0 && ending === 0 && <span className="text-muted-foreground" style={{ fontSize: '10px' }}>세일 없음</span>}
         </div>
       </div>
       <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
@@ -41,8 +44,8 @@ export default function PlatformExplorer({ sales }: Props) {
   );
 
   return (
-    <section className="space-y-4">
-      <h2 className="text-lg font-extrabold text-foreground px-1 flex items-center gap-2">
+    <section className="space-y-3">
+      <h2 className="text-foreground px-1 flex items-center gap-2" style={{ fontSize: '20px', fontWeight: '700' }}>
         <span>🏬</span>
         플랫폼별 세일
       </h2>
