@@ -407,6 +407,7 @@ export type Database = {
           latest_pub_date: string | null
           latest_source_url: string | null
           link: string
+          matched_by: string | null
           platform: string
           publish_status: string
           review_status: string
@@ -417,6 +418,7 @@ export type Database = {
           source_type: string | null
           source_urls: string[]
           start_date: string
+          updated_at: string
         }
         Insert: {
           category?: string[]
@@ -434,6 +436,7 @@ export type Database = {
           latest_pub_date?: string | null
           latest_source_url?: string | null
           link?: string
+          matched_by?: string | null
           platform: string
           publish_status?: string
           review_status?: string
@@ -444,6 +447,7 @@ export type Database = {
           source_type?: string | null
           source_urls?: string[]
           start_date: string
+          updated_at?: string
         }
         Update: {
           category?: string[]
@@ -461,6 +465,7 @@ export type Database = {
           latest_pub_date?: string | null
           latest_source_url?: string | null
           link?: string
+          matched_by?: string | null
           platform?: string
           publish_status?: string
           review_status?: string
@@ -471,6 +476,7 @@ export type Database = {
           source_type?: string | null
           source_urls?: string[]
           start_date?: string
+          updated_at?: string
         }
         Relationships: [
           {
