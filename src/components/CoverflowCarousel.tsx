@@ -90,7 +90,7 @@ export default function CoverflowCarousel({ children }: Props) {
                     ? "0 12px 40px -8px hsl(var(--primary) / 0.22), 0 4px 12px -2px hsl(var(--foreground) / 0.08)"
                     : "0 2px 12px -4px hsl(var(--foreground) / 0.1)",
                   transition: "box-shadow 0.45s ease",
-                  pointerEvents: "none",
+                  pointerEvents: isCenter ? "auto" : "none",
                 }}
               >
                 {isValidElement(child)
