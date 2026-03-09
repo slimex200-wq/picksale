@@ -380,7 +380,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                 <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
                 <PeekCarousel cardWidth={240} gap={16}>
                   {endingTodaySales.map((sale) => (
-                    <SaleCard key={sale.id} sale={sale} />
+                    <HeroSaleCard key={sale.id} sale={sale} />
                   ))}
                 </PeekCarousel>
               </section>
@@ -390,7 +390,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                 <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
                 <PeekCarousel cardWidth={240} gap={16}>
                   {liveSales.slice(0, 6).map((sale) => (
-                    <SaleCard key={sale.id} sale={sale} />
+                    <HeroSaleCard key={sale.id} sale={sale} />
                   ))}
                 </PeekCarousel>
               </section>
