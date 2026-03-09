@@ -1,4 +1,4 @@
-import { Sale, platformColors, platformEmojis, getSaleStatus, saleStatusConfig, calculateRankingScore, isCreditCardPromo } from "@/data/salesUtils";
+import { Sale, platformColors, getSaleStatus, saleStatusConfig, calculateRankingScore, isCreditCardPromo } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,13 +6,13 @@ import { Bell, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-function daysLeft(endDate: string) {
-  const diff = Math.ceil(
-    (new Date(endDate).getTime() - Date.now()) / 86400000
-  );
-  if (diff <= 0) return "오늘 종료";
-  if (diff === 1) return "내일 종료";
-  return `D-${diff}`;
+function countdownText(endDate: string) {
+  const diffMs = new Date(endDate).getTime() - Date.now();
+  if (diffMs <= 0) return "종료";
+  const hours = Math.floor(diffMs / 3600000);
+  if (hours < 24) return `${hours}시간 남음`;
+  const days = Math.ceil(diffMs / 86400000);
+  return `${days}일 남음`;
 }
 
 function formatDate(d: string) {
@@ -28,8 +28,8 @@ interface SaleCardProps {
 export default function SaleCard({ sale, rank }: SaleCardProps) {
   const navigate = useNavigate();
   const colorClass = platformColors[sale.platform];
-  const days = daysLeft(sale.end_date);
-  const isUrgent = days === "오늘 종료" || days === "내일 종료";
+  const countdown = countdownText(sale.end_date);
+  const isUrgent = countdown.includes("시간") || countdown === "종료";
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
   const isCardPromo = isCreditCardPromo(sale.sale_name);
@@ -49,7 +49,10 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
             {rank}
           </span>
         )}
-        <img src={platformLogos[sale.platform]} alt={sale.platform} className="h-5 w-auto object-contain rounded" />
+        {/* Logo with background container for visibility */}
+        <div className="w-6 h-6 rounded-md bg-white/90 flex items-center justify-center shrink-0 p-0.5">
+          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" />
+        </div>
         <span className={`text-[11px] font-bold ${isCardPromo ? "text-muted-foreground" : "text-primary-foreground/90"}`}>{sale.platform}</span>
         {isCardPromo && (
           <Badge variant="outline" className="text-[9px] ml-1 bg-muted text-muted-foreground border-border">
@@ -65,18 +68,16 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
                 : "bg-white/15 text-primary-foreground/90"
           }`}
         >
-          {days}
+          {countdown}
         </span>
       </div>
 
       {/* Content */}
       <div className="p-4 flex flex-col gap-2.5 flex-1">
-        {/* Status badge only — no signal bars on public cards */}
         <div className="flex items-center gap-2">
           <Badge variant="outline" className={`text-[10px] font-semibold px-2 py-0.5 ${statusInfo.className}`}>
             {statusInfo.emoji} {statusInfo.label}
           </Badge>
-          {/* Show sale tier indicator for strong events only */}
           {!isCardPromo && rankingScore >= 6 && (
             <span className="ml-auto text-[10px] font-semibold text-primary">
               🔥 주요 세일
