@@ -2,6 +2,7 @@ import { useState, useMemo, useRef } from "react";
 import { sortByRanking, getSaleStatus, SaleStatus } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
 import SaleCard from "@/components/SaleCard";
+import CoverflowCarousel from "@/components/CoverflowCarousel";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
@@ -234,45 +235,39 @@ export default function Index() {
               </section>
             )}
 
-            {/* Featured — horizontal scroll */}
+            {/* Featured — coverflow carousel */}
             {featuredSales.length > 0 && (
               <section className="space-y-3">
                 <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
-                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+                <CoverflowCarousel>
                   {featuredSales.map((sale, i) => (
-                    <div key={sale.id} className="min-w-[260px] max-w-[280px] flex-1 shrink-0 snap-start">
-                      <SaleCard sale={sale} rank={i + 1} />
-                    </div>
+                    <SaleCard key={sale.id} sale={sale} rank={i + 1} />
                   ))}
-                </div>
+                </CoverflowCarousel>
               </section>
             )}
 
-            {/* Ending Today + Live — horizontal scroll rows side by side */}
+            {/* Ending Today + Live — coverflow carousels side by side */}
             {(endingTodaySales.length > 0 || liveSales.length > 0) && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
                 {endingTodaySales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+                    <CoverflowCarousel visibleSide={1}>
                       {endingTodaySales.map((sale) => (
-                        <div key={sale.id} className="min-w-[240px] max-w-[260px] flex-1 shrink-0 snap-start">
-                          <SaleCard sale={sale} />
-                        </div>
+                        <SaleCard key={sale.id} sale={sale} />
                       ))}
-                    </div>
+                    </CoverflowCarousel>
                   </section>
                 )}
                 {liveSales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+                    <CoverflowCarousel visibleSide={1}>
                       {liveSales.slice(0, 6).map((sale) => (
-                        <div key={sale.id} className="min-w-[240px] max-w-[260px] flex-1 shrink-0 snap-start">
-                          <SaleCard sale={sale} />
-                        </div>
+                        <SaleCard key={sale.id} sale={sale} />
                       ))}
-                    </div>
+                    </CoverflowCarousel>
                   </section>
                 )}
               </div>
