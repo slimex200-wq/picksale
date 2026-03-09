@@ -2,7 +2,6 @@ import { Sale, isCreditCardPromo, getSaleStatus } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
-import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 
 const RANK_MEDALS: Record<number, string> = { 1: "🥇", 2: "🥈", 3: "🥉" };
 
@@ -23,7 +22,7 @@ export default function SaleRankingItem({ sale, rank }: Props) {
   return (
     <div
       onClick={() => navigate(`/sale/${sale.id}`)}
-      className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-card border border-border/50 hover:shadow-sm hover:-translate-y-px transition-all cursor-pointer ${
+      className={`flex items-center gap-2 px-3 py-2.5 rounded-xl bg-card border border-border/50 hover:shadow-sm hover:-translate-y-px transition-all cursor-pointer ${
         isCardPromo ? "opacity-60" : ""
       }`}
     >
@@ -32,9 +31,9 @@ export default function SaleRankingItem({ sale, rank }: Props) {
         {medal || <span className={rank <= 5 ? "text-foreground" : "text-muted-foreground"}>{rank}</span>}
       </span>
 
-      {/* Logo — enlarged */}
-      <div className="w-12 h-12 rounded-md overflow-hidden shrink-0 bg-accent">
-        <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-cover" loading="lazy" />
+      {/* Logo */}
+      <div className="w-7 h-7 rounded-lg bg-accent border border-border/40 flex items-center justify-center shrink-0 p-1">
+        <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded" loading="lazy" />
       </div>
 
       {/* Info */}
@@ -42,15 +41,14 @@ export default function SaleRankingItem({ sale, rank }: Props) {
         <h4 className="text-card-foreground truncate tracking-tight" style={{ fontSize: '13px', fontWeight: '600', lineHeight: '1.4' }}>
           {sale.sale_name}
         </h4>
-        <span className="text-muted-foreground text-[11px]">{sale.platform}</span>
       </div>
 
       {/* Countdown */}
       {isEndingToday ? (
-        <div className="flex flex-col items-end gap-0.5 shrink-0">
-          <ClosingTodayBadge size="sm" />
-          <span className="text-[9px] text-muted-foreground/50">{countdown}</span>
-        </div>
+        <span className="shrink-0 inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today whitespace-nowrap" style={{ fontSize: '10px', fontWeight: 700, padding: '2px 6px' }}>
+          <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+          오늘 마감
+        </span>
       ) : (
         <span
           className={`shrink-0 whitespace-nowrap px-1.5 py-0.5 rounded-md ${

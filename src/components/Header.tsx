@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarDays, Radar, Settings, Home, User, LogOut, Search, Bell } from "lucide-react";
+import { CalendarDays, Radar, Settings, Home, User, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import logo from "@/assets/logo.png";
@@ -22,47 +22,27 @@ export default function Header() {
   return (
     <>
       {/* Top bar */}
-      <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border shadow-sm px-4 py-3">
+      <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-center gap-2 justify-between">
-          {/* Left: Logo + description */}
-          <Link to="/home" className="flex items-center gap-2.5">
+          <Link to="/home" className="flex items-center gap-2">
             <img src={logo} alt="PickSale" className="w-8 h-8 rounded-lg object-cover" />
-            <div className="flex flex-col">
-              <h1 className="text-lg font-extrabold text-foreground tracking-tight leading-none">
-                PickSale
-              </h1>
-              <span className="text-[11px] text-muted-foreground font-medium leading-tight hidden sm:block">
-                세일을 한눈에 보는 레이더
-              </span>
-            </div>
+            <h1 className="text-lg font-extrabold text-foreground tracking-tight">
+              PickSale
+            </h1>
           </Link>
 
-          {/* Right: icons + user */}
-          <div className="flex items-center gap-1.5">
-            <Link
-              to="/home"
-              className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-              title="검색"
-            >
-              <Search className="w-4.5 h-4.5" />
-            </Link>
-            <button
-              className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors relative"
-              title="알림"
-            >
-              <Bell className="w-4.5 h-4.5" />
-            </button>
-
+          {/* User area */}
+          <div className="flex items-center gap-2">
             {user ? (
               <>
                 {profile?.avatar_url ? (
                   <img
                     src={profile.avatar_url}
                     alt={profile.username}
-                    className="w-7 h-7 rounded-full object-cover border border-border ml-1"
+                    className="w-7 h-7 rounded-full object-cover border border-border"
                   />
                 ) : (
-                  <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center ml-1">
+                  <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
                     <User className="w-4 h-4 text-primary" />
                   </div>
                 )}
@@ -80,7 +60,7 @@ export default function Header() {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity ml-1"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity"
               >
                 <User className="w-3.5 h-3.5" />
                 로그인
