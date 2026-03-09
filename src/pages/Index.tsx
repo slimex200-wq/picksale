@@ -273,10 +273,9 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </div>
       )}
 
-      <SaleDetailSheet
-        sale={sheetSale}
-        open={!!sheetSale}
-        onOpenChange={(open) => { if (!open) setSheetSale(null); }}
+      <ExpandedSaleOverlay
+        sale={expandedSale}
+        onClose={() => setExpandedSale(null)}
       />
     </div>
   );
