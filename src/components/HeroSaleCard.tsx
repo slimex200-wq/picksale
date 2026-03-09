@@ -44,14 +44,9 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
     navigate(`/sale/${sale.id}`);
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = () => {
     if (!isActive || isMobile) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const pct = x / rect.width;
-    if (pct < 0.2 && onGoPrev) setHoverZone("left");
-    else if (pct > 0.8 && onGoNext) setHoverZone("right");
-    else setHoverZone("center");
+    setHoverZone("center");
   };
 
   return (
