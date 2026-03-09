@@ -89,7 +89,7 @@ export default function Index() {
   const hasActiveFilter = !!heroFilter || !!quickFilter || !!query.trim();
 
   const featuredSales = useMemo(
-    () => sortByRanking(activeSales.filter((s) => {
+    () => sortForFeatured(activeSales.filter((s) => {
       const st = getSaleStatus(s);
       return st === "live" || st === "ending_today";
     })).slice(0, 6),
