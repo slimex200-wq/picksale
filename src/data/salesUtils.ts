@@ -24,6 +24,12 @@ export interface Sale {
   event_id?: string | null;
   signal_id?: string | null;
   created_at?: string;
+  event_key?: string;
+  latest_pub_date?: string | null;
+  latest_source_url?: string;
+  source_type?: string;
+  signal_type?: string;
+  confidence_score?: number;
 }
 
 export const platforms: Platform[] = ["쿠팡", "올리브영", "무신사", "KREAM", "SSG", "오늘의집", "29CM", "WCONCEPT", "커뮤니티 핫딜"];
