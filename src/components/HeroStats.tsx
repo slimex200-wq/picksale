@@ -17,7 +17,7 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
   const stats = [
     { key: "live" as SaleStatus, label: "진행중", count: liveSales.length, color: "text-green-600", bg: "bg-green-100/80", activeBorder: "border-green-400", icon: TrendingUp, emoji: "🟢" },
     { key: "starting_soon" as SaleStatus, label: "예정", count: startingSoon.length, color: "text-yellow-600", bg: "bg-yellow-100/80", activeBorder: "border-yellow-400", icon: Clock, emoji: "⏰" },
-    { key: "ending_today" as SaleStatus, label: "오늘 종료", count: endingToday.length, color: "text-red-600", bg: "bg-red-100/80", activeBorder: "border-red-400", icon: AlertTriangle, emoji: "🔴" },
+    { key: "ending_today" as SaleStatus, label: "오늘 마감", count: endingToday.length, color: "text-closing-today", bg: "bg-closing-today-bg", activeBorder: "border-closing-today", icon: AlertTriangle, emoji: "" },
   ];
 
   const handleClick = (key: SaleStatus) => {
