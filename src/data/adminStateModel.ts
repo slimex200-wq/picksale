@@ -23,7 +23,7 @@ export const primaryStateConfig: Record<SalePrimaryState, { label: string; emoji
 /* ── Source Classification ── */
 export type SourceClass = "official" | "news" | "community" | "unknown";
 
-export function getSourceClass(sale: Pick<Sale, "source_type">): SourceClass {
+export function getSourceClass(sale: { source_type?: string | null }): SourceClass {
   const st = sale.source_type ?? "";
   if (st === "crawler" || st === "official") return "official";
   if (st === "news") return "news";
