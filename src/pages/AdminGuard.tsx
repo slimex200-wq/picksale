@@ -1,28 +1,13 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import type { Session } from "@supabase/supabase-js";
+import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import AdminLogin from "./AdminLogin";
 import AdminLayout from "./AdminLayout";
 
 export default function AdminGuard() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: adminLoading } = useAdmin();
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setLoading(false);
-    });
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  if (loading) {
+  if (authLoading || adminLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <p className="text-sm text-muted-foreground">로딩 중...</p>
@@ -30,8 +15,16 @@ export default function AdminGuard() {
     );
   }
 
-  if (!session) {
+  if (!user) {
     return <AdminLogin />;
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <p className="text-sm text-muted-foreground">관리자 권한이 없습니다.</p>
+      </div>
+    );
   }
 
   return <AdminLayout />;
