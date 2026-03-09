@@ -256,25 +256,21 @@ export default function Index() {
                 {endingTodaySales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                    <PeekCarousel cardWidth={210} gap={12}>
                       {endingTodaySales.map((sale) => (
-                        <div key={sale.id} style={{ minWidth: 210, width: 210 }} className="shrink-0">
-                          <SaleCard sale={sale} />
-                        </div>
+                        <SaleCard key={sale.id} sale={sale} />
                       ))}
-                    </div>
+                    </PeekCarousel>
                   </section>
                 )}
                 {liveSales.length > 0 && (
                   <section className="space-y-3">
                     <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                    <PeekCarousel cardWidth={210} gap={12}>
                       {liveSales.slice(0, 6).map((sale) => (
-                        <div key={sale.id} style={{ minWidth: 210, width: 210 }} className="shrink-0">
-                          <SaleCard sale={sale} />
-                        </div>
+                        <SaleCard key={sale.id} sale={sale} />
                       ))}
-                    </div>
+                    </PeekCarousel>
                   </section>
                 )}
               </div>
