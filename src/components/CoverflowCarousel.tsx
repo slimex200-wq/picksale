@@ -5,9 +5,9 @@ interface Props {
   children: ReactNode[];
 }
 
-const CARD_W = 260;
-const CARD_H = 320;
-const SIDE_OFFSET = 200; // px from center to side card center
+const CARD_W = 300;
+const CARD_H = 360;
+const SIDE_OFFSET = 220; // px from center to side card center
 const VISIBLE = 2; // cards visible on each side
 
 export default function CoverflowCarousel({ children }: Props) {
@@ -55,25 +55,25 @@ export default function CoverflowCarousel({ children }: Props) {
       )}
 
       {/* Stage — fixed height, centered */}
-      <div
-        className="relative mx-auto"
-        style={{
-          height: CARD_H + 24, // card + shadow room
-          maxWidth: "100%",
-        }}
-      >
+       <div
+         className="relative mx-auto flex items-center justify-center"
+         style={{
+           height: CARD_H + 40, // card + shadow room
+           maxWidth: "100%",
+         }}
+       >
         {children.map((child, i) => {
           const offset = i - active; // negative = left, positive = right
           const abs = Math.abs(offset);
 
           if (abs > VISIBLE) return null;
 
-          const isCenter = offset === 0;
-          const scale = isCenter ? 1 : 0.88 - abs * 0.04;
-          const rotateY = isCenter ? 0 : offset < 0 ? 12 : -12;
-          const tx = offset * SIDE_OFFSET;
-          const z = 20 - abs;
-          const opacity = isCenter ? 1 : Math.max(0.4, 0.75 - (abs - 1) * 0.2);
+           const isCenter = offset === 0;
+           const scale = isCenter ? 1 : 0.82 - abs * 0.04;
+           const rotateY = isCenter ? 0 : offset < 0 ? 12 : -12;
+           const tx = offset * SIDE_OFFSET;
+           const z = 20 - abs;
+           const opacity = isCenter ? 1 : Math.max(0.35, 0.7 - (abs - 1) * 0.2);
 
           return (
             <div
