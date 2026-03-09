@@ -13,7 +13,7 @@ const sections: { status: SaleStatus; emoji: string; title: string }[] = [
   { status: "starting_soon", emoji: "🟡", title: "곧 시작" },
 ];
 
-export default function StatusExploration({ sales }: Props) {
+export default function StatusExploration({ sales, onOpenDetail }: Props) {
   const grouped = useMemo(() => {
     const result: Record<SaleStatus, Sale[]> = {
       live: [],
