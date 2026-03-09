@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarDays, Radar, Settings, Home, User, LogOut, Search, Bell } from "lucide-react";
+import { CalendarDays, Radar, Settings, Home, User, LogOut, Search, Bell, MessageSquare } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import logo from "@/assets/logo.png";
@@ -7,6 +7,7 @@ import logo from "@/assets/logo.png";
 const baseNavItems = [
   { to: "/home", label: "홈", icon: Home },
   { to: "/radar", label: "레이더", icon: Radar },
+  { to: "/community", label: "커뮤니티", icon: MessageSquare },
   { to: "/calendar", label: "캘린더", icon: CalendarDays },
 ];
 
