@@ -47,8 +47,8 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
     >
       {/* Top: Platform banner */}
       <div className="flex items-center gap-2 px-3 pt-3 pb-1.5">
-        <div className="w-5 h-5 rounded bg-accent flex items-center justify-center shrink-0 p-0.5">
-          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" loading="lazy" />
+        <div className="w-6 h-6 rounded-md bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-0.5">
+          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain" loading="lazy" />
         </div>
         <span className="text-foreground font-semibold tracking-tight" style={{ fontSize: "12px" }}>
           {sale.platform}
@@ -78,15 +78,17 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
         </h3>
       </div>
 
-      {/* Brand Logo — visual center with proper sizing */}
+      {/* Brand Logo — visual center */}
       <div className="flex-1 flex items-center justify-center px-6 py-4 min-h-0">
-        <img
-          src={platformLogos[sale.platform]}
-          alt={sale.platform}
-          className="object-contain"
-          style={{ maxHeight: 64, maxWidth: "60%", opacity: 0.15 }}
-          loading="lazy"
-        />
+        <div className="bg-white/90 rounded-xl p-4 shadow-sm">
+          <img
+            src={platformLogos[sale.platform]}
+            alt={sale.platform}
+            className="object-contain"
+            style={{ maxHeight: 80, maxWidth: 120, opacity: 1 }}
+            loading="lazy"
+          />
+        </div>
       </div>
 
       {/* Meta: date + countdown */}
