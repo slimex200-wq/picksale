@@ -69,6 +69,12 @@ export default function AdminHidden() {
       if (error) { toast.error(error.message); return; }
       toast.success("게시 상태로 복원되었습니다.");
       invalidate();
+    } else if (action === "delete") {
+      if (!window.confirm("정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) return;
+      const { error } = await supabase.from("sales").delete().eq("id", id);
+      if (error) { toast.error(error.message); return; }
+      toast.success("삭제되었습니다.");
+      invalidate();
     }
   };
 
