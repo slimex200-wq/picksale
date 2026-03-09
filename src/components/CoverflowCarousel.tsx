@@ -2,8 +2,11 @@ import { ReactNode, isValidElement, cloneElement, ReactElement, useState } from 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
+// @ts-ignore
 import "swiper/css";
+// @ts-ignore
 import "swiper/css/effect-coverflow";
+// @ts-ignore
 import "swiper/css/pagination";
 import { useIsMobile } from "@/hooks/use-mobile";
 
