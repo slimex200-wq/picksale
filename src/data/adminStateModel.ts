@@ -64,7 +64,7 @@ export function countByPrimaryState(sales: { review_status: string; publish_stat
 }
 
 /* ── Count sales by source class ── */
-export function countBySourceClass(sales: Pick<Sale, "source_type">[]) {
+export function countBySourceClass(sales: { source_type?: string | null }[]) {
   const counts: Record<SourceClass, number> = { official: 0, news: 0, community: 0, unknown: 0 };
   for (const s of sales) {
     counts[getSourceClass(s)]++;
