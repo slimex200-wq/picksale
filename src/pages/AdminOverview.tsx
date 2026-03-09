@@ -17,7 +17,9 @@ export default function AdminOverview() {
       const community = communityRes.data ?? [];
       const states = countByPrimaryState(sales);
       const communityPending = community.filter((p: any) => p.review_status === "pending").length;
-      return { states, sales, total: sales.length, communityPending, communityTotal: community.length };
+      let recentUpdates = 0;
+      for (const s of sales) if (isRecentlyUpdated(s)) recentUpdates++;
+      return { states, sales, total: sales.length, communityPending, communityTotal: community.length, recentUpdates };
     },
     refetchInterval: 30000,
   });
