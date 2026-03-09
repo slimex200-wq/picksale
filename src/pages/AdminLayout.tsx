@@ -52,7 +52,7 @@ export default function AdminLayout() {
       const subsTotal = submissions.length;
 
       return {
-        review: { highlight: states.review_pending + states.approved_draft, total: salesTotal },
+        review: { highlight: states.review_pending, total: salesTotal },
         events: { highlight: states.published, total: salesTotal },
         hidden: { highlight: states.hidden, total: salesTotal },
         rejected: { highlight: states.rejected, total: salesTotal },

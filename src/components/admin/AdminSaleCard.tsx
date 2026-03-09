@@ -7,12 +7,13 @@ import {
   RotateCcw, Copy, ChevronDown, ChevronUp, AlertTriangle, Image as ImageIcon,
   Key, Newspaper, Globe, MessageSquare,
 } from "lucide-react";
-import type { Sale } from "@/data/salesUtils";
+import type { Sale, Platform } from "@/data/salesUtils";
 import {
   getSalePrimaryState, primaryStateConfig,
   getSourceClass, sourceClassConfig,
   getUpsertState, upsertStateConfig,
 } from "@/data/adminStateModel";
+import { platformLogos } from "@/data/platformLogos";
 import { toast } from "sonner";
 
 interface AdminSaleCardProps {
@@ -27,6 +28,7 @@ interface AdminSaleCardProps {
 
 export default function AdminSaleCard({ sale, allSales = [], actions = [], onAction, onEdit }: AdminSaleCardProps) {
   const [sourcesOpen, setSourcesOpen] = useState(false);
+  const [imgBroken, setImgBroken] = useState(false);
 
   const primaryState = getSalePrimaryState(sale);
   const stateConf = primaryStateConfig[primaryState];
@@ -43,7 +45,9 @@ export default function AdminSaleCard({ sale, allSales = [], actions = [], onAct
     ? allSales.filter(s => s.id !== sale.id && s.event_key === sale.event_key && s.publish_status === "draft")
     : [];
 
-  const hasImage = sale.image_url && sale.image_url.trim() !== "";
+  const hasValidImage = sale.image_url && sale.image_url.trim() !== "" && !imgBroken
+    && !/\.(mp4|webm|mov|avi)(\?|$)/i.test(sale.image_url);
+  const logoSrc = platformLogos[sale.platform as Platform];
 
   const copyEventKey = () => {
     if (sale.event_key) {
@@ -97,7 +101,7 @@ export default function AdminSaleCard({ sale, allSales = [], actions = [], onAct
                 {upsertConf.label}
               </Badge>
             )}
-            {!hasImage && (
+            {!hasValidImage && (
               <Badge variant="outline" className="text-[10px] h-5 bg-orange-50 text-orange-600 border-orange-200">
                 <ImageIcon className="w-2.5 h-2.5 mr-0.5" />이미지 없음
               </Badge>
@@ -155,9 +159,18 @@ export default function AdminSaleCard({ sale, allSales = [], actions = [], onAct
 
         {/* Thumbnail + external link */}
         <div className="flex items-start gap-1 shrink-0">
-          {hasImage && (
-            <img src={sale.image_url} alt="" className="w-16 h-16 rounded-md object-cover" />
-          )}
+          {hasValidImage ? (
+            <img
+              src={sale.image_url}
+              alt=""
+              className="w-16 h-16 rounded-md object-cover"
+              onError={() => setImgBroken(true)}
+            />
+          ) : logoSrc ? (
+            <div className="w-16 h-16 rounded-md bg-accent/40 flex items-center justify-center">
+              <img src={logoSrc} alt={sale.platform} className="max-w-[40px] max-h-[28px] object-contain" />
+            </div>
+          ) : null}
           {sale.link && (
             <a href={sale.link} target="_blank" rel="noopener noreferrer"
               className="p-1.5 rounded-md hover:bg-muted transition-colors">
