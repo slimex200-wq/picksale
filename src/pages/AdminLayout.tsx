@@ -50,10 +50,12 @@ export default function AdminLayout() {
       const subsPending = submissions.filter(s => s.status === "pending").length;
       const subsTotal = submissions.length;
       const eventsPublished = sales.filter(s => s.publish_status === "published").length;
+      const hiddenCount = sales.filter(s => s.publish_status === "hidden").length;
 
       return {
         review: { highlight: reviewPending, total: reviewTotal },
         events: { highlight: eventsPublished, total: reviewTotal },
+        hidden: { highlight: hiddenCount, total: reviewTotal },
         signals: { highlight: signalsPending, total: signalsTotal },
         community: { highlight: communityPublished, total: communityTotal },
         submissions: { highlight: subsPending, total: subsTotal },

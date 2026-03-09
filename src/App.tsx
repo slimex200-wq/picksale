@@ -68,6 +68,7 @@ const App = () => (
               <Route index element={<AdminOverview />} />
               <Route path="review" element={<AdminReview />} />
               <Route path="events" element={<AdminEvents />} />
+              <Route path="hidden" element={<AdminHidden />} />
               <Route path="community" element={<AdminCommunity />} />
               <Route path="submissions" element={<AdminSubmissions />} />
               <Route path="signals" element={<AdminSignals />} />
