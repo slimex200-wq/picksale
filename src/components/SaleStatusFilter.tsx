@@ -5,7 +5,7 @@ export type StatusFilter = "all" | "live" | "ending_today" | "starting_soon";
 const filters: { key: StatusFilter; label: string; emoji: string }[] = [
   { key: "all", label: "전체", emoji: "📋" },
   { key: "live", label: "진행중", emoji: "🟢" },
-  { key: "ending_today", label: "오늘 종료", emoji: "🔴" },
+  { key: "ending_today", label: "오늘 마감", emoji: "🔴" },
   { key: "starting_soon", label: "곧 시작", emoji: "🟡" },
 ];
 

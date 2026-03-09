@@ -452,7 +452,7 @@ function TabletLoadingSkeleton() {
       </section>
       <div className="grid grid-cols-2 gap-4">
         <section className="space-y-2">
-          <SectionHeader emoji="⏰" title="오늘 종료" />
+          <SectionHeader emoji="⏰" title="오늘 마감" />
           {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
         </section>
         <section className="space-y-2">

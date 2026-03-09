@@ -18,7 +18,7 @@ const statusFilters: { key: StatusFilter; label: string }[] = [
   { key: "all", label: "전체" },
   { key: "live", label: "🟢 진행중" },
   { key: "starting_soon", label: "🟡 곧 시작" },
-  { key: "ending_today", label: "🔴 오늘 종료" },
+  { key: "ending_today", label: "🔴 오늘 마감" },
   { key: "ending_soon", label: "⚠️ 종료 임박" },
 ];
 
