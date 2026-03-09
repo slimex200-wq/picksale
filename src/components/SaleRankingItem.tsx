@@ -1,6 +1,7 @@
 import { Sale, platformColors, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
 
 function countdownText(endDate: string) {
@@ -34,14 +35,21 @@ export default function SaleRankingItem({ sale, rank }: Props) {
       }`}
     >
       {/* Rank */}
-      <span className={`text-sm font-extrabold w-6 text-center shrink-0 ${
-        rank <= 3 ? "text-primary" : "text-muted-foreground"
-      }`}>
-        {rank}
-      </span>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className={`text-sm font-extrabold w-6 text-center shrink-0 ${
+              rank <= 3 ? "text-primary" : "text-muted-foreground"
+            }`}>
+              #{rank}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>{rank}위</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       {/* Logo */}
-      <div className="w-9 h-9 rounded-lg bg-accent/60 border border-border/50 flex items-center justify-center shrink-0 p-1">
+      <div className="w-9 h-9 rounded-lg bg-white/90 border border-border/50 flex items-center justify-center shrink-0 p-1">
         <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded" />
       </div>
 

@@ -2,6 +2,7 @@ import { Sale, platformColors, getSaleStatus, saleStatusConfig, calculateRanking
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Bell, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -18,6 +19,19 @@ function countdownText(endDate: string) {
 function formatDate(d: string) {
   const date = new Date(d);
   return `${date.getMonth() + 1}.${date.getDate()}`;
+}
+
+function getCategoryColor(category: string): string {
+  const colorMap: { [key: string]: string } = {
+    "패션": "bg-pink-100 text-pink-700",
+    "뷰티": "bg-purple-100 text-purple-700",
+    "리빙": "bg-blue-100 text-blue-700",
+    "식품": "bg-orange-100 text-orange-700",
+    "전자": "bg-cyan-100 text-cyan-700",
+    "스포츠": "bg-green-100 text-green-700",
+    "도서": "bg-amber-100 text-amber-700",
+  };
+  return colorMap[category] || "bg-secondary/80 text-secondary-foreground";
 }
 
 interface SaleCardProps {
@@ -92,15 +106,14 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
         </h3>
 
         <p className="text-[11px] text-muted-foreground font-medium tracking-wide">
-          {formatDate(sale.start_date)} — {formatDate(sale.end_date)}
+          {formatDate(sale.start_date)} ~ {formatDate(sale.end_date)}
         </p>
 
         <div className="flex flex-wrap gap-1.5">
           {sale.category.map((cat) => (
             <Badge
               key={cat}
-              variant="secondary"
-              className="text-[10px] font-semibold rounded-full px-2.5 py-0.5 bg-secondary/80"
+              className={`text-[10px] font-semibold rounded-full px-2.5 py-0.5 ${getCategoryColor(cat)}`}
             >
               {cat}
             </Badge>
@@ -117,21 +130,28 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
               navigate(`/sale/${sale.id}`);
             }}
           >
-            {isCardPromo ? "혜택 보기" : "세일 보기"}
+            {isCardPromo ? "혜택 보기" : "세일 바로가기"}
             <ArrowRight className="w-3.5 h-3.5" />
           </Button>
           {!isCardPromo && (
-            <Button
-              size="sm"
-              variant="outline"
-              className="rounded-xl text-xs h-9 w-9 p-0 border-border/70"
-              onClick={(e) => {
-                e.stopPropagation();
-                toast.success("알림이 설정되었습니다! 🔔");
-              }}
-            >
-              <Bell className="w-3.5 h-3.5" />
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-xl text-xs h-9 w-9 p-0 border-border/70"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toast.success("알림이 설정되었습니다! 🔔");
+                    }}
+                  >
+                    <Bell className="w-3.5 h-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>세일 알림 받기</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
       </div>
