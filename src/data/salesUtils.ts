@@ -97,7 +97,16 @@ export function isCreditCardPromo(title: string): boolean {
   return false;
 }
 
-const fmt = (d: Date) => d.toISOString().split("T")[0];
+/** Format date as YYYY-MM-DD in KST (Asia/Seoul) */
+const fmt = (d: Date) => {
+  const year = d.toLocaleString('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric' });
+  const month = d.toLocaleString('en-CA', { timeZone: 'Asia/Seoul', month: '2-digit' });
+  const day = d.toLocaleString('en-CA', { timeZone: 'Asia/Seoul', day: '2-digit' });
+  return `${year}-${month}-${day}`;
+};
+
+/** Get today's date string in KST */
+export const getTodayKST = () => fmt(new Date());
 
 /* ── 세일 상태 ── */
 export type SaleStatus = "live" | "starting_soon" | "ending_today" | "ended";
