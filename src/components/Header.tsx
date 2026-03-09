@@ -1,12 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarDays, Flame, Settings, Home, User, LogOut } from "lucide-react";
+import { CalendarDays, Radar, Settings, Home, User, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import logo from "@/assets/logo.png";
 
 const baseNavItems = [
   { to: "/home", label: "홈", icon: Home },
-  { to: "/community", label: "레이더", icon: Flame },
+  { to: "/radar", label: "레이더", icon: Radar },
   { to: "/calendar", label: "캘린더", icon: CalendarDays },
 ];
 

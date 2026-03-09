@@ -11,6 +11,7 @@ import SaleDetail from "./pages/SaleDetail";
 import PlatformSales from "./pages/PlatformSales";
 import SaleCalendar from "./pages/SaleCalendar";
 import EventDetail from "./pages/EventDetail";
+import RadarPage from "./pages/RadarPage";
 import CommunityPage from "./pages/CommunityPage";
 import CommunityDetail from "./pages/CommunityDetail";
 import SubmitSale from "./pages/SubmitSale";
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/platform/:slug" element={<><Header /><PlatformSales /></>} />
             <Route path="/calendar" element={<><Header /><SaleCalendar /></>} />
             <Route path="/event/:eventId" element={<><Header /><EventDetail /></>} />
+            <Route path="/radar" element={<><Header /><RadarPage /></>} />
             <Route path="/community" element={<><Header /><CommunityPage /></>} />
             <Route path="/community/:id" element={<><Header /><CommunityDetail /></>} />
             <Route path="/submit" element={<><Header /><SubmitSale /></>} />
