@@ -14,6 +14,7 @@ interface SaleCardProps {
   compact?: boolean;
   onGoPrev?: () => void;
   onGoNext?: () => void;
+  onOpenDetail?: (sale: Sale) => void;
 }
 
 export default function SaleCard({ sale, rank, isActive = true, compact = false, onGoPrev, onGoNext }: SaleCardProps) {
