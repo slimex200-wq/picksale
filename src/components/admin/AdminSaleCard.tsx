@@ -39,6 +39,7 @@ export default memo(function AdminSaleCard({ sale, duplicatePublished, duplicate
   const srcConf = sourceClassConfig[sourceClass];
   const upsertState = getUpsertState(sale);
   const upsertConf = upsertStateConfig[upsertState];
+  const recentlyUpdated = isRecentlyUpdated(sale);
 
   // Use pre-computed maps if available, otherwise fall back to legacy allSales filter
   const sameEventKeyPublishedCount = useMemo(() => {
