@@ -29,7 +29,7 @@ interface SaleCardProps {
   onGoNext?: () => void;
 }
 
-export default function SaleCard({ sale, rank, onGoPrev, onGoNext }: SaleCardProps) {
+export default function SaleCard({ sale, rank, isActive = true, onGoPrev, onGoNext }: SaleCardProps) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
@@ -42,6 +42,7 @@ export default function SaleCard({ sale, rank, onGoPrev, onGoNext }: SaleCardPro
   const hasZoneNav = !!(onGoPrev || onGoNext);
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isActive) return;
     if ((e.target as HTMLElement).closest("button")) return;
 
     if (isMobile || !hasZoneNav) {
