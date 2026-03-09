@@ -70,18 +70,15 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         onClick={() => navigate(`/sale/${sale.id}`)}
       >
         {/* Platform logo */}
-        <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 bg-accent">
-          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-cover" loading="lazy" />
+        <div className="w-10 h-10 rounded-md overflow-hidden shrink-0 bg-accent p-1">
+          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain" loading="lazy" />
         </div>
 
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
             {status === "ending_today" ? (
-              <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today shrink-0" style={{ fontSize: "10px", fontWeight: 700, padding: "1px 5px" }}>
-                <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
-                오늘 마감
-              </span>
+              <ClosingTodayBadge size="sm" />
             ) : (
               <Badge variant="outline" className={`${statusInfo.className} border-0 shrink-0`} style={{ fontSize: "10px", fontWeight: "600", padding: "1px 5px" }}>
                 {statusInfo.emoji} {statusInfo.label}
@@ -139,10 +136,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         {/* Row 1: Status badge + countdown */}
         <div className="flex items-center justify-between">
           {status === "ending_today" ? (
-            <span className="inline-flex items-center gap-1.5 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: "11px", fontWeight: 700, padding: "2px 8px" }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
-              오늘 마감
-            </span>
+            <ClosingTodayBadge size="sm" />
           ) : (
             <Badge variant="outline" className={`${statusInfo.className} border-0`} style={{ fontSize: '11px', fontWeight: '600', padding: '2px 8px' }}>
               {statusInfo.emoji} {statusInfo.label}
