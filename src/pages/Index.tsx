@@ -3,6 +3,7 @@ import { sortByRanking, getSaleStatus, SaleStatus } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
 import SaleCard from "@/components/SaleCard";
 import CoverflowCarousel from "@/components/CoverflowCarousel";
+import PeekCarousel from "@/components/PeekCarousel";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
