@@ -1,7 +1,5 @@
 import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
-import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
 
 function countdownText(endDate: string) {
