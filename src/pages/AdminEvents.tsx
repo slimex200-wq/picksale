@@ -110,6 +110,7 @@ export default function AdminEvents() {
           🔄 최근 갱신만 {recentUpdateCount}
         </button>
       </div>
+      <div className="flex flex-wrap gap-2 items-end">
         <div className="space-y-1">
           <Label className="text-xs">플랫폼</Label>
           <Select value={platformFilter} onValueChange={setPlatformFilter}>
