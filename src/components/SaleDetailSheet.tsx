@@ -1,4 +1,5 @@
 import { Sale, getSaleStatus, saleStatusConfig, platformColors, platformEmojis } from "@/data/salesUtils";
+import { formatCategory } from "@/utils/categoryFormat";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -91,7 +92,7 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
             <div className="flex flex-wrap gap-1.5">
               {sale.category.map((cat) => (
                 <Badge key={cat} variant="secondary" className="text-[11px] font-semibold rounded-full px-3 py-0.5 bg-secondary/80">
-                  {cat}
+                  {formatCategory(cat)}
                 </Badge>
               ))}
             </div>

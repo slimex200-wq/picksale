@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCategory } from "@/utils/categoryFormat";
 import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
@@ -108,7 +109,7 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
       {isActive && sale.category.length > 0 && (
         <div className="flex flex-wrap gap-1 px-3 pt-1.5">
           {sale.category.slice(0, 3).map((c) => (
-            <span key={c} className="text-muted-foreground bg-accent rounded px-1.5 py-0.5" style={{ fontSize: "9px", fontWeight: "500" }}>{c}</span>
+            <span key={c} className="text-muted-foreground bg-accent rounded px-1.5 py-0.5" style={{ fontSize: "9px", fontWeight: "500" }}>{formatCategory(c)}</span>
           ))}
         </div>
       )}

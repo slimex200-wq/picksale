@@ -1,4 +1,5 @@
 import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
+import { formatCategory } from "@/utils/categoryFormat";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
@@ -194,7 +195,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
           <div className="flex flex-wrap gap-1">
             {sale.category.slice(0, 3).map((c) => (
               <span key={c} className="text-muted-foreground bg-accent rounded px-1.5 py-0.5" style={{ fontSize: '10px', fontWeight: '500' }}>
-                {c}
+                {formatCategory(c)}
               </span>
             ))}
           </div>
