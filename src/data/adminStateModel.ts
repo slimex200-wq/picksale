@@ -61,7 +61,7 @@ export const upsertStateConfig: Record<UpsertState, { label: string; className: 
 };
 
 /* ── Count sales by primary state ── */
-export function countByPrimaryState(sales: { review_status: string; publish_status: string }[]) {
+export function countByPrimaryState(sales: { review_status: string; publish_status: string; end_date?: string }[]) {
   const counts: Record<SalePrimaryState, number> = {
     review_pending: 0, approved_draft: 0, published: 0, hidden: 0, rejected: 0,
   };
