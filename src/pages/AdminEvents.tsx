@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAdminSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,17 +29,6 @@ export default function AdminEvents() {
   const [publishFilter, setPublishFilter] = useState(searchParams.get("publish") || "");
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
-  // Sync filters from URL params when navigating from overview
-  useEffect(() => {
-    const p = searchParams.get("platform") || "";
-    const t = searchParams.get("tier") || "";
-    const r = searchParams.get("review") || "";
-    const pub = searchParams.get("publish") || "";
-    setPlatformFilter(p);
-    setTierFilter(t);
-    setReviewFilter(r);
-    setPublishFilter(pub);
-  }, [searchParams]);
 
   const { data: sales = [], isLoading } = useAdminSales({
     platform: platformFilter || undefined,
