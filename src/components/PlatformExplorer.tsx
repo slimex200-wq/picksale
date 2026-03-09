@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Sale, getSaleStatus, platforms, platformSlugs, Platform } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
@@ -8,19 +9,23 @@ interface Props {
   sales: Sale[];
 }
 
-export default function PlatformExplorer({ sales }: Props) {
+export default memo(function PlatformExplorer({ sales }: Props) {
   const bp = useBreakpoint();
-  const platformStats = platforms
-    .filter((p) => p !== "커뮤니티 핫딜")
-    .map((p) => {
-      const platSales = sales.filter((s) => s.platform === p);
-      const live = platSales.filter((s) => {
-        const st = getSaleStatus(s);
-        return st === "live" || st === "ending_today";
-      }).length;
-      const ending = platSales.filter((s) => getSaleStatus(s) === "ending_today").length;
-      return { platform: p, live, ending };
-    });
+  const platformStats = useMemo(() =>
+    platforms
+      .filter((p) => p !== "커뮤니티 핫딜")
+      .map((p) => {
+        let live = 0, ending = 0;
+        for (const s of sales) {
+          if (s.platform !== p) continue;
+          const st = getSaleStatus(s);
+          if (st === "ending_today") { ending++; live++; }
+          else if (st === "live") { live++; }
+        }
+        return { platform: p, live, ending };
+      }),
+    [sales]
+  );
 
   const PlatformCard = ({ platform, live, ending }: { platform: Platform; live: number; ending: number }) => (
     <Link
@@ -64,4 +69,4 @@ export default function PlatformExplorer({ sales }: Props) {
       )}
     </section>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useCallback, memo } from "react";
 import { sortByRanking, sortForFeatured, getSaleStatus, SaleStatus, Sale } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
 import SaleCard from "@/components/SaleCard";
@@ -117,7 +117,7 @@ export default function Index() {
     setHeroFilter(null);
   };
 
-  const rankingSales = sortByRanking(activeSales).slice(0, 10);
+  const rankingSales = useMemo(() => sortByRanking(activeSales).slice(0, 10), [activeSales]);
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-20 sm:pb-24 overflow-x-hidden">

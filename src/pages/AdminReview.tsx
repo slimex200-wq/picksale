@@ -16,6 +16,7 @@ import { ArrowUpDown } from "lucide-react";
 import AdminSaleCard from "@/components/admin/AdminSaleCard";
 import AdminEditDialog from "@/components/admin/AdminEditDialog";
 import SourceDistribution from "@/components/admin/SourceDistribution";
+import { useDuplicateMaps } from "@/hooks/useDuplicateMaps";
 
 export default function AdminReview() {
   const navigate = useNavigate();
@@ -25,31 +26,24 @@ export default function AdminReview() {
   const [sourceFilter, setSourceFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
-  // Fetch broadly — pending & draft sales
-  const { data: rawSales = [], isLoading } = useAdminSales({
-    sort: sortBy,
-  });
+  const { data: rawSales = [], isLoading } = useAdminSales({ sort: sortBy });
 
-  // Fetch all sales for duplicate warning
-  const { data: allSales = [] } = useAdminSales();
+  // Pre-compute duplicate maps once for all cards
+  const { duplicatePublished, duplicateDrafts } = useDuplicateMaps(rawSales);
 
   // CANONICAL STATE FILTER FIRST, then additional filters
   const { salesBeforeSource, sales } = useMemo(() => {
-    // Step 1: canonical state filter — ONLY review_pending
     let filtered = rawSales.filter(s => getSalePrimaryState(s) === "review_pending");
 
-    // Step 2: platform filter
     if (platformFilter && platformFilter !== "all") {
       filtered = filtered.filter(s => s.platform === platformFilter);
     }
-    // Step 3: tier filter
     if (tierFilter && tierFilter !== "all") {
       filtered = filtered.filter(s => s.sale_tier === tierFilter);
     }
 
     const beforeSource = filtered;
 
-    // Step 4: source filter
     if (sourceFilter && sourceFilter !== "all") {
       filtered = filtered.filter(s => getSourceClass(s) === sourceFilter);
     }
@@ -57,7 +51,6 @@ export default function AdminReview() {
   }, [rawSales, platformFilter, tierFilter, sourceFilter]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
-
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
 
   const handleAction = async (id: string, action: string) => {
@@ -153,7 +146,8 @@ export default function AdminReview() {
             <AdminSaleCard
               key={sale.id}
               sale={sale}
-              allSales={allSales}
+              duplicatePublished={duplicatePublished}
+              duplicateDrafts={duplicateDrafts}
               actions={["approve", "publish", "reject", "edit"]}
               onAction={handleAction}
               onEdit={setEditingSale}

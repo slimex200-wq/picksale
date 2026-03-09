@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Sale, Platform, SaleTier, ReviewStatus, PublishStatus } from "@/data/salesUtils";
 import { getTodayKST } from "@/data/salesUtils";
@@ -56,6 +56,10 @@ export function useAdminSales(filters?: {
       if (error) throw error;
       return (data ?? []).map(mapRow);
     },
+    staleTime: 2 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false,
   });
 }
 

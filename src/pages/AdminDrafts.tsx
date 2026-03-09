@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { ArrowUpDown } from "lucide-react";
 import AdminSaleCard from "@/components/admin/AdminSaleCard";
 import AdminEditDialog from "@/components/admin/AdminEditDialog";
+import { useDuplicateMaps } from "@/hooks/useDuplicateMaps";
 
 export default function AdminDrafts() {
   const queryClient = useQueryClient();
@@ -21,7 +22,8 @@ export default function AdminDrafts() {
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
   const { data: rawSales = [], isLoading } = useAdminSales({ sort: sortBy });
-  const { data: allSales = [] } = useAdminSales();
+
+  const { duplicatePublished, duplicateDrafts } = useDuplicateMaps(rawSales);
 
   const sales = useMemo(() => {
     let filtered = rawSales.filter(s => getSalePrimaryState(s) === "approved_draft");
@@ -92,7 +94,8 @@ export default function AdminDrafts() {
             <AdminSaleCard
               key={sale.id}
               sale={sale}
-              allSales={allSales}
+              duplicatePublished={duplicatePublished}
+              duplicateDrafts={duplicateDrafts}
               actions={["publish", "reject", "restore_review", "edit"]}
               onAction={handleAction}
               onEdit={setEditingSale}
