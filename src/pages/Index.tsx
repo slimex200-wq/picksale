@@ -209,22 +209,21 @@ interface LayoutProps {
 
 /* ─── MOBILE ─── */
 function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
+  const [sheetSale, setSheetSale] = useState<Sale | null>(null);
+
   return (
     <div className="space-y-6">
-      {/* Featured — compact list */}
+      {/* Featured — Cover Flow 3D carousel */}
       {featuredSales.length > 0 && (
-        <section className="space-y-2">
-          <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
-          <div className="space-y-2">
-            {featuredSales.slice(0, 4).map((sale, i) => (
-              <SaleCard key={sale.id} sale={sale} rank={i + 1} compact />
-            ))}
+        <section className="space-y-2 -mx-3">
+          <div className="px-3">
+            <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
           </div>
-          {featuredSales.length > 4 && (
-            <Link to="/radar" className="block text-center text-xs text-primary font-medium hover:underline py-1">
-              전체 보기 →
-            </Link>
-          )}
+          <CoverflowCarousel>
+            {featuredSales.map((sale, i) => (
+              <EditorialBrandCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setSheetSale} />
+            ))}
+          </CoverflowCarousel>
         </section>
       )}
 
@@ -273,6 +272,12 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           <p className="text-sm mt-2">진행 중인 세일이 없습니다.</p>
         </div>
       )}
+
+      <SaleDetailSheet
+        sale={sheetSale}
+        open={!!sheetSale}
+        onOpenChange={(open) => { if (!open) setSheetSale(null); }}
+      />
     </div>
   );
 }
