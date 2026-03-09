@@ -40,7 +40,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Landing — no header */}
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<Navigate to="/home" replace />} />
             {/* Login — no header */}
             <Route path="/login" element={<><Header /><LoginPage /></>} />
             {/* All other pages — with header */}
