@@ -1,6 +1,6 @@
 import { Sale, getSaleStatus, SaleStatus } from "@/data/salesUtils";
 import { Radar, TrendingUp, Clock, AlertTriangle } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 interface Props {
   sales: Sale[];
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function HeroStats({ sales, activeFilter, onFilterChange }: Props) {
-  const isMobile = useIsMobile();
+  const bp = useBreakpoint();
   const liveSales = sales.filter((s) => getSaleStatus(s) === "live");
   const startingSoon = sales.filter((s) => getSaleStatus(s) === "starting_soon");
   const endingToday = sales.filter((s) => getSaleStatus(s) === "ending_today");
@@ -25,16 +25,17 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
   };
 
   return (
-    <section className="space-y-3">
+    <section className="space-y-2 sm:space-y-3">
       <div className="flex items-center gap-2.5">
         <Radar className="w-5 h-5 text-primary" />
         <div>
-          <h1 className="text-foreground tracking-tight" style={{ fontSize: '24px', fontWeight: '700' }}>세일 레이더</h1>
-          <p className="text-muted-foreground" style={{ fontSize: '13px', fontWeight: '500' }}>주요 쇼핑몰 세일을 실시간으로 탐지합니다</p>
+          <h1 className="text-foreground tracking-tight text-xl sm:text-2xl font-bold">세일 레이더</h1>
+          <p className="text-muted-foreground text-xs sm:text-[13px] font-medium">주요 쇼핑몰 세일을 실시간으로 탐지합니다</p>
         </div>
       </div>
 
-      {isMobile ? (
+      {bp === "mobile" ? (
+        /* Mobile: pill row */
         <div className="flex items-center bg-card border border-border rounded-xl px-1 py-1 gap-0.5">
           {stats.map((stat) => {
             const isActive = activeFilter === stat.key;
@@ -48,9 +49,9 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
                     : "text-muted-foreground hover:bg-accent"
                 }`}
               >
-                <span style={{ fontSize: '12px' }}>{stat.emoji}</span>
-                <span className="whitespace-nowrap" style={{ fontSize: '11px' }}>{stat.label}</span>
-                <span className={`font-extrabold tabular-nums ${isActive ? stat.color : "text-foreground"}`} style={{ fontSize: '13px' }}>
+                <span className="text-xs">{stat.emoji}</span>
+                <span className="whitespace-nowrap text-[11px]">{stat.label}</span>
+                <span className={`font-extrabold tabular-nums text-[13px] ${isActive ? stat.color : "text-foreground"}`}>
                   {stat.count}
                 </span>
               </button>
@@ -58,6 +59,7 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
           })}
         </div>
       ) : (
+        /* Tablet + Desktop: stat cards */
         <div className="grid grid-cols-3 gap-2">
           {stats.map((stat) => {
             const isActive = activeFilter === stat.key;

@@ -3,7 +3,6 @@ import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 
 function countdownText(endDate: string) {
@@ -25,13 +24,13 @@ interface SaleCardProps {
   sale: Sale;
   rank?: number;
   isActive?: boolean;
+  compact?: boolean;
   onGoPrev?: () => void;
   onGoNext?: () => void;
 }
 
-export default function SaleCard({ sale, rank, isActive = true, onGoPrev, onGoNext }: SaleCardProps) {
+export default function SaleCard({ sale, rank, isActive = true, compact = false, onGoPrev, onGoNext }: SaleCardProps) {
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
   const countdown = countdownText(sale.end_date);
   const isUrgent = countdown.includes("시간") || countdown === "D-1" || countdown === "종료";
@@ -45,7 +44,7 @@ export default function SaleCard({ sale, rank, isActive = true, onGoPrev, onGoNe
     if (!isActive) return;
     if ((e.target as HTMLElement).closest("button")) return;
 
-    if (isMobile || !hasZoneNav) {
+    if (compact || !hasZoneNav) {
       navigate(`/sale/${sale.id}`);
       return;
     }
@@ -64,7 +63,7 @@ export default function SaleCard({ sale, rank, isActive = true, onGoPrev, onGoNe
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!hasZoneNav || isMobile) return;
+    if (!hasZoneNav || compact) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const pct = x / rect.width;
@@ -73,6 +72,59 @@ export default function SaleCard({ sale, rank, isActive = true, onGoPrev, onGoNe
     else setHoverZone("center");
   };
 
+  /* ─── Compact layout (mobile) ─── */
+  if (compact) {
+    return (
+      <div
+        className={`w-full bg-card rounded-xl cursor-pointer flex items-center gap-3 border overflow-hidden transition-all hover:shadow-sm active:scale-[0.99] ${
+          isCardPromo ? "border-border opacity-60" : "border-border/60"
+        }`}
+        style={{ padding: "10px 12px" }}
+        onClick={() => navigate(`/sale/${sale.id}`)}
+      >
+        {/* Platform logo */}
+        <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center shrink-0 p-1">
+          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" loading="lazy" />
+        </div>
+
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <Badge
+              variant="outline"
+              className={`${statusInfo.className} border-0 shrink-0`}
+              style={{ fontSize: "10px", fontWeight: "600", padding: "1px 5px" }}
+            >
+              {statusInfo.emoji} {statusInfo.label}
+            </Badge>
+            <span
+              className={`text-[10px] font-semibold shrink-0 ${isUrgent ? "text-destructive" : "text-muted-foreground"}`}
+            >
+              {countdown}
+            </span>
+          </div>
+          <h3
+            className={`line-clamp-2 ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
+            style={{ fontSize: "13px", fontWeight: "650", lineHeight: "1.35" }}
+          >
+            {rank && <span className="text-primary mr-1 text-xs">#{rank}</span>}
+            {sale.sale_name}
+          </h3>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className="text-muted-foreground text-[11px]">{sale.platform}</span>
+            <span className="text-muted-foreground text-[10px]">
+              {formatDate(sale.start_date)} – {formatDate(sale.end_date)}
+            </span>
+          </div>
+        </div>
+
+        {/* Arrow */}
+        <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+      </div>
+    );
+  }
+
+  /* ─── Standard card layout ─── */
   return (
     <div
       className={`relative w-full bg-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden border ${
@@ -83,12 +135,12 @@ export default function SaleCard({ sale, rank, isActive = true, onGoPrev, onGoNe
       onMouseLeave={() => setHoverZone(null)}
     >
       {/* Hover zone indicators — desktop only */}
-      {hasZoneNav && !isMobile && hoverZone === "left" && onGoPrev && (
+      {hasZoneNav && hoverZone === "left" && onGoPrev && (
         <div className="absolute left-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-l-xl transition-opacity">
           <ChevronLeft className="w-5 h-5 text-muted-foreground" />
         </div>
       )}
-      {hasZoneNav && !isMobile && hoverZone === "right" && onGoNext && (
+      {hasZoneNav && hoverZone === "right" && onGoNext && (
         <div className="absolute right-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-r-xl transition-opacity">
           <ChevronRight className="w-5 h-5 text-muted-foreground" />
         </div>
@@ -104,9 +156,7 @@ export default function SaleCard({ sale, rank, isActive = true, onGoPrev, onGoNe
             {statusInfo.emoji} {statusInfo.label}
           </Badge>
           <span
-            className={`font-semibold whitespace-nowrap ${
-              isUrgent ? "text-destructive" : "text-muted-foreground"
-            }`}
+            className={`font-semibold whitespace-nowrap ${isUrgent ? "text-destructive" : "text-muted-foreground"}`}
             style={{ fontSize: '11px' }}
           >
             {countdown}
@@ -134,8 +184,8 @@ export default function SaleCard({ sale, rank, isActive = true, onGoPrev, onGoNe
           </span>
         </div>
 
-        {/* Row 4: Categories (desktop only) */}
-        {!isMobile && sale.category.length > 0 && (
+        {/* Row 4: Categories */}
+        {sale.category.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {sale.category.slice(0, 3).map((c) => (
               <span key={c} className="text-muted-foreground bg-accent rounded px-1.5 py-0.5" style={{ fontSize: '10px', fontWeight: '500' }}>
