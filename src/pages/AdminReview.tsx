@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { ArrowUpDown } from "lucide-react";
 import AdminSaleCard from "@/components/admin/AdminSaleCard";
 import AdminEditDialog from "@/components/admin/AdminEditDialog";
+import SourceDistribution from "@/components/admin/SourceDistribution";
 
 export default function AdminReview() {
   const navigate = useNavigate();
