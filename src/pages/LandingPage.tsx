@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight } from "lucide-react";
+import ViewModeToggle from "@/components/ViewModeToggle";
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
@@ -24,6 +25,10 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[#09090b] flex flex-col items-center justify-center px-4 relative overflow-hidden selection:bg-white/20">
+      {/* View mode toggle */}
+      <div className="absolute top-4 right-4 z-20">
+        <ViewModeToggle />
+      </div>
       {/* Subtle radial glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full bg-white/[0.015] blur-[100px] pointer-events-none" />
 
