@@ -177,11 +177,8 @@ export default function AdminAll() {
         activeSource={sourceFilter}
         onSourceChange={setSourceFilter}
         contextLabel={`전체 ${salesBeforeSource.length}건`}
+        filteredCount={sales.length}
       />
-
-      <p className="text-xs text-muted-foreground">
-        전체 {rawSales.length}건 중 {sales.length}건 표시
-      </p>
 
       {isLoading ? (
         <p className="text-sm text-muted-foreground text-center py-12">불러오는 중...</p>
