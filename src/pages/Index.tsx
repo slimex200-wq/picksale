@@ -221,7 +221,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           </div>
           <CoverflowCarousel>
             {featuredSales.map((sale, i) => (
-              <EditorialBrandCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setSheetSale} />
+              <EditorialBrandCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
             ))}
           </CoverflowCarousel>
         </section>
