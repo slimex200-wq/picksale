@@ -391,7 +391,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                 <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
                 <PeekCarousel cardWidth={240} gap={16}>
                   {liveSales.slice(0, 6).map((sale) => (
-                    <HeroSaleCard key={sale.id} sale={sale} />
+                    <EditorialBrandCard key={sale.id} sale={sale} />
                   ))}
                 </PeekCarousel>
               </section>
