@@ -4,6 +4,7 @@ import SaleRankingItem from "./SaleRankingItem";
 
 interface Props {
   sales: Sale[];
+  onOpenDetail?: (sale: Sale) => void;
 }
 
 const sections: { status: SaleStatus; emoji: string; title: string }[] = [
