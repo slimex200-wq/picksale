@@ -13,23 +13,23 @@ const QUICK_FILTERS = [
 
 export default function QuickFilters({ activeFilter, onFilter }: Props) {
   return (
-    <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
       {QUICK_FILTERS.map((f) => {
         const isActive = activeFilter === f.key;
         return (
           <button
             key={f.key ?? "all"}
             onClick={() => onFilter(f.key)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-1 border ${
+            className={`shrink-0 px-4 py-2 rounded-full text-[13px] transition-all whitespace-nowrap flex items-center gap-1.5 border ${
               isActive
-                ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                : "bg-card text-muted-foreground border-border hover:bg-accent hover:text-accent-foreground"
+                ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
+                : "bg-card text-foreground/70 border-border font-medium hover:bg-accent hover:border-border/80"
             }`}
           >
             {f.key === "ending_today" ? (
-              <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+              <span className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-primary-foreground" : "bg-closing-today"} animate-closing-pulse`} />
             ) : (
-              <span className="text-[11px]">{f.emoji}</span>
+              <span className="text-sm">{f.emoji}</span>
             )}
             {f.label}
           </button>
