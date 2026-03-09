@@ -58,6 +58,10 @@ export default {
   				community: 'hsl(var(--sale-community))',
   				wconcept: 'hsl(var(--sale-wconcept))'
   			},
+  			'closing-today': {
+  				DEFAULT: 'hsl(var(--closing-today))',
+  				bg: 'hsl(var(--closing-today-bg))'
+  			},
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',
