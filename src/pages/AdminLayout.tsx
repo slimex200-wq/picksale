@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   Settings, Inbox, List, LogOut, MessageSquare, Send, Radio,
@@ -27,6 +28,29 @@ const tabDefs = [
 
 export default function AdminLayout() {
   const { pathname } = useLocation();
+  const navRef = useRef<HTMLElement>(null);
+  const activeTabRef = useRef<HTMLAnchorElement>(null);
+
+  // Scroll active tab into view on route change
+  useEffect(() => {
+    if (activeTabRef.current) {
+      activeTabRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  }, [pathname]);
+
+  // Enable horizontal wheel scrolling on desktop
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        nav.scrollLeft += e.deltaY;
+      }
+    };
+    nav.addEventListener("wheel", onWheel, { passive: false });
+    return () => nav.removeEventListener("wheel", onWheel);
+  }, []);
 
   const { data: counts } = useQuery({
     queryKey: ["admin_tab_counts"],
@@ -84,31 +108,42 @@ export default function AdminLayout() {
         </Button>
       </div>
 
-      <nav className="flex gap-0.5 mb-6 border-b border-border overflow-x-auto scrollbar-hide">
-        {tabDefs.map(({ to, label, icon: Icon, exact, countKey }) => {
-          const active = exact ? pathname === to : pathname.startsWith(to) && pathname !== "/admin";
-          const c = countKey && counts ? counts[countKey] : null;
-          return (
-            <Link
-              key={to}
-              to={to}
-              className={`flex items-center gap-1 px-2.5 py-2 text-xs font-medium border-b-2 whitespace-nowrap transition-colors ${
-                active
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              {label}
-              {c && (
-                <span className={`ml-0.5 text-[10px] font-bold ${c.highlight > 0 ? "text-primary" : "text-muted-foreground"}`}>
-                  {c.highlight}/{c.total}
-                </span>
-              )}
-            </Link>
-          );
-        })}
-      </nav>
+      {/* Scrollable tab strip with fade hints */}
+      <div className="relative mb-6">
+        <nav
+          ref={navRef}
+          className="flex gap-0.5 border-b border-border overflow-x-auto scrollbar-hide"
+        >
+          {tabDefs.map(({ to, label, icon: Icon, exact, countKey }) => {
+            const active = exact ? pathname === to : pathname.startsWith(to) && pathname !== "/admin";
+            const c = countKey && counts ? counts[countKey] : null;
+            return (
+              <Link
+                key={to}
+                to={to}
+                ref={active ? activeTabRef : undefined}
+                className={`flex items-center gap-1 px-2.5 py-2 text-xs font-medium border-b-2 whitespace-nowrap transition-colors shrink-0 ${
+                  active
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {label}
+                {c && (
+                  <span className={`ml-0.5 text-[10px] font-bold ${c.highlight > 0 ? "text-primary" : "text-muted-foreground"}`}>
+                    {c.highlight}/{c.total}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+        {/* Left fade */}
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent" />
+        {/* Right fade */}
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent" />
+      </div>
 
       <Outlet />
     </div>
