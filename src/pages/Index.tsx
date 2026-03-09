@@ -380,7 +380,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
               </div>
               <CoverflowCarousel>
                 {featuredSales.map((sale, i) => (
-                  <HeroSaleCard key={sale.id} sale={sale} rank={i + 1} />
+                  <HeroSaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
                 ))}
               </CoverflowCarousel>
             </section>
