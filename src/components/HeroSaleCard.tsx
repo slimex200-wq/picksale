@@ -14,9 +14,10 @@ interface HeroSaleCardProps {
   onGoPrev?: () => void;
   onGoNext?: () => void;
   isMobile?: boolean;
+  onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, onGoNext, isMobile }: HeroSaleCardProps) {
+export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, onGoNext, isMobile, onOpenDetail }: HeroSaleCardProps) {
   const navigate = useNavigate();
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
@@ -25,10 +26,16 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
   const isCardPromo = isCreditCardPromo(sale.sale_name);
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
 
+  const handleOpen = () => {
+    if (!isActive) return;
+    if (onOpenDetail) onOpenDetail(sale);
+    else navigate(`/sale/${sale.id}`);
+  };
+
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isActive) return;
     if ((e.target as HTMLElement).closest("button")) return;
-    navigate(`/sale/${sale.id}`);
+    handleOpen();
   };
 
   const handleMouseMove = () => {
@@ -111,7 +118,7 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
         <div className="px-3 pb-3 pt-2 mt-auto relative z-30">
           <button
             className="w-full rounded-lg text-xs font-semibold h-7 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            onClick={(e) => { e.stopPropagation(); navigate(`/sale/${sale.id}`); }}
+            onClick={(e) => { e.stopPropagation(); handleOpen(); }}
           >
             세일 보러가기
             <ArrowRight className="w-3 h-3" />
