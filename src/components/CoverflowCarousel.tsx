@@ -55,13 +55,13 @@ export default function CoverflowCarousel({ children }: Props) {
       )}
 
       {/* Stage — fixed height, centered */}
-      <div
-        className="relative mx-auto"
-        style={{
-          height: CARD_H + 24, // card + shadow room
-          maxWidth: "100%",
-        }}
-      >
+       <div
+         className="relative mx-auto flex items-center justify-center"
+         style={{
+           height: CARD_H + 40, // card + shadow room
+           maxWidth: "100%",
+         }}
+       >
         {children.map((child, i) => {
           const offset = i - active; // negative = left, positive = right
           const abs = Math.abs(offset);
