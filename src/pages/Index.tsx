@@ -6,7 +6,7 @@ import HeroSaleCard from "@/components/HeroSaleCard";
 import CoverflowCarousel from "@/components/CoverflowCarousel";
 import EditorialBrandCard from "@/components/EditorialBrandCard";
 import PeekCarousel from "@/components/PeekCarousel";
-import SaleDetailSheet from "@/components/SaleDetailSheet";
+import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
