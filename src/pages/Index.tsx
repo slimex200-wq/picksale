@@ -348,7 +348,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 
 /* ─── DESKTOP ─── */
 function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
-  const [sheetSale, setSheetSale] = useState<Sale | null>(null);
+  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
   return (
     <>
