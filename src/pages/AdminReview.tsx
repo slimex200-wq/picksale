@@ -136,9 +136,8 @@ export default function AdminReview() {
         activeSource={sourceFilter}
         onSourceChange={setSourceFilter}
         contextLabel={`검토 대기 ${salesBeforeSource.length}건`}
+        filteredCount={sales.length}
       />
-
-      <p className="text-xs text-muted-foreground">{sales.length}개 검토 대기</p>
 
       {isLoading ? (
         <p className="text-sm text-muted-foreground text-center py-12">불러오는 중...</p>

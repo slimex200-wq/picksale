@@ -137,9 +137,8 @@ export default function AdminEvents() {
         activeSource={sourceFilter}
         onSourceChange={setSourceFilter}
         contextLabel={`게시됨 ${salesBeforeSource.length}건`}
+        filteredCount={sales.length}
       />
-
-      <p className="text-xs text-muted-foreground">{sales.length}개 게시 이벤트</p>
 
       {isLoading ? (
         <p className="text-sm text-muted-foreground text-center py-12">불러오는 중...</p>
