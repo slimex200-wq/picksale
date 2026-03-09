@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
+import SaleBannerImage from "@/components/SaleBannerImage";
 
 interface SaleCardProps {
   sale: Sale;
