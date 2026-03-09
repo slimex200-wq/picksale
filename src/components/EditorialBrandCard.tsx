@@ -3,6 +3,7 @@ import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
+import SaleBannerImage from "@/components/SaleBannerImage";
 
 interface Props {
   sale: Sale;
