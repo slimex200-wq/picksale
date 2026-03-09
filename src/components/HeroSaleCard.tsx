@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCategory } from "@/utils/categoryFormat";
 import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
