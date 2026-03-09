@@ -41,6 +41,7 @@ export default function AdminOverview() {
     { label: "숨김", value: states.hidden, icon: EyeOff, color: "text-muted-foreground", to: "/admin/hidden" },
     { label: "반려", value: states.rejected, icon: XCircle, color: "text-destructive", to: "/admin/rejected" },
     { label: "커뮤니티", value: communityPending, icon: MessageSquare, color: "text-blue-600", to: "/admin/community", denominator: communityTotal },
+    { label: "최근 갱신(24h)", value: recentUpdates, icon: RefreshCw, color: "text-cyan-600", to: "/admin/all?updated=true", denominator: total },
   ];
 
   const sourceItems = [
