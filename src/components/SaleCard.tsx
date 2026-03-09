@@ -24,6 +24,8 @@ function formatDate(d: string) {
 interface SaleCardProps {
   sale: Sale;
   rank?: number;
+  onGoPrev?: () => void;
+  onGoNext?: () => void;
 }
 
 export default function SaleCard({ sale, rank }: SaleCardProps) {
