@@ -7,12 +7,13 @@ import {
   RotateCcw, Copy, ChevronDown, ChevronUp, AlertTriangle, Image as ImageIcon,
   Key, Newspaper, Globe, MessageSquare,
 } from "lucide-react";
-import type { Sale } from "@/data/salesUtils";
+import type { Sale, Platform } from "@/data/salesUtils";
 import {
   getSalePrimaryState, primaryStateConfig,
   getSourceClass, sourceClassConfig,
   getUpsertState, upsertStateConfig,
 } from "@/data/adminStateModel";
+import { platformLogos } from "@/data/platformLogos";
 import { toast } from "sonner";
 
 interface AdminSaleCardProps {
