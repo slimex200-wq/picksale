@@ -421,10 +421,9 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
         </aside>
       </div>
 
-      <SaleDetailSheet
-        sale={sheetSale}
-        open={!!sheetSale}
-        onOpenChange={(open) => { if (!open) setSheetSale(null); }}
+      <ExpandedSaleOverlay
+        sale={expandedSale}
+        onClose={() => setExpandedSale(null)}
       />
     </>
   );
