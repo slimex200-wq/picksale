@@ -24,11 +24,12 @@ function formatDate(d: string) {
 interface SaleCardProps {
   sale: Sale;
   rank?: number;
+  isActive?: boolean;
   onGoPrev?: () => void;
   onGoNext?: () => void;
 }
 
-export default function SaleCard({ sale, rank, onGoPrev, onGoNext }: SaleCardProps) {
+export default function SaleCard({ sale, rank, isActive = true, onGoPrev, onGoNext }: SaleCardProps) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
@@ -41,6 +42,7 @@ export default function SaleCard({ sale, rank, onGoPrev, onGoNext }: SaleCardPro
   const hasZoneNav = !!(onGoPrev || onGoNext);
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isActive) return;
     if ((e.target as HTMLElement).closest("button")) return;
 
     if (isMobile || !hasZoneNav) {
@@ -143,17 +145,19 @@ export default function SaleCard({ sale, rank, onGoPrev, onGoNext }: SaleCardPro
           </div>
         )}
 
-        {/* CTA */}
-        <button
-          className="mt-auto w-full rounded-lg text-xs font-semibold h-8 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/sale/${sale.id}`);
-          }}
-        >
-          세일 보러가기
-          <ArrowRight className="w-3 h-3" />
-        </button>
+        {/* CTA — only when active */}
+        {isActive && (
+          <button
+            className="mt-auto w-full rounded-lg text-xs font-semibold h-8 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/sale/${sale.id}`);
+            }}
+          >
+            세일 보러가기
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        )}
       </div>
     </div>
   );
