@@ -2,6 +2,7 @@ import { useState, useMemo, useRef } from "react";
 import { sortByRanking, getSaleStatus, SaleStatus } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
 import SaleCard from "@/components/SaleCard";
+import CoverflowCarousel from "@/components/CoverflowCarousel";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
