@@ -9,7 +9,7 @@ interface Props {
   onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function SaleTimeline({ sales }: Props) {
+export default function SaleTimeline({ sales, onOpenDetail }: Props) {
   const navigate = useNavigate();
   const timeline = useMemo(() => categorizeTimeline(sales), [sales]);
 
