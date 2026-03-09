@@ -80,5 +80,11 @@ function mapRow(row: any): Sale {
     event_id: row.event_id ?? null,
     signal_id: row.signal_id ?? null,
     created_at: row.created_at,
+    event_key: row.event_key ?? "",
+    latest_pub_date: row.latest_pub_date ?? null,
+    latest_source_url: row.latest_source_url ?? "",
+    source_type: row.source_type ?? "",
+    signal_type: row.signal_type ?? "",
+    confidence_score: row.confidence_score ?? 0,
   };
 }

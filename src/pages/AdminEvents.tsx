@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import {
   Eye, EyeOff, Pencil, Trash2, ArrowUpDown, CheckCircle, XCircle, Clock, ExternalLink,
 } from "lucide-react";
+import { SaleMetaBadges, SaleSourceLinks } from "@/components/SaleMetaBadges";
 
 export default function AdminEvents() {
   const queryClient = useQueryClient();
@@ -188,6 +189,7 @@ export default function AdminEvents() {
                     <span className="text-[10px] text-muted-foreground font-mono">
                       {sale.sale_tier === "major" ? "주요" : sale.sale_tier === "minor" ? "일반" : "제외"} · 중요도 {sale.importance_score}
                     </span>
+                    <SaleMetaBadges sale={sale} />
                   </div>
                   <p className="text-sm font-semibold text-card-foreground">{sale.sale_name}</p>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -201,6 +203,9 @@ export default function AdminEvents() {
                     )}
                   </div>
                 </div>
+                {sale.image_url && (
+                  <img src={sale.image_url} alt="" className="w-16 h-16 rounded-md object-cover shrink-0" />
+                )}
                 {sale.link && (
                   <a href={sale.link} target="_blank" rel="noopener noreferrer"
                     className="shrink-0 p-1.5 rounded-md hover:bg-muted transition-colors">
@@ -208,6 +213,8 @@ export default function AdminEvents() {
                   </a>
                 )}
               </div>
+
+              <SaleSourceLinks sale={sale} />
 
               <div className="flex gap-1.5 pt-1 flex-wrap">
                 {sale.publish_status !== "published" && (

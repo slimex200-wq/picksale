@@ -393,15 +393,19 @@ export type Database = {
       sales: {
         Row: {
           category: string[]
+          confidence_score: number | null
           created_at: string
           description: string
           end_date: string
           event_id: string | null
+          event_key: string | null
           filter_reason: string
           grouped_page_count: number
           id: string
           image_url: string | null
           importance_score: number
+          latest_pub_date: string | null
+          latest_source_url: string | null
           link: string
           platform: string
           publish_status: string
@@ -409,20 +413,26 @@ export type Database = {
           sale_name: string
           sale_tier: string
           signal_id: string | null
+          signal_type: string | null
+          source_type: string | null
           source_urls: string[]
           start_date: string
         }
         Insert: {
           category?: string[]
+          confidence_score?: number | null
           created_at?: string
           description?: string
           end_date: string
           event_id?: string | null
+          event_key?: string | null
           filter_reason?: string
           grouped_page_count?: number
           id?: string
           image_url?: string | null
           importance_score?: number
+          latest_pub_date?: string | null
+          latest_source_url?: string | null
           link?: string
           platform: string
           publish_status?: string
@@ -430,20 +440,26 @@ export type Database = {
           sale_name: string
           sale_tier?: string
           signal_id?: string | null
+          signal_type?: string | null
+          source_type?: string | null
           source_urls?: string[]
           start_date: string
         }
         Update: {
           category?: string[]
+          confidence_score?: number | null
           created_at?: string
           description?: string
           end_date?: string
           event_id?: string | null
+          event_key?: string | null
           filter_reason?: string
           grouped_page_count?: number
           id?: string
           image_url?: string | null
           importance_score?: number
+          latest_pub_date?: string | null
+          latest_source_url?: string | null
           link?: string
           platform?: string
           publish_status?: string
@@ -451,6 +467,8 @@ export type Database = {
           sale_name?: string
           sale_tier?: string
           signal_id?: string | null
+          signal_type?: string | null
+          source_type?: string | null
           source_urls?: string[]
           start_date?: string
         }
