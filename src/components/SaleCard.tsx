@@ -73,11 +73,24 @@ export default function SaleCard({ sale, rank, onGoPrev, onGoNext }: SaleCardPro
 
   return (
     <div
-      className={`w-full bg-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden border ${
+      className={`relative w-full bg-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden border ${
         isCardPromo ? "border-border opacity-60" : "border-border/60"
       }`}
-      onClick={() => navigate(`/sale/${sale.id}`)}
+      onClick={handleCardClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => setHoverZone(null)}
     >
+      {/* Hover zone indicators — desktop only */}
+      {hasZoneNav && !isMobile && hoverZone === "left" && onGoPrev && (
+        <div className="absolute left-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-l-xl transition-opacity">
+          <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+        </div>
+      )}
+      {hasZoneNav && !isMobile && hoverZone === "right" && onGoNext && (
+        <div className="absolute right-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-r-xl transition-opacity">
+          <ChevronRight className="w-5 h-5 text-muted-foreground" />
+        </div>
+      )}
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
         {/* Row 1: Status badge + countdown */}
         <div className="flex items-center justify-between">

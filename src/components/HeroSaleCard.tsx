@@ -59,17 +59,6 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setHoverZone(null)}
     >
-      {/* Hover zone indicators — desktop only */}
-      {isActive && !isMobile && hoverZone === "left" && onGoPrev && (
-        <div className="absolute left-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-l-xl transition-opacity">
-          <ChevronLeft className="w-5 h-5 text-muted-foreground" />
-        </div>
-      )}
-      {isActive && !isMobile && hoverZone === "right" && onGoNext && (
-        <div className="absolute right-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-r-xl transition-opacity">
-          <ChevronRight className="w-5 h-5 text-muted-foreground" />
-        </div>
-      )}
 
       {/* Top: Platform banner */}
       <div className="flex items-center gap-2 px-3 pt-3 pb-1.5">
