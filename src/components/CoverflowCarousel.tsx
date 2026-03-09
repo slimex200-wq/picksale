@@ -5,10 +5,10 @@ interface Props {
   children: ReactNode[];
 }
 
-const CARD_W = 300;
-const CARD_H = 360;
-const SIDE_OFFSET = 220; // px from center to side card center
-const VISIBLE = 2; // cards visible on each side
+const CARD_W = 280;
+const CARD_H = 340;
+const SIDE_OFFSET = 200;
+const VISIBLE = 2;
 
 export default function CoverflowCarousel({ children }: Props) {
   const [active, setActive] = useState(0);
@@ -26,6 +26,7 @@ export default function CoverflowCarousel({ children }: Props) {
   return (
     <div
       className="relative overflow-hidden select-none"
+      style={{ minHeight: 430, padding: "24px 0" }}
       onTouchStart={(e) => {
         touchRef.current = e.touches[0].clientX;
       }}
@@ -40,7 +41,7 @@ export default function CoverflowCarousel({ children }: Props) {
       {active > 0 && (
         <button
           onClick={() => go(-1)}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-card border border-border shadow-md flex items-center justify-center hover:bg-accent transition-colors"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-card border border-border shadow-lg flex items-center justify-center hover:bg-accent transition-colors"
         >
           <ChevronLeft className="w-4 h-4 text-foreground" />
         </button>
@@ -48,32 +49,35 @@ export default function CoverflowCarousel({ children }: Props) {
       {active < count - 1 && (
         <button
           onClick={() => go(1)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-card border border-border shadow-md flex items-center justify-center hover:bg-accent transition-colors"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-card border border-border shadow-lg flex items-center justify-center hover:bg-accent transition-colors"
         >
           <ChevronRight className="w-4 h-4 text-foreground" />
         </button>
       )}
 
-      {/* Stage — fixed height, centered */}
-       <div
-         className="relative mx-auto flex items-center justify-center"
-         style={{
-           height: CARD_H + 40, // card + shadow room
-           maxWidth: "100%",
-         }}
-       >
+      {/* Stage */}
+      <div
+        style={{
+          position: "relative",
+          height: 380,
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         {children.map((child, i) => {
-          const offset = i - active; // negative = left, positive = right
+          const offset = i - active;
           const abs = Math.abs(offset);
 
           if (abs > VISIBLE) return null;
 
-           const isCenter = offset === 0;
-           const scale = isCenter ? 1 : 0.82 - abs * 0.04;
-           const rotateY = isCenter ? 0 : offset < 0 ? 12 : -12;
-           const tx = offset * SIDE_OFFSET;
-           const z = 20 - abs;
-           const opacity = isCenter ? 1 : Math.max(0.35, 0.7 - (abs - 1) * 0.2);
+          const isCenter = offset === 0;
+          const scale = isCenter ? 1 : 0.78 - (abs - 1) * 0.06;
+          const rotateY = isCenter ? 0 : offset < 0 ? 10 : -10;
+          const tx = offset * SIDE_OFFSET;
+          const z = 20 - abs;
+          const opacity = isCenter ? 1 : Math.max(0.3, 0.55 - (abs - 1) * 0.15);
 
           return (
             <div
@@ -82,9 +86,10 @@ export default function CoverflowCarousel({ children }: Props) {
                 position: "absolute",
                 width: CARD_W,
                 height: CARD_H,
-                top: 12,
                 left: "50%",
+                top: "50%",
                 marginLeft: -(CARD_W / 2),
+                marginTop: -(CARD_H / 2),
                 transform: `translateX(${tx}px) scale(${scale}) perspective(800px) rotateY(${rotateY}deg)`,
                 zIndex: z,
                 opacity,
@@ -94,12 +99,11 @@ export default function CoverflowCarousel({ children }: Props) {
               }}
               onClick={() => !isCenter && setActive(i)}
             >
-              {/* Card wrapper — ensures full card visible, no clipping */}
               <div
                 className="w-full h-full rounded-xl border border-border bg-card overflow-hidden flex flex-col"
                 style={{
                   boxShadow: isCenter
-                    ? "0 8px 32px -8px hsl(var(--primary) / 0.18), 0 2px 8px -2px hsl(var(--foreground) / 0.06)"
+                    ? "0 12px 40px -8px hsl(var(--primary) / 0.22), 0 4px 12px -2px hsl(var(--foreground) / 0.08)"
                     : "0 2px 12px -4px hsl(var(--foreground) / 0.1)",
                   transition: "box-shadow 0.45s ease",
                   pointerEvents: isCenter ? "auto" : "none",
@@ -114,7 +118,7 @@ export default function CoverflowCarousel({ children }: Props) {
 
       {/* Dots */}
       {count > 1 && (
-        <div className="flex justify-center gap-1.5 mt-2 pb-1">
+        <div className="flex justify-center gap-1.5 mt-3 pb-1">
           {children.map((_, i) => (
             <button
               key={i}
