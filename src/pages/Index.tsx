@@ -366,7 +366,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
               <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
               <div className="grid grid-cols-2 gap-1.5">
                 {rankingSales.slice(0, 6).map((sale, i) => (
-                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
+                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
                 ))}
               </div>
             </section>
