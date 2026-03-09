@@ -185,9 +185,9 @@ export default function AdminAll() {
           </Select>
         </div>
         <Button variant="outline" size="sm" className="h-8 gap-1 text-xs"
-          onClick={() => setSortBy(sortBy === "newest" ? "importance" : "newest")}>
+          onClick={() => setSortBy(sortBy === "newest" ? "importance" : sortBy === "importance" ? "updated" : "newest")}>
           <ArrowUpDown className="w-3 h-3" />
-          {sortBy === "newest" ? "최신순" : "중요도순"}
+          {sortBy === "newest" ? "최신순" : sortBy === "importance" ? "중요도순" : "갱신순"}
         </Button>
       </div>
 
