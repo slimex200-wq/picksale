@@ -1,12 +1,14 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { Sale, getSaleStatus, saleStatusConfig, platformColors } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Calendar, Bell, X } from "lucide-react";
+import { ExternalLink, Calendar, Bell, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
+import SaleInlineEditor from "@/components/SaleInlineEditor";
+import { useAdmin } from "@/hooks/useAdmin";
 
 function formatDate(d: string) {
   const date = new Date(d);
@@ -16,14 +18,28 @@ function formatDate(d: string) {
 interface Props {
   sale: Sale | null;
   onClose: () => void;
+  onSaleUpdated?: (updated: Sale) => void;
 }
 
-export default function ExpandedSaleOverlay({ sale, onClose }: Props) {
+export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Props) {
+  const [editing, setEditing] = useState(false);
+  const [currentSale, setCurrentSale] = useState<Sale | null>(sale);
+  const { isAdmin } = useAdmin();
+
+  // Sync when sale prop changes
+  useEffect(() => {
+    setCurrentSale(sale);
+    setEditing(false);
+  }, [sale]);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        if (editing) setEditing(false);
+        else onClose();
+      }
     },
-    [onClose]
+    [onClose, editing]
   );
 
   useEffect(() => {
@@ -36,14 +52,19 @@ export default function ExpandedSaleOverlay({ sale, onClose }: Props) {
     };
   }, [sale, handleKeyDown]);
 
-  if (!sale) return null;
+  if (!currentSale) return null;
 
-  const status = getSaleStatus(sale);
+  const status = getSaleStatus(currentSale);
   const statusInfo = saleStatusConfig[status];
-  const countdown = countdownText(sale.end_date);
+  const countdown = countdownText(currentSale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
-  const logoSrc = platformLogos[sale.platform];
-  const colorClass = platformColors[sale.platform];
+  const logoSrc = platformLogos[currentSale.platform];
+
+  const handleSaved = (updated: Sale) => {
+    setCurrentSale(updated);
+    setEditing(false);
+    onSaleUpdated?.(updated);
+  };
 
   return (
     <div
@@ -68,84 +89,104 @@ export default function ExpandedSaleOverlay({ sale, onClose }: Props) {
       >
         {/* Banner / Platform header */}
         <div className="relative shrink-0">
-          <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} heightClass="h-40" />
-          <button
-            onClick={onClose}
-            className="absolute top-3 right-3 bg-foreground/20 backdrop-blur-sm rounded-xl p-2 text-white hover:bg-foreground/40 transition-colors z-10"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <SaleBannerImage imageUrl={currentSale.image_url} platform={currentSale.platform} alt={currentSale.sale_name} heightClass="h-40" />
+          <div className="absolute top-3 right-3 flex gap-1.5 z-10">
+            {isAdmin && !editing && (
+              <button
+                onClick={() => setEditing(true)}
+                className="bg-foreground/20 backdrop-blur-sm rounded-xl p-2 text-white hover:bg-foreground/40 transition-colors"
+              >
+                <Pencil className="w-4 h-4" />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="bg-foreground/20 backdrop-blur-sm rounded-xl p-2 text-white hover:bg-foreground/40 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
           <div className="absolute bottom-3 left-4 flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-white/90 shadow-sm flex items-center justify-center p-1">
-              <img src={logoSrc} alt={sale.platform} className="w-full h-full object-contain" />
+              <img src={logoSrc} alt={currentSale.platform} className="w-full h-full object-contain" />
             </div>
             <span className="text-white text-xs font-bold tracking-wide drop-shadow-sm">
-              {sale.platform}
+              {currentSale.platform}
             </span>
           </div>
         </div>
 
         {/* Content */}
         <div className="p-5 space-y-4 overflow-y-auto flex-1">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              {status === "ending_today" ? (
-                <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today text-xs font-bold px-2 py-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
-                  오늘 마감
-                </span>
-              ) : (
-                <Badge variant="outline" className={`${statusInfo.className} border-0 text-xs font-semibold`}>
-                  {statusInfo.emoji} {statusInfo.label}
-                </Badge>
+          {editing ? (
+            <SaleInlineEditor
+              sale={currentSale}
+              onSaved={handleSaved}
+              onCancel={() => setEditing(false)}
+            />
+          ) : (
+            <>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  {status === "ending_today" ? (
+                    <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today text-xs font-bold px-2 py-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+                      오늘 마감
+                    </span>
+                  ) : (
+                    <Badge variant="outline" className={`${statusInfo.className} border-0 text-xs font-semibold`}>
+                      {statusInfo.emoji} {statusInfo.label}
+                    </Badge>
+                  )}
+                  <span className={`text-xs ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                    {countdown}
+                  </span>
+                </div>
+                <h2 className="text-lg font-bold text-card-foreground leading-snug tracking-tight">
+                  {currentSale.sale_name}
+                </h2>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+                <Calendar className="w-4 h-4 shrink-0" />
+                <span>{formatDate(currentSale.start_date)} ~ {formatDate(currentSale.end_date)}</span>
+              </div>
+
+              {currentSale.category.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {currentSale.category.map((cat) => (
+                    <Badge key={cat} variant="secondary" className="text-[11px] font-semibold rounded-full px-3 py-0.5 bg-secondary/80">
+                      {cat}
+                    </Badge>
+                  ))}
+                </div>
               )}
-              <span className={`text-xs ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
-                {countdown}
-              </span>
-            </div>
-            <h2 className="text-lg font-bold text-card-foreground leading-snug tracking-tight">
-              {sale.sale_name}
-            </h2>
-          </div>
 
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-            <Calendar className="w-4 h-4 shrink-0" />
-            <span>{formatDate(sale.start_date)} ~ {formatDate(sale.end_date)}</span>
-          </div>
+              {currentSale.description && (
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {currentSale.description}
+                </p>
+              )}
 
-          {sale.category.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {sale.category.map((cat) => (
-                <Badge key={cat} variant="secondary" className="text-[11px] font-semibold rounded-full px-3 py-0.5 bg-secondary/80">
-                  {cat}
-                </Badge>
-              ))}
-            </div>
+              <div className="flex flex-col gap-2.5 pt-2">
+                <Button
+                  className="w-full rounded-xl gap-2 h-11 font-semibold"
+                  onClick={() => window.open(currentSale.link, "_blank")}
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  세일 바로가기
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full rounded-xl gap-2 h-11 font-semibold border-border/70"
+                  onClick={() => toast.success("알림이 설정되었습니다! 🔔")}
+                >
+                  <Bell className="w-4 h-4" />
+                  알림받기
+                </Button>
+              </div>
+            </>
           )}
-
-          {sale.description && (
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {sale.description}
-            </p>
-          )}
-
-          <div className="flex flex-col gap-2.5 pt-2">
-            <Button
-              className="w-full rounded-xl gap-2 h-11 font-semibold"
-              onClick={() => window.open(sale.link, "_blank")}
-            >
-              <ExternalLink className="w-4 h-4" />
-              세일 바로가기
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full rounded-xl gap-2 h-11 font-semibold border-border/70"
-              onClick={() => toast.success("알림이 설정되었습니다! 🔔")}
-            >
-              <Bell className="w-4 h-4" />
-              알림받기
-            </Button>
-          </div>
         </div>
       </div>
 
