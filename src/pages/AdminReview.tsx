@@ -138,10 +138,10 @@ export default function AdminReview() {
       </div>
 
       <SourceDistribution
-        sales={sales}
+        sales={salesBeforeSource}
         activeSource={sourceFilter}
         onSourceChange={setSourceFilter}
-        contextLabel={`검토 대기 ${sales.length}건`}
+        contextLabel={`검토 대기 ${salesBeforeSource.length}건`}
       />
 
       <p className="text-xs text-muted-foreground">{sales.length}개 검토 대기</p>
