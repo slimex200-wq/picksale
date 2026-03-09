@@ -255,7 +255,6 @@ export default function Index() {
               <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 overflow-hidden" style={{ gap: 20 }}>
                 {endingTodaySales.length > 0 && (
                   <section className="space-y-3 min-w-0 overflow-hidden">
-                  <section className="space-y-3">
                     <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
                     <PeekCarousel cardWidth={210} gap={12}>
                       {endingTodaySales.map((sale) => (
