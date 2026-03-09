@@ -312,6 +312,8 @@ export default function AdminSignals() {
             </SelectContent>
           </Select>
         </div>
+        <div className="space-y-1">
+          <Label className="text-xs">플랫폼</Label>
           <Select value={platformFilter} onValueChange={setPlatformFilter}>
             <SelectTrigger className="w-[130px] h-8 text-xs"><SelectValue placeholder="전체" /></SelectTrigger>
             <SelectContent>
