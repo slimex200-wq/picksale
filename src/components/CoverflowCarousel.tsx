@@ -9,12 +9,15 @@ const CARD_W = 280;
 const CARD_H = 340;
 const SIDE_OFFSET = 200;
 const VISIBLE = 2;
+const DRAG_THRESHOLD = 50;
 
 export default function CoverflowCarousel({ children }: Props) {
   const count = children.length;
   const [active, setActive] = useState(Math.floor(count / 2));
-  const touchRef = useRef<number | null>(null);
   const isMobile = useIsMobile();
+
+  // Unified drag/touch state
+  const dragRef = useRef<{ startX: number; dragging: boolean } | null>(null);
 
   const go = useCallback(
     (dir: number) =>
@@ -22,21 +25,30 @@ export default function CoverflowCarousel({ children }: Props) {
     [count]
   );
 
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    dragRef.current = { startX: e.clientX, dragging: true };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  }, []);
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (!dragRef.current) return;
+      const dx = e.clientX - dragRef.current.startX;
+      dragRef.current = null;
+      if (Math.abs(dx) > DRAG_THRESHOLD) go(dx < 0 ? 1 : -1);
+    },
+    [go]
+  );
+
   if (count === 0) return null;
 
   return (
     <div
       className="relative overflow-hidden select-none"
-      style={{ minHeight: 430, padding: "24px 0" }}
-      onTouchStart={(e) => {
-        touchRef.current = e.touches[0].clientX;
-      }}
-      onTouchEnd={(e) => {
-        if (touchRef.current === null) return;
-        const dx = e.changedTouches[0].clientX - touchRef.current;
-        touchRef.current = null;
-        if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
-      }}
+      style={{ minHeight: 430, padding: "24px 0", touchAction: "pan-y" }}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={() => { dragRef.current = null; }}
     >
       <div
         style={{
@@ -59,7 +71,6 @@ export default function CoverflowCarousel({ children }: Props) {
           const rotateY = isCenter ? 0 : offset < 0 ? 10 : -10;
           const tx = offset * SIDE_OFFSET;
           const z = 20 - abs;
-          // Improved: side cards much more visible (0.75 min instead of 0.3)
           const opacity = isCenter ? 1 : Math.max(0.75, 0.85 - (abs - 1) * 0.1);
 
           return (
