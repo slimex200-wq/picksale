@@ -29,12 +29,15 @@ const stateOptions: { value: string; label: string }[] = [
 
 export default function AdminAll() {
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
   const [platformFilter, setPlatformFilter] = useState("");
   const [tierFilter, setTierFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
   const [stateFilter, setStateFilter] = useState("");
-  const [updatedOnly, setUpdatedOnly] = useState(false);
-  const [sortBy, setSortBy] = useState<"newest" | "importance" | "updated">("newest");
+  const [updatedOnly, setUpdatedOnly] = useState(searchParams.get("updated") === "true");
+  const [sortBy, setSortBy] = useState<"newest" | "importance" | "updated">(
+    searchParams.get("updated") === "true" ? "updated" : "newest"
+  );
 
   const { data: rawSales = [], isLoading } = useAdminSales({ sort: sortBy });
 
