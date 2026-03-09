@@ -19,6 +19,7 @@ interface Props {
 }
 
 export default function SaleInlineEditor({ sale, onSaved, onCancel }: Props) {
+  const queryClient = useQueryClient();
   const [title, setTitle] = useState(sale.sale_name);
   const [link, setLink] = useState(sale.link);
   const [startDate, setStartDate] = useState<Date>(new Date(sale.start_date));
