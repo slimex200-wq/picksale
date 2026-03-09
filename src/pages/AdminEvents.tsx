@@ -22,12 +22,24 @@ import {
 
 export default function AdminEvents() {
   const queryClient = useQueryClient();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [platformFilter, setPlatformFilter] = useState(searchParams.get("platform") || "");
   const [tierFilter, setTierFilter] = useState(searchParams.get("tier") || "");
   const [reviewFilter, setReviewFilter] = useState(searchParams.get("review") || "");
   const [publishFilter, setPublishFilter] = useState(searchParams.get("publish") || "");
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
+
+  // Sync filters from URL params when navigating from overview
+  useEffect(() => {
+    const p = searchParams.get("platform") || "";
+    const t = searchParams.get("tier") || "";
+    const r = searchParams.get("review") || "";
+    const pub = searchParams.get("publish") || "";
+    setPlatformFilter(p);
+    setTierFilter(t);
+    setReviewFilter(r);
+    setPublishFilter(pub);
+  }, [searchParams]);
 
   const { data: sales = [], isLoading } = useAdminSales({
     platform: platformFilter || undefined,
