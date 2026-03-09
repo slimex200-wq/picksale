@@ -4,10 +4,16 @@
 /* ── Canonical Primary States ── */
 export type SalePrimaryState = "review_pending" | "approved_draft" | "published" | "hidden" | "rejected";
 
-/** Returns today in KST as YYYY-MM-DD for expiry check */
+/** Returns today in KST as YYYY-MM-DD for expiry check — cached per minute */
+let _todayCache = "";
+let _todayCacheTs = 0;
 function todayKST(): string {
-  const d = new Date(Date.now() + 9 * 3600 * 1000);
-  return d.toISOString().slice(0, 10);
+  const now = Date.now();
+  if (now - _todayCacheTs < 60_000 && _todayCache) return _todayCache;
+  const d = new Date(now + 9 * 3600 * 1000);
+  _todayCache = d.toISOString().slice(0, 10);
+  _todayCacheTs = now;
+  return _todayCache;
 }
 
 export function getSalePrimaryState(sale: { review_status: string; publish_status: string; end_date?: string }): SalePrimaryState {

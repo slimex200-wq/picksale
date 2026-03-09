@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "react";
+import { useState, memo, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,15 +18,17 @@ import { toast } from "sonner";
 
 interface AdminSaleCardProps {
   sale: Sale;
-  /** All sales for duplicate checking */
+  /** Pre-computed duplicate maps for O(1) lookup instead of O(n) filter per card */
+  duplicatePublished?: Map<string, number>;
+  duplicateDrafts?: Map<string, number>;
+  /** @deprecated Use duplicatePublished/duplicateDrafts instead */
   allSales?: Sale[];
-  /** Which actions to show */
   actions?: ("approve" | "publish" | "reject" | "hide" | "restore" | "restore_review" | "edit" | "delete")[];
   onAction: (id: string, action: string) => void;
   onEdit?: (sale: Sale) => void;
 }
 
-export default function AdminSaleCard({ sale, allSales = [], actions = [], onAction, onEdit }: AdminSaleCardProps) {
+export default memo(function AdminSaleCard({ sale, duplicatePublished, duplicateDrafts, allSales = [], actions = [], onAction, onEdit }: AdminSaleCardProps) {
   const [sourcesOpen, setSourcesOpen] = useState(false);
   const [imgBroken, setImgBroken] = useState(false);
 
@@ -37,13 +39,18 @@ export default function AdminSaleCard({ sale, allSales = [], actions = [], onAct
   const upsertState = getUpsertState(sale);
   const upsertConf = upsertStateConfig[upsertState];
 
-  // Check for same event_key published rows (duplicate warning)
-  const sameEventKeyPublished = sale.event_key
-    ? allSales.filter(s => s.id !== sale.id && s.event_key === sale.event_key && s.publish_status === "published")
-    : [];
-  const sameEventKeyDrafts = sale.event_key
-    ? allSales.filter(s => s.id !== sale.id && s.event_key === sale.event_key && s.publish_status === "draft")
-    : [];
+  // Use pre-computed maps if available, otherwise fall back to legacy allSales filter
+  const sameEventKeyPublishedCount = useMemo(() => {
+    if (!sale.event_key) return 0;
+    if (duplicatePublished) return duplicatePublished.get(sale.event_key) ?? 0;
+    return allSales.filter(s => s.id !== sale.id && s.event_key === sale.event_key && s.publish_status === "published").length;
+  }, [sale.event_key, sale.id, duplicatePublished, allSales]);
+
+  const sameEventKeyDraftsCount = useMemo(() => {
+    if (!sale.event_key) return 0;
+    if (duplicateDrafts) return duplicateDrafts.get(sale.event_key) ?? 0;
+    return allSales.filter(s => s.id !== sale.id && s.event_key === sale.event_key && s.publish_status === "draft").length;
+  }, [sale.event_key, sale.id, duplicateDrafts, allSales]);
 
   const hasValidImage = sale.image_url && sale.image_url.trim() !== "" && !imgBroken
     && !/\.(mp4|webm|mov|avi)(\?|$)/i.test(sale.image_url);
@@ -66,16 +73,16 @@ export default function AdminSaleCard({ sale, allSales = [], actions = [], onAct
   return (
     <div className="bg-card border border-border rounded-lg p-3 space-y-2">
       {/* Warnings */}
-      {sameEventKeyPublished.length > 0 && (
+      {sameEventKeyPublishedCount > 0 && (
         <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-md bg-yellow-50 border border-yellow-200 text-yellow-800 text-[11px]">
           <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-          <span>⚠️ 동일 행사 게시됨 {sameEventKeyPublished.length}건 존재 — 중복 승인 주의</span>
+          <span>⚠️ 동일 행사 게시됨 {sameEventKeyPublishedCount}건 존재 — 중복 승인 주의</span>
         </div>
       )}
-      {sameEventKeyDrafts.length > 0 && (
+      {sameEventKeyDraftsCount > 0 && (
         <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-md bg-blue-50 border border-blue-200 text-blue-700 text-[11px]">
           <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-          <span>동일 event_key 초안 {sameEventKeyDrafts.length}건 — 병합 권장</span>
+          <span>동일 event_key 초안 {sameEventKeyDraftsCount}건 — 병합 권장</span>
         </div>
       )}
 
@@ -164,11 +171,12 @@ export default function AdminSaleCard({ sale, allSales = [], actions = [], onAct
               src={sale.image_url}
               alt=""
               className="w-16 h-16 rounded-md object-cover"
+              loading="lazy"
               onError={() => setImgBroken(true)}
             />
           ) : logoSrc ? (
             <div className="w-16 h-16 rounded-md bg-accent/40 flex items-center justify-center">
-              <img src={logoSrc} alt={sale.platform} className="max-w-[40px] max-h-[28px] object-contain" />
+              <img src={logoSrc} alt={sale.platform} className="max-w-[40px] max-h-[28px] object-contain" loading="lazy" />
             </div>
           ) : null}
           {sale.link && (
@@ -273,4 +281,4 @@ export default function AdminSaleCard({ sale, allSales = [], actions = [], onAct
       )}
     </div>
   );
-}
+});

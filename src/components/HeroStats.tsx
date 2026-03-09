@@ -91,4 +91,4 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
       )}
     </section>
   );
-}
+});
