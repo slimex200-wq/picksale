@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import {
   CheckCircle, XCircle, Eye, Pencil, ExternalLink, ArrowUpDown,
 } from "lucide-react";
+import { SaleMetaBadges, SaleSourceLinks } from "@/components/SaleMetaBadges";
 
 export default function AdminReview() {
   const queryClient = useQueryClient();
