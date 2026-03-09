@@ -289,12 +289,29 @@ export default function AdminSignals() {
         ))}
       </div>
 
-      <p className="text-xs text-muted-foreground">{signals.length}개 대기 중</p>
+      {/* Status summary */}
+      {statusCounts && (
+        <p className="text-xs text-muted-foreground">
+          전체 {statusCounts.total}건 — 대기 {statusCounts.pending} · 승격 {statusCounts.promoted} · 무시 {statusCounts.dismissed}
+        </p>
+      )}
+
+      <p className="text-xs font-medium text-foreground">{signals.length}개 {statusFilter === "pending" ? "대기 중" : statusFilter === "promoted" ? "승격됨" : statusFilter === "dismissed" ? "무시됨" : "전체"}</p>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2 items-end">
         <div className="space-y-1">
-          <Label className="text-xs">플랫폼</Label>
+          <Label className="text-xs">상태</Label>
+          <Select value={statusFilter} onValueChange={(v: any) => setStatusFilter(v)}>
+            <SelectTrigger className="w-[110px] h-8 text-xs"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pending">대기</SelectItem>
+              <SelectItem value="promoted">승격</SelectItem>
+              <SelectItem value="dismissed">무시</SelectItem>
+              <SelectItem value="all">전체</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
           <Select value={platformFilter} onValueChange={setPlatformFilter}>
             <SelectTrigger className="w-[130px] h-8 text-xs"><SelectValue placeholder="전체" /></SelectTrigger>
             <SelectContent>
