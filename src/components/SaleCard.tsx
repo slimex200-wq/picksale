@@ -203,7 +203,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             className="mt-auto w-full rounded-lg text-xs font-semibold h-8 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/sale/${sale.id}`);
+              goToSale();
             }}
           >
             세일 보러가기
