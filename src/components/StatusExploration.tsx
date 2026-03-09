@@ -67,7 +67,7 @@ export default function StatusExploration({ sales, onOpenDetail }: Props) {
               </div>
               <div className="space-y-1.5">
                 {items.map((sale, i) => (
-                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
+                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={onOpenDetail} />
                 ))}
               </div>
             </div>

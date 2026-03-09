@@ -53,7 +53,7 @@ export default function SaleTimeline({ sales, onOpenDetail }: Props) {
               return (
                 <div
                   key={sale.id}
-                  onClick={() => navigate(`/sale/${sale.id}`)}
+                  onClick={() => onOpenDetail ? onOpenDetail(sale) : navigate(`/sale/${sale.id}`)}
                   className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-accent/50 cursor-pointer transition-colors"
                 >
                   <div className="w-7 h-7 rounded-lg overflow-hidden shrink-0 bg-accent p-1">

@@ -84,6 +84,8 @@ export default function RadarPage() {
           </section>
         </>
       )}
+
+      <ExpandedSaleOverlay sale={selectedSale} onClose={() => setSelectedSale(null)} />
     </div>
   );
 }
