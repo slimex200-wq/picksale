@@ -114,21 +114,21 @@ export default function Header() {
 
       {/* Bottom nav (mobile) */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-lg border-t border-border md:hidden">
-        <div className="max-w-lg mx-auto flex justify-around py-2">
+        <div className="max-w-lg mx-auto flex justify-around py-1.5">
           {navItems.map(({ to, label, icon: Icon }) => {
             const active = to === "/home" ? pathname === "/home" : pathname.startsWith(to);
             return (
               <Link
                 key={to}
                 to={to}
-                className={`flex flex-col items-center gap-0.5 px-4 py-1 transition-colors ${
+                className={`flex flex-col items-center gap-0.5 px-2 py-1 transition-colors min-w-0 ${
                   active
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <Icon className="w-5 h-5" />
-                <span className="text-[10px] font-medium">{label}</span>
+                <span className="text-[10px] font-medium truncate max-w-[56px]">{label}</span>
               </Link>
             );
           })}
