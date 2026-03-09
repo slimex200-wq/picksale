@@ -66,14 +66,13 @@ export default function AdminLayout() {
       const signalsTotalRes = await supabase.from("sale_signals").select("id", { count: "exact", head: true });
 
       const sales = salesRes.data ?? [];
-      const signals = signalsRes.data ?? [];
+      const signalsPending = signalsRes.data?.length ?? 0;
+      const signalsTotal = signalsTotalRes.count ?? 0;
       const community = communityRes.data ?? [];
       const submissions = submissionsRes.data ?? [];
 
       const states = countByPrimaryState(sales);
       const salesTotal = sales.length;
-      const signalsPending = signals.filter((s: any) => s.review_status === "pending").length;
-      const signalsTotal = signals.length;
       const communityPublished = community.filter((p: any) => p.review_status === "published").length;
       const communityTotal = community.length;
       const subsPending = submissions.filter((s: any) => s.status === "pending").length;
