@@ -1,4 +1,4 @@
-import { Sale, platformColors, getSaleStatus, saleStatusConfig, calculateRankingScore, isCreditCardPromo } from "@/data/salesUtils";
+import { Sale, getSaleStatus, saleStatusConfig, calculateRankingScore, isCreditCardPromo } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
