@@ -205,7 +205,7 @@ function getTimelineStatus(sale: Sale, todayStr: string, _now: Date): TimelineSt
 /** Categorize sales into timeline buckets (major + published only, no duplicates) */
 export function categorizeTimeline(sales: Sale[]): Record<TimelineStatus, Sale[]> {
   const now = new Date();
-  const todayStr = fmt(now);
+  const todayStr = getTodayKST();
   const result: Record<TimelineStatus, Sale[]> = {
     ending_today: [],
     starts_today: [],
