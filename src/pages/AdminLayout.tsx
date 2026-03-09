@@ -54,6 +54,7 @@ export default function AdminLayout() {
 
       return {
         review: { highlight: states.review_pending, total: salesTotal },
+        drafts: { highlight: states.approved_draft, total: salesTotal },
         events: { highlight: states.published, total: salesTotal },
         hidden: { highlight: states.hidden, total: salesTotal },
         rejected: { highlight: states.rejected, total: salesTotal },
