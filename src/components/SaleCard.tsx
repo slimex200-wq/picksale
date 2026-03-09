@@ -56,10 +56,10 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
       }`}
       onClick={() => navigate(`/sale/${sale.id}`)}
     >
-      {/* Platform strip */}
-      <div className={`${isCardPromo ? "bg-muted" : colorClass} px-4 py-2.5 flex items-center gap-2`}>
+      {/* Platform strip - Neutral header with state colors */}
+      <div className="bg-muted/50 px-4 py-2.5 flex items-center gap-2">
         {rank && !isCardPromo && (
-          <span className="text-primary-foreground font-extrabold text-sm bg-white/20 rounded-full w-6 h-6 flex items-center justify-center shrink-0">
+          <span className="text-foreground font-extrabold text-sm bg-muted rounded-full w-6 h-6 flex items-center justify-center shrink-0">
             {rank}
           </span>
         )}
@@ -67,7 +67,7 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
         <div className="w-6 h-6 rounded-md bg-white/90 flex items-center justify-center shrink-0 p-0.5">
           <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" />
         </div>
-        <span className={`text-[11px] font-bold ${isCardPromo ? "text-muted-foreground" : "text-primary-foreground/90"}`}>{sale.platform}</span>
+        <span className="text-[11px] font-bold text-foreground">{sale.platform}</span>
         {isCardPromo && (
           <Badge variant="outline" className="text-[9px] ml-1 bg-muted text-muted-foreground border-border">
             카드 프로모션
@@ -78,8 +78,8 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
             isCardPromo
               ? "bg-muted text-muted-foreground"
               : isUrgent
-                ? "bg-white/25 text-primary-foreground"
-                : "bg-white/15 text-primary-foreground/90"
+                ? "bg-red-100/80 text-red-700"
+                : "bg-muted text-muted-foreground"
           }`}
         >
           {countdown}
