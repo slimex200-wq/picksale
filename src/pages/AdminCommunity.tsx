@@ -96,6 +96,7 @@ export default function AdminCommunity() {
         raw_text: post.content || "",
         confidence: Math.min(post.signal_score / 20, 1),
         review_status: "pending",
+        community_post_id: post.id,
       });
       if (error) throw error;
 
