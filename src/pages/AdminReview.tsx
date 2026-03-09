@@ -73,6 +73,7 @@ export default function AdminReview() {
     if (error) { toast.error(error.message); return; }
     toast.success("처리되었습니다.");
     invalidate();
+    if (action === "approve") navigate("/admin/drafts");
   };
 
   const handleEditSubmit = async (data: any) => {
