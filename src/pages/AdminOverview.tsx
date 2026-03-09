@@ -32,7 +32,7 @@ export default function AdminOverview() {
   }, [data]);
 
   if (!data) return null;
-  const { states, total, communityPending, communityTotal } = data;
+  const { states, total, communityPending, communityTotal, recentUpdates } = data;
 
   const stateCards = [
     { label: "검토 대기", value: states.review_pending, icon: Clock, color: "text-yellow-600", to: "/admin/review" },
