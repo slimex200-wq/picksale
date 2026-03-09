@@ -156,12 +156,23 @@ Deno.serve(async (req) => {
         updates.image_url = image_url;
       }
 
-      // Update dates if more precise (existing dates are null or incoming narrows range)
-      if (start_date && (!existing.start_date || start_date > existing.start_date)) {
+      // Update dates: replace if existing is single-day (article pub date) and new has real range,
+      // or if new range is wider than existing
+      const existingIsSingleDay = existing.start_date && existing.end_date && existing.start_date === existing.end_date;
+      const newHasRange = start_date && end_date && start_date !== end_date;
+
+      if (existingIsSingleDay && newHasRange) {
+        // Existing was likely set from article pub_date; replace with actual event period
         updates.start_date = start_date;
-      }
-      if (end_date && (!existing.end_date || end_date < existing.end_date)) {
         updates.end_date = end_date;
+      } else {
+        // Widen range: use earlier start and later end
+        if (start_date && (!existing.start_date || start_date < existing.start_date)) {
+          updates.start_date = start_date;
+        }
+        if (end_date && (!existing.end_date || end_date > existing.end_date)) {
+          updates.end_date = end_date;
+        }
       }
 
       // Update description if existing is empty
