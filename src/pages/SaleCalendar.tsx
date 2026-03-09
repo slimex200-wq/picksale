@@ -206,7 +206,7 @@ function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => 
         <p className="text-sm font-semibold text-foreground truncate">{sale.sale_name}</p>
         <div className="flex items-center gap-2 mt-0.5">
           <span className="text-[11px] text-muted-foreground">
-            {sale.start_date} ~ {sale.end_date}
+            {new Date(sale.start_date).getMonth() + 1}.{new Date(sale.start_date).getDate()} ~ {new Date(sale.end_date).getMonth() + 1}.{new Date(sale.end_date).getDate()}
           </span>
           <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-medium ${statusConf.className}`}>
             {statusConf.emoji} {statusConf.label}
