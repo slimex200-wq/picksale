@@ -344,75 +344,85 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 
 /* ─── DESKTOP ─── */
 function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
+  const [sheetSale, setSheetSale] = useState<Sale | null>(null);
+
   return (
-    <div className="grid grid-cols-[1fr_280px] gap-6 min-w-0">
-      <main className="space-y-8 min-w-0 overflow-hidden">
-        {/* Ranking */}
-        {rankingSales.length > 0 && (
-          <section className="space-y-3">
-            <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
-            <div className="grid grid-cols-2 gap-1.5">
-              {rankingSales.slice(0, 6).map((sale, i) => (
-                <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
-              ))}
+    <>
+      <div className="grid grid-cols-[1fr_280px] gap-6 min-w-0">
+        <main className="space-y-8 min-w-0 overflow-hidden">
+          {/* Ranking */}
+          {rankingSales.length > 0 && (
+            <section className="space-y-3">
+              <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
+              <div className="grid grid-cols-2 gap-1.5">
+                {rankingSales.slice(0, 6).map((sale, i) => (
+                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Featured — coverflow carousel */}
+          {featuredSales.length > 0 && (
+            <section style={{ marginBottom: 32 }}>
+              <div className="mb-3">
+                <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
+              </div>
+              <CoverflowCarousel>
+                {featuredSales.map((sale, i) => (
+                  <HeroSaleCard key={sale.id} sale={sale} rank={i + 1} />
+                ))}
+              </CoverflowCarousel>
+            </section>
+          )}
+
+          {/* Ending Today + Live — peek carousels */}
+          {(endingTodaySales.length > 0 || liveSales.length > 0) && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 gap-5">
+              {endingTodaySales.length > 0 && (
+                <section className="space-y-3">
+                  <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
+                  <PeekCarousel cardWidth={240} gap={16}>
+                    {endingTodaySales.map((sale) => (
+                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setSheetSale} />
+                    ))}
+                  </PeekCarousel>
+                </section>
+              )}
+              {liveSales.length > 0 && (
+                <section className="space-y-3">
+                  <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
+                  <PeekCarousel cardWidth={240} gap={16}>
+                    {liveSales.slice(0, 6).map((sale) => (
+                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setSheetSale} />
+                    ))}
+                  </PeekCarousel>
+                </section>
+              )}
             </div>
-          </section>
-        )}
+          )}
 
-        {/* Featured — coverflow carousel */}
-        {featuredSales.length > 0 && (
-          <section style={{ marginBottom: 32 }}>
-            <div className="mb-3">
-              <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
+          <PlatformExplorer sales={activeSales} />
+
+          {activeSales.length === 0 && (
+            <div className="flex flex-col items-center py-10 text-muted-foreground">
+              <Trophy className="w-8 h-8 text-muted-foreground/40" />
+              <p className="text-sm mt-2">진행 중인 세일이 없습니다.</p>
             </div>
-            <CoverflowCarousel>
-              {featuredSales.map((sale, i) => (
-                <HeroSaleCard key={sale.id} sale={sale} rank={i + 1} />
-              ))}
-            </CoverflowCarousel>
-          </section>
-        )}
+          )}
+        </main>
 
-        {/* Ending Today + Live — peek carousels */}
-        {(endingTodaySales.length > 0 || liveSales.length > 0) && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 gap-5">
-            {endingTodaySales.length > 0 && (
-              <section className="space-y-3">
-                <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
-                <PeekCarousel cardWidth={240} gap={16}>
-                  {endingTodaySales.map((sale) => (
-                    <EditorialBrandCard key={sale.id} sale={sale} />
-                  ))}
-                </PeekCarousel>
-              </section>
-            )}
-            {liveSales.length > 0 && (
-              <section className="space-y-3">
-                <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-                <PeekCarousel cardWidth={240} gap={16}>
-                  {liveSales.slice(0, 6).map((sale) => (
-                    <EditorialBrandCard key={sale.id} sale={sale} />
-                  ))}
-                </PeekCarousel>
-              </section>
-            )}
-          </div>
-        )}
+        <aside className="space-y-4 sticky top-4">
+          <TrendingCommunity maxPosts={5} />
+        </aside>
+      </div>
 
-        <PlatformExplorer sales={activeSales} />
-
-        {activeSales.length === 0 && (
-          <div className="flex flex-col items-center py-10 text-muted-foreground">
-            <Trophy className="w-8 h-8 text-muted-foreground/40" />
-            <p className="text-sm mt-2">진행 중인 세일이 없습니다.</p>
-          </div>
-        )}
-      </main>
-
-      <aside className="space-y-4 sticky top-4">
-        <TrendingCommunity maxPosts={5} />
-      </aside>
-    </div>
+      <SaleDetailSheet
+        sale={sheetSale}
+        open={!!sheetSale}
+        onOpenChange={(open) => { if (!open) setSheetSale(null); }}
+      />
+    </>
   );
 }
 
