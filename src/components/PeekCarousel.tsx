@@ -32,7 +32,10 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
     (idx: number) => {
       const el = scrollRef.current;
       if (!el) return;
-      const target = Math.max(0, Math.min(count - 1, idx));
+      // Loop around
+      let target = idx;
+      if (target < 0) target = count - 1;
+      if (target >= count) target = 0;
       el.scrollTo({ left: target * (cardWidth + gap), behavior: "smooth" });
     },
     [cardWidth, gap, count]
@@ -62,8 +65,8 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
       >
         {children.map((child, i) => {
            const isActive = i === activeIndex;
-           const onGoPrev = i > 0 ? () => scrollTo(i - 1) : undefined;
-           const onGoNext = i < count - 1 ? () => scrollTo(i + 1) : undefined;
+           const onGoPrev = () => scrollTo(i - 1);
+           const onGoNext = () => scrollTo(i + 1);
            
            return (
              <div
@@ -96,8 +99,8 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
          })}
       </div>
 
-      {/* Left arrow */}
-      {activeIndex > 0 && (
+      {/* Left arrow — always visible when count > 1 */}
+      {count > 1 && (
         <button
           onClick={() => scrollTo(activeIndex - 1)}
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-card border border-border shadow flex items-center justify-center transition-opacity duration-200"
@@ -107,8 +110,8 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
         </button>
       )}
 
-      {/* Right arrow */}
-      {activeIndex < count - 1 && (
+      {/* Right arrow — always visible when count > 1 */}
+      {count > 1 && (
         <button
           onClick={() => scrollTo(activeIndex + 1)}
           className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-card border border-border shadow flex items-center justify-center transition-opacity duration-200"
@@ -116,6 +119,21 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
         >
           <ChevronRight className="w-3.5 h-3.5 text-foreground" />
         </button>
+      )}
+
+      {/* Dot indicators */}
+      {count > 1 && (
+        <div className="flex justify-center gap-1 pt-2">
+          {children.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollTo(i)}
+              className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
+                i === activeIndex ? "bg-primary w-3" : "bg-muted-foreground/30"
+              }`}
+            />
+          ))}
+        </div>
       )}
     </div>
   );
