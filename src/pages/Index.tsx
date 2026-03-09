@@ -118,7 +118,7 @@ export default function Index() {
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-20 sm:pb-24 overflow-x-hidden">
-      <PageMeta title="PickSale - 쇼핑 세일 레이더" description="쿠팡, 무신사, 올리브영 등 주요 쇼핑몰의 세일 정보를 한눈에 확인하세요." />
+      <PageMeta title="PickSale - 쇼핑 세일 한눈에" description="의류, 뷰티, 라이프스타일 세일 정보를 한눈에 확인하세요." />
       <CanonicalLink href={window.location.origin + "/"} />
 
       {/* Hero + Search */}

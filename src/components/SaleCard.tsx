@@ -95,7 +95,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
           </div>
           <h3
             className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
-            style={{ fontSize: "13px", fontWeight: "600", lineHeight: "1.35" }}
+            style={{ fontSize: "13px", fontWeight: "700", lineHeight: "1.35" }}
           >
             {rank && <span className="text-primary mr-1 text-xs">#{rank}</span>}
             {sale.sale_name}
@@ -159,7 +159,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         {/* Row 2: Title */}
         <h3
           className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
-          style={{ fontSize: '15px', fontWeight: '600', lineHeight: '1.35' }}
+          style={{ fontSize: '15px', fontWeight: '700', lineHeight: '1.35' }}
         >
           {sale.sale_name}
         </h3>

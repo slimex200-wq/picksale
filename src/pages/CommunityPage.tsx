@@ -54,20 +54,23 @@ export default function CommunityPage() {
         </Link>
       </div>
 
-      {/* Category Filter */}
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+      {/* Category Filter — pill tabs */}
+      <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide border-b border-border">
         {categories.map((cat) => (
           <button
             key={cat.key}
             onClick={() => setCategory(cat.key)}
-            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[13px] font-semibold whitespace-nowrap transition-all border ${
+            className={`flex items-center gap-1.5 px-4 py-2 text-[13px] font-semibold whitespace-nowrap transition-all relative ${
               category === cat.key
-                ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                : "bg-card text-foreground/70 border-border hover:bg-accent hover:border-border/80"
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <span className="text-sm">{cat.emoji}</span>
             {cat.label}
+            {category === cat.key && (
+              <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
+            )}
           </button>
         ))}
       </div>
