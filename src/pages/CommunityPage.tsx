@@ -27,7 +27,7 @@ const sortOptions = [
 
 export default function CommunityPage() {
   const [category, setCategory] = useState("all");
-  const [sort, setSort] = useState<"newest" | "upvotes" | "trending">("trending");
+  const [sort, setSort] = useState<"newest" | "upvotes" | "trending">("newest");
   const { data: posts = [], isLoading } = useCommunityPosts({ category, sort });
   const { user } = useAuth();
   const bp = useBreakpoint();
