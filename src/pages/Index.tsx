@@ -377,7 +377,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
           <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 gap-5">
             {endingTodaySales.length > 0 && (
               <section className="space-y-3">
-                <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
+                <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
                 <PeekCarousel cardWidth={240} gap={16}>
                   {endingTodaySales.map((sale) => (
                     <SaleCard key={sale.id} sale={sale} />
