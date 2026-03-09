@@ -250,8 +250,8 @@ export function categorizeTimeline(sales: Sale[]): Record<TimelineStatus, Sale[]
 
 /* ── 기존 카테고리 분류 (하위 호환) ── */
 export function categorizeSales(sales: Sale[]) {
-  const now = new Date();
-  const todayStr = fmt(now);
+  const todayStr = getTodayKST();
+  const daysBetween = (a: string, b: string) => Math.round((new Date(a + "T00:00:00+09:00").getTime() - new Date(b + "T00:00:00+09:00").getTime()) / 86400000);
 
   const startsToday = sales.filter((s) => s.start_date === todayStr);
   const ongoing = sales.filter(
@@ -259,8 +259,7 @@ export function categorizeSales(sales: Sale[]) {
   );
   const endingSoon = sales
     .filter((s) => {
-      const end = new Date(s.end_date);
-      const diff = (end.getTime() - now.getTime()) / 86400000;
+      const diff = daysBetween(s.end_date, todayStr);
       return diff >= 0 && diff <= 3 && s.start_date !== todayStr;
     })
     .sort((a, b) => new Date(a.end_date).getTime() - new Date(b.end_date).getTime());
