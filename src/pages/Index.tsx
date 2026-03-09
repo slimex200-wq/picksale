@@ -259,7 +259,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
           <div className="space-y-1.5">
             {rankingSales.slice(0, 3).map((sale, i) => (
-              <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
+              <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
             ))}
           </div>
         </section>
