@@ -32,8 +32,9 @@ export default function Header() {
             </h1>
           </Link>
 
-          {/* User area */}
-          <div className="flex items-center gap-2">
+          {/* View mode + User area */}
+          <div className="flex items-center gap-1">
+            <ViewModeToggle />
             {user ? (
               <>
                 {profile?.avatar_url ? (
