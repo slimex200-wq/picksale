@@ -160,6 +160,16 @@ export default function SaleCalendar() {
           );
         })}
         </div>
+
+        {/* Legend */}
+        <div className="flex flex-wrap items-center gap-3 mt-3 px-1">
+          {(Object.entries(platformDotColors) as [Platform, string][]).map(([name, cls]) => (
+            <span key={name} className="flex items-center gap-1 text-[10px] text-muted-foreground">
+              <span className={`w-2 h-2 rounded-full ${cls}`} />
+              {name}
+            </span>
+          ))}
+        </div>
       </div>
 
       {selectedDay && (
