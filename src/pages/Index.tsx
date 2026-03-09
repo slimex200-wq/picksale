@@ -209,7 +209,7 @@ interface LayoutProps {
 
 /* ─── MOBILE ─── */
 function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
-  const [sheetSale, setSheetSale] = useState<Sale | null>(null);
+  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
   return (
     <div className="space-y-6">
