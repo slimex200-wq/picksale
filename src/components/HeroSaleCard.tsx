@@ -17,7 +17,7 @@ interface HeroSaleCardProps {
   onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, onGoNext, isMobile }: HeroSaleCardProps) {
+export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, onGoNext, isMobile, onOpenDetail }: HeroSaleCardProps) {
   const navigate = useNavigate();
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
@@ -26,10 +26,16 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
   const isCardPromo = isCreditCardPromo(sale.sale_name);
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
 
+  const handleOpen = () => {
+    if (!isActive) return;
+    if (onOpenDetail) onOpenDetail(sale);
+    else navigate(`/sale/${sale.id}`);
+  };
+
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isActive) return;
     if ((e.target as HTMLElement).closest("button")) return;
-    navigate(`/sale/${sale.id}`);
+    handleOpen();
   };
 
   const handleMouseMove = () => {
