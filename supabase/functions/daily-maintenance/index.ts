@@ -16,7 +16,10 @@ serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceKey);
 
-    const today = new Date().toISOString().split("T")[0];
+    // KST (UTC+9) 기준 오늘 날짜
+    const now = new Date();
+    const kstOffset = 9 * 60 * 60 * 1000;
+    const today = new Date(now.getTime() + kstOffset).toISOString().split("T")[0];
     const results: string[] = [];
 
     // 1. Expire sale_events where end_date < today
