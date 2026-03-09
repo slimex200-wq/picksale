@@ -24,6 +24,7 @@ function formatDate(d: string) {
 interface SaleCardProps {
   sale: Sale;
   rank?: number;
+  isActive?: boolean;
   onGoPrev?: () => void;
   onGoNext?: () => void;
 }
