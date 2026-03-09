@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import {
   Eye, EyeOff, Pencil, Trash2, ArrowUpDown, CheckCircle, XCircle, Clock, ExternalLink,
 } from "lucide-react";
+import { SaleMetaBadges, SaleSourceLinks } from "@/components/SaleMetaBadges";
 
 export default function AdminEvents() {
   const queryClient = useQueryClient();
