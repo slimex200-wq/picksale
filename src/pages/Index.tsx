@@ -285,6 +285,8 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 
 /* ─── TABLET ─── */
 function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
+  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
+
   return (
     <div className="space-y-6">
       {/* Featured — 2-col grid */}
@@ -293,7 +295,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
           <div className="grid grid-cols-2 gap-3">
             {featuredSales.slice(0, 4).map((sale, i) => (
-              <SaleCard key={sale.id} sale={sale} rank={i + 1} />
+              <SaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
             ))}
           </div>
         </section>
@@ -306,7 +308,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
             <SectionHeader emoji="⏰" title="오늘 마감" count={endingTodaySales.length} />
             <div className="space-y-2">
               {endingTodaySales.slice(0, 4).map((sale) => (
-                <SaleCard key={sale.id} sale={sale} compact />
+                <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
               ))}
             </div>
           </section>
@@ -316,7 +318,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
             <SectionHeader emoji="🟢" title="진행중" count={liveSales.length} moreLink="/radar" />
             <div className="space-y-2">
               {liveSales.slice(0, 4).map((sale) => (
-                <SaleCard key={sale.id} sale={sale} compact />
+                <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
               ))}
             </div>
           </section>
@@ -344,6 +346,8 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           <p className="text-sm mt-2">진행 중인 세일이 없습니다.</p>
         </div>
       )}
+
+      <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
     </div>
   );
 }
