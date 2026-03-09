@@ -139,10 +139,10 @@ export default function AdminEvents() {
       </div>
 
       <SourceDistribution
-        sales={sales}
+        sales={salesBeforeSource}
         activeSource={sourceFilter}
         onSourceChange={setSourceFilter}
-        contextLabel={`게시됨 ${sales.length}건`}
+        contextLabel={`게시됨 ${salesBeforeSource.length}건`}
       />
 
       <p className="text-xs text-muted-foreground">{sales.length}개 게시 이벤트</p>
