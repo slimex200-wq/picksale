@@ -58,7 +58,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="w-full max-w-sm bg-card border border-border rounded-2xl p-6 space-y-6">
-        <div className="text-center space-y-2">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          뒤로가기
+        </button>
           <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
             <LogIn className="w-6 h-6 text-primary" />
           </div>
