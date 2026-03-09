@@ -388,7 +388,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                   <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
                   <PeekCarousel cardWidth={240} gap={16}>
                     {endingTodaySales.map((sale) => (
-                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setSheetSale} />
+                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
                     ))}
                   </PeekCarousel>
                 </section>
