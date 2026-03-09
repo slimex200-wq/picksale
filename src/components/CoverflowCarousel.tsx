@@ -14,7 +14,6 @@ export default function CoverflowCarousel({ children }: Props) {
   const count = children.length;
   const [active, setActive] = useState(Math.floor(count / 2));
   const touchRef = useRef<number | null>(null);
-  const count = children.length;
 
   const go = useCallback(
     (dir: number) =>
