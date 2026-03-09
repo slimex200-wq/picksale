@@ -198,7 +198,6 @@ export default function Index() {
 }
 
 /* ─── Layout Props ─── */
-import { Sale } from "@/data/salesUtils";
 
 interface LayoutProps {
   featuredSales: Sale[];
