@@ -19,8 +19,9 @@ export function useSales() {
       if (error) throw error;
       return (data ?? []).map(mapRow);
     },
-    staleTime: 2 * 60 * 1000, // 2 min
-    gcTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000, // 5 min
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 }
 
