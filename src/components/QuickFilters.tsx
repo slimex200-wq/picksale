@@ -4,7 +4,7 @@ interface Props {
 }
 
 const QUICK_FILTERS = [
-  { key: "ending_today", label: "오늘 종료", emoji: "🔥" },
+  { key: "ending_today", label: "오늘 마감", emoji: "" },
   { key: "패션", label: "패션", emoji: "👟" },
   { key: "뷰티", label: "뷰티", emoji: "💄" },
   { key: "리빙", label: "가전/리빙", emoji: "🏠" },
