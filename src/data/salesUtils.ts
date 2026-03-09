@@ -182,17 +182,22 @@ export const timelineSections: {
   { key: "starting_soon", title: "곧 시작하는 세일", emoji: "⏳", emptyText: "곧 시작하는 세일이 없습니다." },
 ];
 
-function getTimelineStatus(sale: Sale, todayStr: string, now: Date): TimelineStatus | null {
-  const endDiff = Math.ceil((new Date(sale.end_date).getTime() - now.getTime()) / 86400000);
-  const startDiff = Math.ceil((new Date(sale.start_date).getTime() - now.getTime()) / 86400000);
-  const isActive = sale.start_date <= todayStr && sale.end_date >= todayStr;
+function getTimelineStatus(sale: Sale, todayStr: string, _now: Date): TimelineStatus | null {
+  const endDate = sale.end_date;
+  const startDate = sale.start_date;
+  const isActive = startDate <= todayStr && endDate >= todayStr;
+
+  // Calculate day diffs using date strings (safe from timezone issues)
+  const daysBetween = (a: string, b: string) => Math.round((new Date(a + "T00:00:00+09:00").getTime() - new Date(b + "T00:00:00+09:00").getTime()) / 86400000);
+  const endDaysLeft = daysBetween(endDate, todayStr);
+  const startDaysLeft = daysBetween(startDate, todayStr);
 
   // Priority: ending_today > starts_today > ending_soon > live > starting_soon
-  if (sale.end_date === todayStr) return "ending_today";
-  if (sale.start_date === todayStr) return "starts_today";
-  if (isActive && endDiff >= 0 && endDiff <= 2) return "ending_soon";
+  if (endDate === todayStr) return "ending_today";
+  if (startDate === todayStr) return "starts_today";
+  if (isActive && endDaysLeft >= 0 && endDaysLeft <= 2) return "ending_soon";
   if (isActive) return "live";
-  if (startDiff > 0 && startDiff <= 3) return "starting_soon";
+  if (startDaysLeft > 0 && startDaysLeft <= 3) return "starting_soon";
   return null;
 }
 
