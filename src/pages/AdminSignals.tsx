@@ -227,7 +227,9 @@ export default function AdminSignals() {
         .update({ review_status: "promoted", processed: true })
         .eq("id", signal.id);
 
-      toast.success("세일로 승격되었습니다.");
+      toast.success("세일로 승격되었습니다.", {
+        action: { label: "승인(초안) 확인 →", onClick: () => navigate("/admin/drafts") },
+      });
       invalidateAll();
     } catch (err: any) {
       toast.error(err.message || "승격에 실패했습니다.");
