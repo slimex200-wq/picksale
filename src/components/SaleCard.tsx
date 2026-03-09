@@ -88,7 +88,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
               </Badge>
             )}
             <span
-              className={`text-[10px] shrink-0 ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
+              className={`text-[9px] shrink-0 ${status === "ending_today" ? "text-muted-foreground/50 font-normal" : isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
             >
               {countdown}
             </span>
