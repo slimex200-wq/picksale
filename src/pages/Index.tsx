@@ -252,9 +252,9 @@ export default function Index() {
 
             {/* Ending Today + Live — smaller cards */}
             {(endingTodaySales.length > 0 || liveSales.length > 0) && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0" style={{ gap: 20 }}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 overflow-hidden" style={{ gap: 20 }}>
                 {endingTodaySales.length > 0 && (
-                  <section className="space-y-3">
+                  <section className="space-y-3 min-w-0 overflow-hidden">
                     <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
                     <PeekCarousel cardWidth={210} gap={12}>
                       {endingTodaySales.map((sale) => (
@@ -264,7 +264,7 @@ export default function Index() {
                   </section>
                 )}
                 {liveSales.length > 0 && (
-                  <section className="space-y-3">
+                  <section className="space-y-3 min-w-0 overflow-hidden">
                     <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
                     <PeekCarousel cardWidth={210} gap={12}>
                       {liveSales.slice(0, 6).map((sale) => (
