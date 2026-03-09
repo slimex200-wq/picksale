@@ -123,7 +123,9 @@ export default function Index() {
 
       {/* Hero + Search */}
       <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
-        {!isLoading && (
+        {isLoading ? (
+          <HeroStatsSkeleton />
+        ) : (
           <HeroStats sales={activeSales} activeFilter={heroFilter} onFilterChange={handleHeroFilter} />
         )}
         <div className="space-y-2">
@@ -144,9 +146,9 @@ export default function Index() {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-32 w-full rounded-lg" />)}
-        </div>
+        bp === "mobile" ? <MobileLoadingSkeleton /> :
+        bp === "tablet" ? <TabletLoadingSkeleton /> :
+        <DesktopLoadingSkeleton />
       ) : hasActiveFilter ? (
         <section className="space-y-3">
           <SectionHeader emoji="🔍" title="검색 결과" count={filtered.length} />
