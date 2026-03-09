@@ -226,22 +226,22 @@ export default function Index() {
           )}
         </div>
       ) : (
-        /* ═══ DESKTOP 3-COLUMN LAYOUT ═══ */
-        <div className="grid grid-cols-[220px_1fr_260px] gap-6">
-          {/* Left Sidebar — Ranking */}
-          <aside className="space-y-4">
-            <h3 className="text-sm font-extrabold text-foreground flex items-center gap-1.5 px-1">
-              🏆 세일 랭킹
-            </h3>
-            <div className="space-y-1.5">
-              {rankingSales.map((sale, i) => (
-                <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
-              ))}
-            </div>
-          </aside>
-
+        /* ═══ DESKTOP 2-COLUMN LAYOUT ═══ */
+        <div className="grid grid-cols-[1fr_280px] gap-6">
           {/* Center — Main Content */}
           <main className="space-y-10">
+            {/* Ranking — horizontal compact */}
+            {rankingSales.length > 0 && (
+              <section className="space-y-4">
+                <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
+                <div className="grid grid-cols-2 gap-2">
+                  {rankingSales.slice(0, 6).map((sale, i) => (
+                    <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} />
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* Featured */}
             {featuredSales.length > 0 && (
               <section className="space-y-4">
@@ -284,7 +284,7 @@ export default function Index() {
           </main>
 
           {/* Right Sidebar — Community */}
-          <aside className="space-y-4">
+          <aside className="space-y-4 sticky top-4">
             <TrendingCommunity maxPosts={5} />
           </aside>
         </div>
