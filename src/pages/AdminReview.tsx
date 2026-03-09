@@ -34,7 +34,7 @@ export default function AdminReview() {
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const [editForm, setEditForm] = useState({
-    sale_name: "", platform: "", start_date: "", end_date: "",
+    sale_name: "", platform: "", link: "", start_date: "", end_date: "",
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
@@ -55,14 +55,14 @@ export default function AdminReview() {
 
   const openEdit = (sale: Sale) => {
     setEditingSale(sale);
-    setEditForm({ sale_name: sale.sale_name, platform: sale.platform, start_date: sale.start_date, end_date: sale.end_date });
+    setEditForm({ sale_name: sale.sale_name, platform: sale.platform, link: sale.link || "", start_date: sale.start_date, end_date: sale.end_date });
   };
 
   const handleEditSubmit = async () => {
     if (!editingSale) return;
     const { error } = await supabase.from("sales").update({
       sale_name: editForm.sale_name, platform: editForm.platform,
-      start_date: editForm.start_date, end_date: editForm.end_date,
+      link: editForm.link, start_date: editForm.start_date, end_date: editForm.end_date,
     }).eq("id", editingSale.id);
     if (error) { toast.error(error.message); return; }
     toast.success("수정되었습니다.");
@@ -203,6 +203,10 @@ export default function AdminReview() {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>{platforms.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
               </Select>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-sm">링크</Label>
+              <Input type="url" placeholder="https://www.musinsa.com/app/plan/..." value={editForm.link} onChange={(e) => setEditForm((f) => ({ ...f, link: e.target.value }))} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
