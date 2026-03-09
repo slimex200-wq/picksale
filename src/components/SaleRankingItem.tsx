@@ -34,19 +34,19 @@ export default function SaleRankingItem({ sale, rank }: Props) {
         isCardPromo ? "opacity-70" : ""
       }`}
     >
-      {/* Rank */}
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className={`text-sm font-extrabold w-6 text-center shrink-0 ${
-              rank <= 3 ? "text-primary" : "text-muted-foreground"
-            }`}>
-              #{rank}
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>{rank}위</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+       {/* Rank */}
+       <TooltipProvider>
+         <Tooltip>
+           <TooltipTrigger asChild>
+             <span className={`font-bold w-6 text-center shrink-0 ${
+               rank <= 3 ? "text-primary" : "text-muted-foreground"
+             }`} style={{ fontSize: '14px', fontWeight: '700' }}>
+               #{rank}
+             </span>
+           </TooltipTrigger>
+           <TooltipContent>{rank}위</TooltipContent>
+         </Tooltip>
+       </TooltipProvider>
 
       {/* Logo */}
       <div className="w-9 h-9 rounded-lg bg-white/90 border border-border/50 flex items-center justify-center shrink-0 p-1">
