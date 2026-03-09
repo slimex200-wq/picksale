@@ -69,6 +69,7 @@ export default function AdminEvents() {
     if (!editingSale) return;
     const { error } = await supabase.from("sales").update({
       sale_name: editForm.sale_name, platform: editForm.platform,
+      link: editForm.link,
       start_date: editForm.start_date, end_date: editForm.end_date,
     }).eq("id", editingSale.id);
     if (error) { toast.error(error.message); return; }
