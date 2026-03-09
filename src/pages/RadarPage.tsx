@@ -29,16 +29,16 @@ export default function RadarPage() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-12">
+    <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-6">
       <PageMeta title="세일 레이더 - PickSale" description="상태별, 타임라인별, 플랫폼별로 세일을 탐색하세요." />
       <CanonicalLink href={window.location.origin + "/radar"} />
 
       {/* Header */}
       <div className="flex items-center gap-2.5">
-        <Radar className="w-5 h-5 text-primary" />
+        <Radar className="w-6 h-6 text-primary" />
         <div>
-          <h1 className="text-lg font-extrabold text-foreground tracking-tight">세일 레이더</h1>
-          <p className="text-xs text-muted-foreground">상태별 · 타임라인 · 플랫폼별 탐색</p>
+          <h1 className="text-foreground font-extrabold tracking-tight" style={{ fontSize: '28px' }}>세일 레이더</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">상태별 · 타임라인 · 플랫폼별 탐색</p>
         </div>
       </div>
 

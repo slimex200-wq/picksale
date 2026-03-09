@@ -244,24 +244,26 @@ export default function Index() {
               </section>
             )}
 
-            {/* Ending Today */}
-            {endingTodaySales.length > 0 && (
-              <section className="space-y-3">
-                <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                  {endingTodaySales.map((sale) => <SaleCard key={sale.id} sale={sale} />)}
-                </div>
-              </section>
-            )}
-
-            {/* Live */}
-            {liveSales.length > 0 && (
-              <section className="space-y-3">
-                <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                  {liveSales.slice(0, 6).map((sale) => <SaleCard key={sale.id} sale={sale} />)}
-                </div>
-              </section>
+            {/* Ending Today + Live — side by side on desktop */}
+            {(endingTodaySales.length > 0 || liveSales.length > 0) && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {endingTodaySales.length > 0 && (
+                  <section className="space-y-3">
+                    <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
+                    <div className="space-y-2">
+                      {endingTodaySales.map((sale) => <SaleCard key={sale.id} sale={sale} />)}
+                    </div>
+                  </section>
+                )}
+                {liveSales.length > 0 && (
+                  <section className="space-y-3">
+                    <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
+                    <div className="space-y-2">
+                      {liveSales.slice(0, 6).map((sale) => <SaleCard key={sale.id} sale={sale} />)}
+                    </div>
+                  </section>
+                )}
+              </div>
             )}
 
             <PlatformExplorer sales={activeSales} />
