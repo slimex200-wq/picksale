@@ -30,7 +30,7 @@ export default function AdminEvents() {
   });
 
   // CANONICAL STATE FILTER FIRST, then additional filters
-  const sales = useMemo(() => {
+  const { salesBeforeSource, sales } = useMemo(() => {
     // Step 1: canonical state — only published
     let filtered = rawSales.filter(s => getSalePrimaryState(s) === "published");
 
@@ -42,6 +42,9 @@ export default function AdminEvents() {
     if (tierFilter && tierFilter !== "all") {
       filtered = filtered.filter(s => s.sale_tier === tierFilter);
     }
+
+    const beforeSource = filtered;
+
     // Step 4: source
     if (sourceFilter && sourceFilter !== "all") {
       filtered = filtered.filter(s => {
@@ -52,7 +55,7 @@ export default function AdminEvents() {
         return true;
       });
     }
-    return filtered;
+    return { salesBeforeSource: beforeSource, sales: filtered };
   }, [rawSales, platformFilter, tierFilter, sourceFilter]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
