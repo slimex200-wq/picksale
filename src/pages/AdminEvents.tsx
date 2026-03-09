@@ -24,7 +24,8 @@ export default function AdminEvents() {
   const [platformFilter, setPlatformFilter] = useState(searchParams.get("platform") || "");
   const [tierFilter, setTierFilter] = useState(searchParams.get("tier") || "");
   const [sourceFilter, setSourceFilter] = useState("");
-  const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
+  const [updatedOnly, setUpdatedOnly] = useState(false);
+  const [sortBy, setSortBy] = useState<"newest" | "importance" | "updated">("newest");
 
   const { data: rawSales = [], isLoading } = useAdminSales({ sort: sortBy });
 
