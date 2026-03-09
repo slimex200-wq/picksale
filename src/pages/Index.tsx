@@ -157,7 +157,7 @@ export default function Index() {
           <SectionHeader emoji="🔍" title="검색 결과" count={filtered.length} />
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3">
-              {filtered.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} />)}
+              {filtered.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />)}
             </div>
           ) : (
             <div className="flex flex-col items-center py-10 text-muted-foreground">
@@ -165,6 +165,7 @@ export default function Index() {
               <p className="text-sm mt-2">검색 결과가 없습니다.</p>
             </div>
           )}
+          <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
         </section>
       ) : bp === "mobile" ? (
         /* ═══ MOBILE LAYOUT ═══ */
