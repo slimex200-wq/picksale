@@ -238,7 +238,7 @@ export default function Index() {
             {featuredSales.length > 0 && (
               <section className="space-y-3">
                 <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
-                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
                   {featuredSales.map((sale, i) => (
                     <div key={sale.id} className="w-[280px] shrink-0">
                       <SaleCard sale={sale} rank={i + 1} />
