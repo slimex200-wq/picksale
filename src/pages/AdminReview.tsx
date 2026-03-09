@@ -207,6 +207,7 @@ export default function AdminReview() {
             <div className="space-y-1">
               <Label className="text-sm">링크</Label>
               <Input type="url" placeholder="https://www.musinsa.com/app/plan/..." value={editForm.link} onChange={(e) => setEditForm((f) => ({ ...f, link: e.target.value }))} />
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label className="text-sm">시작일</Label>
