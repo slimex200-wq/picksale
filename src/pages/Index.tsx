@@ -414,3 +414,91 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
     </div>
   );
 }
+
+/* ─── Loading Skeletons ─── */
+function MobileLoadingSkeleton() {
+  return (
+    <div className="space-y-6">
+      <section className="space-y-2">
+        <SectionHeader emoji="🔥" title="추천 세일" />
+        {[1, 2, 3, 4].map((i) => <SaleCardCompactSkeleton key={i} />)}
+      </section>
+      <section className="space-y-2">
+        <SectionHeader emoji="⏰" title="오늘 종료 세일" />
+        {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
+      </section>
+      <section className="space-y-2">
+        <SectionHeader emoji="🏆" title="세일 랭킹" />
+        {[1, 2, 3].map((i) => <RankingItemSkeleton key={i} />)}
+      </section>
+      <section className="space-y-2">
+        <SectionHeader emoji="🏬" title="플랫폼별 세일" />
+        <div className="flex gap-2 overflow-hidden">
+          {[1, 2].map((i) => <PlatformCardSkeleton key={i} />)}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function TabletLoadingSkeleton() {
+  return (
+    <div className="space-y-6">
+      <section className="space-y-3">
+        <SectionHeader emoji="🔥" title="추천 세일" />
+        <div className="grid grid-cols-2 gap-3">
+          {[1, 2, 3, 4].map((i) => <SaleCardSkeleton key={i} />)}
+        </div>
+      </section>
+      <div className="grid grid-cols-2 gap-4">
+        <section className="space-y-2">
+          <SectionHeader emoji="⏰" title="오늘 종료" />
+          {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
+        </section>
+        <section className="space-y-2">
+          <SectionHeader emoji="🟢" title="진행중" />
+          {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
+        </section>
+      </div>
+      <section className="space-y-2">
+        <SectionHeader emoji="🏆" title="세일 랭킹" />
+        <div className="grid grid-cols-2 gap-1.5">
+          {[1, 2, 3, 4].map((i) => <RankingItemSkeleton key={i} />)}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function DesktopLoadingSkeleton() {
+  return (
+    <div className="grid grid-cols-[1fr_280px] gap-6 min-w-0">
+      <main className="space-y-8 min-w-0">
+        <section className="space-y-3">
+          <SectionHeader emoji="🏆" title="세일 랭킹" />
+          <div className="grid grid-cols-2 gap-1.5">
+            {[1, 2, 3, 4, 5, 6].map((i) => <RankingItemSkeleton key={i} />)}
+          </div>
+        </section>
+        <section className="space-y-3">
+          <SectionHeader emoji="🔥" title="추천 세일" />
+          <div className="grid grid-cols-3 gap-3">
+            {[1, 2, 3].map((i) => <SaleCardSkeleton key={i} />)}
+          </div>
+        </section>
+        <section className="space-y-3">
+          <SectionHeader emoji="🏬" title="플랫폼별 세일" />
+          <div className="grid grid-cols-4 gap-2">
+            {[1, 2, 3, 4].map((i) => <PlatformCardSkeleton key={i} />)}
+          </div>
+        </section>
+      </main>
+      <aside className="space-y-4">
+        <section className="space-y-3">
+          <SectionHeader emoji="🔥" title="커뮤니티 트렌딩" />
+          {[1, 2, 3, 4, 5].map((i) => <CommunityPostSkeleton key={i} />)}
+        </section>
+      </aside>
+    </div>
+  );
+}
