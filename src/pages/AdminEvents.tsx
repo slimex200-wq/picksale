@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAdminSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
