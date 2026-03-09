@@ -1,4 +1,4 @@
-import { Sale, platformColors, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
+import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
