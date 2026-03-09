@@ -17,7 +17,7 @@ interface SaleCardProps {
   onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function SaleCard({ sale, rank, isActive = true, compact = false, onGoPrev, onGoNext }: SaleCardProps) {
+export default function SaleCard({ sale, rank, isActive = true, compact = false, onGoPrev, onGoNext, onOpenDetail }: SaleCardProps) {
   const navigate = useNavigate();
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
   const countdown = countdownText(sale.end_date);
