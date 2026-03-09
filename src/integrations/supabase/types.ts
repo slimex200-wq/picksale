@@ -400,6 +400,7 @@ export type Database = {
           filter_reason: string
           grouped_page_count: number
           id: string
+          image_url: string | null
           importance_score: number
           link: string
           platform: string
@@ -420,6 +421,7 @@ export type Database = {
           filter_reason?: string
           grouped_page_count?: number
           id?: string
+          image_url?: string | null
           importance_score?: number
           link?: string
           platform: string
@@ -440,6 +442,7 @@ export type Database = {
           filter_reason?: string
           grouped_page_count?: number
           id?: string
+          image_url?: string | null
           importance_score?: number
           link?: string
           platform?: string
