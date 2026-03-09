@@ -4,7 +4,7 @@ import { useAdminSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sale, platforms } from "@/data/salesUtils";
-import { getSalePrimaryState, getSourceClass, type SalePrimaryState } from "@/data/adminStateModel";
+import { getSalePrimaryState, getSourceClass, isRecentlyUpdated, type SalePrimaryState } from "@/data/adminStateModel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
