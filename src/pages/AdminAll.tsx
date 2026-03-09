@@ -4,7 +4,7 @@ import { useAdminSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sale, platforms } from "@/data/salesUtils";
-import { getSalePrimaryState, primaryStateConfig, type SalePrimaryState } from "@/data/adminStateModel";
+import { getSalePrimaryState, getSourceClass, primaryStateConfig, type SalePrimaryState } from "@/data/adminStateModel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -62,13 +62,7 @@ export default function AdminAll() {
 
     // Source filter
     if (sourceFilter && sourceFilter !== "all") {
-      filtered = filtered.filter(s => {
-        const st = s.source_type || "";
-        if (sourceFilter === "official") return st === "crawler" || st === "official";
-        if (sourceFilter === "news") return st === "news";
-        if (sourceFilter === "community") return st === "community";
-        return true;
-      });
+      filtered = filtered.filter(s => getSourceClass(s) === sourceFilter);
     }
 
     return { salesBeforeSource: beforeSource, sales: filtered, stateCounts: counts };
