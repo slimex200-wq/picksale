@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Sale, Platform, SaleTier, ReviewStatus, PublishStatus } from "@/data/salesUtils";
+import { getTodayKST } from "@/data/salesUtils";
 
 /** Columns needed for card/list views (no description, source_urls, filter_reason) */
 const LIST_COLUMNS = "id,platform,sale_name,start_date,end_date,category,link,sale_tier,importance_score,review_status,publish_status,grouped_page_count,event_id,signal_id,created_at,image_url";
@@ -10,7 +11,7 @@ export function useSales() {
   return useQuery({
     queryKey: ["sales", "published"],
     queryFn: async (): Promise<Sale[]> => {
-      const today = new Date().toISOString().split("T")[0];
+      const today = getTodayKST();
       const { data, error } = await supabase
         .from("sales")
         .select(LIST_COLUMNS)
