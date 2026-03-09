@@ -296,7 +296,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
       <div className="grid grid-cols-2 gap-4">
         {endingTodaySales.length > 0 && (
           <section className="space-y-2">
-            <SectionHeader emoji="⏰" title="오늘 종료" count={endingTodaySales.length} />
+            <SectionHeader emoji="⏰" title="오늘 마감" count={endingTodaySales.length} />
             <div className="space-y-2">
               {endingTodaySales.slice(0, 4).map((sale) => (
                 <SaleCard key={sale.id} sale={sale} compact />
