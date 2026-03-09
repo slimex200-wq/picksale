@@ -23,5 +23,23 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Defer render-blocking CSS: swap injected stylesheets to non-blocking
+      (function(){
+        var o=new MutationObserver(function(ms){
+          ms.forEach(function(m){
+            m.addedNodes.forEach(function(n){
+              if(n.tagName==='LINK'&&n.rel==='stylesheet'){
+                n.media='print';
+                n.onload=function(){n.media='all'};
+              }
+            });
+          });
+        });
+        o.observe(document.head,{childList:true});
+        // Disconnect after page load
+        window.addEventListener('load',function(){o.disconnect()});
+      })();
+    </script>
   </body>
 </html>
