@@ -66,7 +66,7 @@ export default function SaleCalendar() {
     setSelectedDay(null);
   };
 
-  if (isLoading) {
+  if (isLoading && !sales.length) {
     return (
       <div className="max-w-lg mx-auto px-4 pt-4 pb-24">
         <Skeleton className="h-96 w-full rounded-lg" />
