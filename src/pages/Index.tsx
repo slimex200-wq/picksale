@@ -1,11 +1,12 @@
 import { useState, useMemo, useRef } from "react";
-import { sortByRanking, getSaleStatus, SaleStatus } from "@/data/salesUtils";
+import { sortByRanking, getSaleStatus, SaleStatus, Sale } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
 import SaleCard from "@/components/SaleCard";
 import HeroSaleCard from "@/components/HeroSaleCard";
 import CoverflowCarousel from "@/components/CoverflowCarousel";
 import EditorialBrandCard from "@/components/EditorialBrandCard";
 import PeekCarousel from "@/components/PeekCarousel";
+import SaleDetailSheet from "@/components/SaleDetailSheet";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
