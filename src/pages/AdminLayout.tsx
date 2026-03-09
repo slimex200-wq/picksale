@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
+import { countByPrimaryState } from "@/data/adminStateModel";
 
 const tabDefs = [
   { to: "/admin", label: "개요", icon: Settings, exact: true },
@@ -26,7 +27,6 @@ const tabDefs = [
 export default function AdminLayout() {
   const { pathname } = useLocation();
 
-  // Fetch counts for tabs
   const { data: counts } = useQuery({
     queryKey: ["admin_tab_counts"],
     queryFn: async () => {
@@ -42,24 +42,20 @@ export default function AdminLayout() {
       const community = communityRes.data ?? [];
       const submissions = submissionsRes.data ?? [];
 
-      const reviewCount = sales.filter(s => s.review_status === "pending").length;
-      const approvedDraft = sales.filter(s => s.review_status === "approved" && s.publish_status !== "published" && s.publish_status !== "hidden").length;
-      const reviewTotal = sales.length;
-      const signalsPending = signals.filter(s => s.review_status === "pending").length;
+      const states = countByPrimaryState(sales);
+      const salesTotal = sales.length;
+      const signalsPending = signals.filter((s: any) => s.review_status === "pending").length;
       const signalsTotal = signals.length;
-      const communityPublished = community.filter(p => p.review_status === "published").length;
+      const communityPublished = community.filter((p: any) => p.review_status === "published").length;
       const communityTotal = community.length;
-      const subsPending = submissions.filter(s => s.status === "pending").length;
+      const subsPending = submissions.filter((s: any) => s.status === "pending").length;
       const subsTotal = submissions.length;
-      const eventsPublished = sales.filter(s => s.publish_status === "published").length;
-      const hiddenCount = sales.filter(s => s.publish_status === "hidden").length;
-      const rejectedCount = sales.filter(s => s.review_status === "rejected").length;
 
       return {
-        review: { highlight: reviewCount + approvedDraft, total: reviewTotal },
-        events: { highlight: eventsPublished, total: reviewTotal },
-        hidden: { highlight: hiddenCount, total: reviewTotal },
-        rejected: { highlight: rejectedCount, total: reviewTotal },
+        review: { highlight: states.review_pending + states.approved_draft, total: salesTotal },
+        events: { highlight: states.published, total: salesTotal },
+        hidden: { highlight: states.hidden, total: salesTotal },
+        rejected: { highlight: states.rejected, total: salesTotal },
         signals: { highlight: signalsPending, total: signalsTotal },
         community: { highlight: communityPublished, total: communityTotal },
         submissions: { highlight: subsPending, total: subsTotal },

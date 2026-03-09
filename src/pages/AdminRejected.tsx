@@ -5,19 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sale, platforms } from "@/data/salesUtils";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
-import {
-  Eye, Pencil, Trash2, ExternalLink, ArrowUpDown,
-} from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
+import AdminSaleCard from "@/components/admin/AdminSaleCard";
+import AdminEditDialog from "@/components/admin/AdminEditDialog";
 
 export default function AdminRejected() {
   const queryClient = useQueryClient();
@@ -31,45 +26,37 @@ export default function AdminRejected() {
   });
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
-  const [editForm, setEditForm] = useState({
-    sale_name: "", platform: "", link: "", start_date: "", end_date: "",
-  });
-
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
 
-  const handleRestore = async (id: string) => {
-    const { error } = await supabase.from("sales").update({ review_status: "pending" }).eq("id", id);
-    if (error) { toast.error(error.message); return; }
-    toast.success("검토 대기로 복원되었습니다.");
-    invalidate();
+  const handleAction = async (id: string, action: string) => {
+    if (action === "delete") {
+      if (!confirm("정말 삭제하시겠습니까?")) return;
+      const { data, error } = await supabase.from("sales").delete().eq("id", id).select("id");
+      if (error) { toast.error(error.message); return; }
+      if (!data || data.length === 0) { toast.error("삭제에 실패했습니다."); return; }
+      toast.success("삭제되었습니다.");
+      invalidate(); return;
+    }
+    if (action === "restore_review") {
+      const { error } = await supabase.from("sales").update({ review_status: "pending" }).eq("id", id);
+      if (error) { toast.error(error.message); return; }
+      toast.success("검토 대기로 복원되었습니다.");
+      invalidate(); return;
+    }
+    if (action === "publish") {
+      const { error } = await supabase.from("sales").update({ review_status: "approved", publish_status: "published" }).eq("id", id);
+      if (error) { toast.error(error.message); return; }
+      toast.success("게시되었습니다.");
+      invalidate();
+    }
   };
 
-  const handlePublish = async (id: string) => {
-    const { error } = await supabase.from("sales").update({ review_status: "approved", publish_status: "published" }).eq("id", id);
-    if (error) { toast.error(error.message); return; }
-    toast.success("게시되었습니다.");
-    invalidate();
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("정말 삭제하시겠습니까?")) return;
-    const { data, error } = await supabase.from("sales").delete().eq("id", id).select("id");
-    if (error) { toast.error(error.message); return; }
-    if (!data || data.length === 0) { toast.error("삭제에 실패했습니다."); return; }
-    toast.success("삭제되었습니다.");
-    invalidate();
-  };
-
-  const openEdit = (sale: Sale) => {
-    setEditingSale(sale);
-    setEditForm({ sale_name: sale.sale_name, platform: sale.platform, link: sale.link || "", start_date: sale.start_date, end_date: sale.end_date });
-  };
-
-  const handleEditSubmit = async () => {
+  const handleEditSubmit = async (data: any) => {
     if (!editingSale) return;
     const { error } = await supabase.from("sales").update({
-      sale_name: editForm.sale_name, platform: editForm.platform,
-      link: editForm.link, start_date: editForm.start_date, end_date: editForm.end_date,
+      sale_name: data.sale_name, platform: data.platform,
+      link: data.link, start_date: data.start_date, end_date: data.end_date,
+      event_key: data.event_key, image_url: data.image_url,
     }).eq("id", editingSale.id);
     if (error) { toast.error(error.message); return; }
     toast.success("수정되었습니다.");
@@ -106,83 +93,18 @@ export default function AdminRejected() {
       ) : (
         <div className="space-y-2">
           {sales.map((sale) => (
-            <div key={sale.id} className="bg-card border border-border rounded-lg p-3 space-y-2">
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5 flex-wrap mb-1">
-                    <Badge variant="outline" className="text-[10px] bg-destructive/10 text-destructive border-destructive/30">
-                      반려됨
-                    </Badge>
-                    <span className="text-[10px] text-muted-foreground font-mono">{sale.platform}</span>
-                  </div>
-                  <p className="text-sm font-semibold text-card-foreground">{sale.sale_name}</p>
-                  <p className="text-xs text-muted-foreground font-mono">{sale.start_date} ~ {sale.end_date}</p>
-                  {sale.filter_reason && (
-                    <p className="text-[10px] text-muted-foreground mt-0.5">사유: {sale.filter_reason}</p>
-                  )}
-                </div>
-                {sale.link && (
-                  <a href={sale.link} target="_blank" rel="noopener noreferrer"
-                    className="shrink-0 p-1.5 rounded-md hover:bg-muted transition-colors">
-                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                  </a>
-                )}
-              </div>
-              <div className="flex gap-1.5 pt-1 flex-wrap">
-                <Button size="sm" variant="outline" className="gap-1 text-xs h-7"
-                  onClick={() => handleRestore(sale.id)}>
-                  검토로 복원
-                </Button>
-                <Button size="sm" className="gap-1 text-xs h-7 bg-green-600 hover:bg-green-700"
-                  onClick={() => handlePublish(sale.id)}>
-                  <Eye className="w-3 h-3" /> 게시
-                </Button>
-                <Button size="sm" variant="ghost" className="text-xs h-7" onClick={() => openEdit(sale)}>
-                  <Pencil className="w-3 h-3" /> 수정
-                </Button>
-                <Button size="sm" variant="ghost" className="text-xs h-7 text-destructive hover:text-destructive"
-                  onClick={() => handleDelete(sale.id)}>
-                  <Trash2 className="w-3 h-3" /> 삭제
-                </Button>
-              </div>
-            </div>
+            <AdminSaleCard
+              key={sale.id}
+              sale={sale}
+              actions={["restore_review", "publish", "edit", "delete"]}
+              onAction={handleAction}
+              onEdit={setEditingSale}
+            />
           ))}
         </div>
       )}
 
-      <Dialog open={!!editingSale} onOpenChange={(o) => !o && setEditingSale(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>이벤트 수정</DialogTitle></DialogHeader>
-          <div className="space-y-3 pt-2">
-            <div className="space-y-1">
-              <Label className="text-sm">제목</Label>
-              <Input value={editForm.sale_name} onChange={(e) => setEditForm((f) => ({ ...f, sale_name: e.target.value }))} />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm">플랫폼</Label>
-              <Select value={editForm.platform} onValueChange={(v) => setEditForm((f) => ({ ...f, platform: v }))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{platforms.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1">
-              <Label className="text-sm">링크</Label>
-              <Input type="url" placeholder="https://..." value={editForm.link} onChange={(e) => setEditForm((f) => ({ ...f, link: e.target.value }))} />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <Label className="text-sm">시작일</Label>
-                <Input type="date" value={editForm.start_date} onChange={(e) => setEditForm((f) => ({ ...f, start_date: e.target.value }))} />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-sm">종료일</Label>
-                <Input type="date" value={editForm.end_date} onChange={(e) => setEditForm((f) => ({ ...f, end_date: e.target.value }))} />
-              </div>
-            </div>
-            <Button className="w-full" onClick={handleEditSubmit}>저장</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <AdminEditDialog sale={editingSale} onClose={() => setEditingSale(null)} onSubmit={handleEditSubmit} />
     </div>
   );
 }

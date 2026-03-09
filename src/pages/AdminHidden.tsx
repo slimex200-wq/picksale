@@ -4,19 +4,18 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Sale, platforms, getTodayKST } from "@/data/salesUtils";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Eye, Download, ExternalLink, RotateCcw } from "lucide-react";
+import { Download } from "lucide-react";
+import AdminSaleCard from "@/components/admin/AdminSaleCard";
 
 export default function AdminHidden() {
   const queryClient = useQueryClient();
   const today = getTodayKST();
   const currentYear = parseInt(today.slice(0, 4));
-  const currentMonth = parseInt(today.slice(5, 7));
 
   const [yearFilter, setYearFilter] = useState(String(currentYear));
   const [monthFilter, setMonthFilter] = useState("");
@@ -25,17 +24,10 @@ export default function AdminHidden() {
   const { data: sales = [], isLoading } = useQuery({
     queryKey: ["sales", "admin-hidden", yearFilter, monthFilter, platformFilter],
     queryFn: async (): Promise<Sale[]> => {
-      // Fetch hidden OR expired sales
       let q = supabase.from("sales").select("*");
-
-      // We need: publish_status = 'hidden' OR end_date < today
-      // Use .or() filter
       q = q.or(`publish_status.eq.hidden,end_date.lt.${today}`);
 
-      if (platformFilter && platformFilter !== "all") {
-        q = q.eq("platform", platformFilter);
-      }
-
+      if (platformFilter && platformFilter !== "all") q = q.eq("platform", platformFilter);
       if (yearFilter && yearFilter !== "all") {
         const y = parseInt(yearFilter);
         if (monthFilter && monthFilter !== "all") {
@@ -49,60 +41,47 @@ export default function AdminHidden() {
       }
 
       q = q.order("end_date", { ascending: false });
-
       const { data, error } = await q;
       if (error) throw error;
       return (data ?? []).map((row: any) => ({
-        id: row.id,
-        platform: row.platform,
-        sale_name: row.sale_name,
-        start_date: row.start_date,
-        end_date: row.end_date,
-        category: row.category ?? [],
-        link: row.link ?? "",
-        description: row.description ?? "",
-        sale_tier: row.sale_tier ?? "major",
-        importance_score: row.importance_score ?? 0,
-        filter_reason: row.filter_reason ?? "",
-        review_status: row.review_status ?? "pending",
-        publish_status: row.publish_status ?? "draft",
-        source_urls: row.source_urls ?? [],
-        grouped_page_count: row.grouped_page_count ?? 0,
-        image_url: row.image_url ?? "",
-        event_id: row.event_id ?? null,
-        signal_id: row.signal_id ?? null,
-        created_at: row.created_at,
+        id: row.id, platform: row.platform, sale_name: row.sale_name,
+        start_date: row.start_date, end_date: row.end_date,
+        category: row.category ?? [], link: row.link ?? "", description: row.description ?? "",
+        sale_tier: row.sale_tier ?? "major", importance_score: row.importance_score ?? 0,
+        filter_reason: row.filter_reason ?? "", review_status: row.review_status ?? "pending",
+        publish_status: row.publish_status ?? "draft", source_urls: row.source_urls ?? [],
+        grouped_page_count: row.grouped_page_count ?? 0, image_url: row.image_url ?? "",
+        event_id: row.event_id ?? null, signal_id: row.signal_id ?? null,
+        created_at: row.created_at, event_key: row.event_key ?? "",
+        latest_pub_date: row.latest_pub_date ?? null, latest_source_url: row.latest_source_url ?? "",
+        source_type: row.source_type ?? "", signal_type: row.signal_type ?? "",
+        confidence_score: row.confidence_score ?? 0, updated_at: row.updated_at ?? "",
+        matched_by: row.matched_by ?? "",
       }));
     },
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });
 
-  const handleRestore = async (id: string) => {
-    const { error } = await supabase.from("sales").update({ publish_status: "published" }).eq("id", id);
-    if (error) { toast.error(error.message); return; }
-    toast.success("게시 상태로 복원되었습니다.");
-    invalidate();
+  const handleAction = async (id: string, action: string) => {
+    if (action === "restore") {
+      const { error } = await supabase.from("sales").update({ publish_status: "published" }).eq("id", id);
+      if (error) { toast.error(error.message); return; }
+      toast.success("게시 상태로 복원되었습니다.");
+      invalidate();
+    }
   };
 
   const handleCSVDownload = () => {
     if (sales.length === 0) { toast.error("다운로드할 데이터가 없습니다."); return; }
     const headers = ["제목", "플랫폼", "시작일", "종료일", "게시상태", "링크"];
     const rows = sales.map(s => [
-      `"${s.sale_name.replace(/"/g, '""')}"`,
-      s.platform,
-      s.start_date,
-      s.end_date,
-      s.publish_status,
-      s.link,
+      `"${s.sale_name.replace(/"/g, '""')}"`, s.platform, s.start_date, s.end_date, s.publish_status, s.link,
     ]);
     const csv = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `hidden-sales-${today}.csv`;
-    a.click();
+    const a = document.createElement("a"); a.href = url; a.download = `hidden-sales-${today}.csv`; a.click();
     URL.revokeObjectURL(url);
     toast.success("CSV 다운로드 완료");
   };
@@ -110,15 +89,8 @@ export default function AdminHidden() {
   const years = Array.from({ length: 3 }, (_, i) => String(currentYear - i));
   const months = Array.from({ length: 12 }, (_, i) => String(i + 1));
 
-  const reasonLabel = (sale: Sale) => {
-    if (sale.publish_status === "hidden") return "숨김 처리";
-    if (sale.end_date < today) return "기간 만료";
-    return "";
-  };
-
   return (
     <div className="space-y-4">
-      {/* Filters */}
       <div className="flex flex-wrap gap-2 items-end">
         <div className="space-y-1">
           <Label className="text-xs">연도</Label>
@@ -164,36 +136,12 @@ export default function AdminHidden() {
       ) : (
         <div className="space-y-2">
           {sales.map((sale) => (
-            <div key={sale.id} className="bg-card border border-border rounded-lg p-3 space-y-2">
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5 flex-wrap mb-1">
-                    <Badge variant="outline" className="text-[10px] bg-muted text-muted-foreground">
-                      {reasonLabel(sale)}
-                    </Badge>
-                    <span className="text-[10px] text-muted-foreground font-mono">
-                      {sale.platform}
-                    </span>
-                  </div>
-                  <p className="text-sm font-semibold text-card-foreground">{sale.sale_name}</p>
-                  <p className="text-xs text-muted-foreground font-mono">
-                    {sale.start_date} ~ {sale.end_date}
-                  </p>
-                </div>
-                {sale.link && (
-                  <a href={sale.link} target="_blank" rel="noopener noreferrer"
-                    className="shrink-0 p-1.5 rounded-md hover:bg-muted transition-colors">
-                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                  </a>
-                )}
-              </div>
-              <div className="flex gap-1.5 pt-1">
-                <Button size="sm" className="gap-1 text-xs h-7 bg-green-600 hover:bg-green-700"
-                  onClick={() => handleRestore(sale.id)}>
-                  <RotateCcw className="w-3 h-3" /> 복원 (게시)
-                </Button>
-              </div>
-            </div>
+            <AdminSaleCard
+              key={sale.id}
+              sale={sale}
+              actions={["restore"]}
+              onAction={handleAction}
+            />
           ))}
         </div>
       )}
