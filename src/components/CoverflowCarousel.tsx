@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, ReactNode } from "react";
+import { useState, useCallback, useRef, ReactNode, isValidElement, cloneElement, ReactElement } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
