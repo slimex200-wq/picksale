@@ -235,17 +235,15 @@ export default function Index() {
               </section>
             )}
 
-            {/* Featured — horizontal scroll */}
+            {/* Featured — coverflow carousel */}
             {featuredSales.length > 0 && (
               <section className="space-y-3">
                 <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
-                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+                <CoverflowCarousel>
                   {featuredSales.map((sale, i) => (
-                    <div key={sale.id} className="min-w-[260px] max-w-[280px] flex-1 shrink-0 snap-start">
-                      <SaleCard sale={sale} rank={i + 1} />
-                    </div>
+                    <SaleCard key={sale.id} sale={sale} rank={i + 1} />
                   ))}
-                </div>
+                </CoverflowCarousel>
               </section>
             )}
 
