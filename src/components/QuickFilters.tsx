@@ -26,7 +26,11 @@ export default function QuickFilters({ activeFilter, onFilter }: Props) {
                 : "bg-card text-muted-foreground border-border hover:bg-accent hover:text-accent-foreground"
             }`}
           >
-            <span className="text-[11px]">{f.emoji}</span>
+            {f.key === "ending_today" ? (
+              <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+            ) : (
+              <span className="text-[11px]">{f.emoji}</span>
+            )}
             {f.label}
           </button>
         );

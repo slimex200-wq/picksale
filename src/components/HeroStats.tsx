@@ -49,7 +49,8 @@ export default function HeroStats({ sales, activeFilter, onFilterChange }: Props
                     : "text-muted-foreground hover:bg-accent"
                 }`}
               >
-                <span className="text-xs">{stat.emoji}</span>
+                <span className="text-xs">{stat.key === "ending_today" ? "" : stat.emoji}</span>
+                {stat.key === "ending_today" && <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />}
                 <span className="whitespace-nowrap text-[11px]">{stat.label}</span>
                 <span className={`font-extrabold tabular-nums text-[13px] ${isActive ? stat.color : "text-foreground"}`}>
                   {stat.count}
