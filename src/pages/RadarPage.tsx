@@ -23,6 +23,7 @@ function TimelineSkeleton() {
 
 export default function RadarPage() {
   const { data: sales = [], isLoading } = useSales();
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
   const activeSales = useMemo(
     () => sales.filter((s) => getSaleStatus(s) !== "ended"),
