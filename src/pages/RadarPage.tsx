@@ -37,8 +37,8 @@ export default function RadarPage() {
       <div className="flex items-center gap-2.5">
         <Radar className="w-6 h-6 text-primary" />
         <div>
-          <h1 className="text-foreground font-extrabold tracking-tight" style={{ fontSize: '28px' }}>세일 레이더</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">상태별 · 타임라인 · 플랫폼별 탐색</p>
+          <h1 className="text-2xl sm:text-3xl text-foreground font-extrabold tracking-tight">세일 레이더</h1>
+          <p className="text-xs text-muted-foreground mt-0.5 font-normal">상태별 · 타임라인 · 플랫폼별 탐색</p>
         </div>
       </div>
 

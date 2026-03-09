@@ -166,7 +166,7 @@ export const timelineSections: {
   emoji: string;
   emptyText: string;
 }[] = [
-  { key: "ending_today", title: "오늘 종료되는 세일", emoji: "🔴", emptyText: "오늘 종료되는 세일이 없습니다." },
+  { key: "ending_today", title: "오늘 마감 세일", emoji: "🔴", emptyText: "오늘 마감 세일이 없습니다." },
   { key: "starts_today", title: "오늘 시작하는 세일", emoji: "🔥", emptyText: "오늘 시작하는 세일이 없습니다." },
   { key: "ending_soon", title: "종료 임박 세일", emoji: "⚠️", emptyText: "종료 임박 세일이 없습니다." },
   { key: "live", title: "지금 진행중인 세일", emoji: "🟢", emptyText: "진행중인 세일이 없습니다." },

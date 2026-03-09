@@ -29,7 +29,7 @@ import PageMeta from "@/components/PageMeta";
 function SectionHeader({ emoji, title, count, moreLink, moreLabel }: { emoji: string; title: string; count?: number; moreLink?: string; moreLabel?: string }) {
   return (
     <div className="flex items-center justify-between px-1">
-      <h2 className="text-foreground flex items-center gap-2 text-base sm:text-lg font-bold">
+      <h2 className="text-foreground flex items-center gap-2 text-lg sm:text-xl font-extrabold tracking-tight">
         <span>{emoji}</span>
         {title}
         {count !== undefined && (
@@ -230,7 +230,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
       {/* Ending Today — compact list */}
       {endingTodaySales.length > 0 && (
         <section className="space-y-2">
-          <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
+          <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
           <div className="space-y-2">
             {endingTodaySales.slice(0, 3).map((sale) => (
               <SaleCard key={sale.id} sale={sale} compact />
@@ -296,7 +296,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
       <div className="grid grid-cols-2 gap-4">
         {endingTodaySales.length > 0 && (
           <section className="space-y-2">
-            <SectionHeader emoji="⏰" title="오늘 종료" count={endingTodaySales.length} />
+            <SectionHeader emoji="⏰" title="오늘 마감" count={endingTodaySales.length} />
             <div className="space-y-2">
               {endingTodaySales.slice(0, 4).map((sale) => (
                 <SaleCard key={sale.id} sale={sale} compact />
@@ -377,7 +377,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
           <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 gap-5">
             {endingTodaySales.length > 0 && (
               <section className="space-y-3">
-                <SectionHeader emoji="⏰" title="오늘 종료 세일" count={endingTodaySales.length} />
+                <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
                 <PeekCarousel cardWidth={240} gap={16}>
                   {endingTodaySales.map((sale) => (
                     <SaleCard key={sale.id} sale={sale} />
@@ -424,7 +424,7 @@ function MobileLoadingSkeleton() {
         {[1, 2, 3, 4].map((i) => <SaleCardCompactSkeleton key={i} />)}
       </section>
       <section className="space-y-2">
-        <SectionHeader emoji="⏰" title="오늘 종료 세일" />
+        <SectionHeader emoji="⏰" title="오늘 마감 세일" />
         {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
       </section>
       <section className="space-y-2">
@@ -452,7 +452,7 @@ function TabletLoadingSkeleton() {
       </section>
       <div className="grid grid-cols-2 gap-4">
         <section className="space-y-2">
-          <SectionHeader emoji="⏰" title="오늘 종료" />
+          <SectionHeader emoji="⏰" title="오늘 마감" />
           {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
         </section>
         <section className="space-y-2">

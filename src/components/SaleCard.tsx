@@ -4,21 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
-function countdownText(endDate: string) {
-  const diffMs = new Date(endDate).getTime() - Date.now();
-  if (diffMs <= 0) return "종료";
-  const hours = Math.floor(diffMs / 3600000);
-  if (hours < 24) return `${hours}시간 남음`;
-  const days = Math.ceil(diffMs / 86400000);
-  if (days === 1) return "D-1";
-  return `D-${days}`;
-}
-
-function formatDate(d: string) {
-  const date = new Date(d);
-  return `${date.getMonth() + 1}.${date.getDate()}`;
-}
+import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
+import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 
 interface SaleCardProps {
   sale: Sale;
@@ -33,7 +20,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
   const navigate = useNavigate();
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
   const countdown = countdownText(sale.end_date);
-  const isUrgent = countdown.includes("시간") || countdown === "D-1" || countdown === "종료";
+  const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
   const isCardPromo = isCreditCardPromo(sale.sale_name);
@@ -76,14 +63,14 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
   if (compact) {
     return (
       <div
-        className={`w-full bg-card rounded-xl cursor-pointer flex items-center gap-3 border overflow-hidden transition-all hover:shadow-sm active:scale-[0.99] ${
+        className={`w-full bg-card rounded-xl cursor-pointer flex items-center gap-2.5 border overflow-hidden transition-all hover:shadow-sm active:scale-[0.99] ${
           isCardPromo ? "border-border opacity-60" : "border-border/60"
         }`}
         style={{ padding: "10px 12px" }}
         onClick={() => navigate(`/sale/${sale.id}`)}
       >
         {/* Platform logo */}
-        <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center shrink-0 p-1">
+        <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center shrink-0 p-1.5">
           <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" loading="lazy" />
         </div>
 
@@ -91,7 +78,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
             {status === "ending_today" ? (
-              <span className="inline-flex items-center gap-1.5 rounded-md bg-closing-today-bg text-closing-today shrink-0" style={{ fontSize: "10px", fontWeight: 700, padding: "1px 5px" }}>
+              <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today shrink-0" style={{ fontSize: "10px", fontWeight: 700, padding: "1px 5px" }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
                 오늘 마감
               </span>
@@ -101,21 +88,21 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
               </Badge>
             )}
             <span
-              className={`text-[10px] font-semibold shrink-0 ${isUrgent ? "text-destructive" : "text-muted-foreground"}`}
+              className={`text-[10px] shrink-0 ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
             >
               {countdown}
             </span>
           </div>
           <h3
-            className={`line-clamp-2 ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
-            style={{ fontSize: "13px", fontWeight: "650", lineHeight: "1.35" }}
+            className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
+            style={{ fontSize: "13px", fontWeight: "600", lineHeight: "1.35" }}
           >
             {rank && <span className="text-primary mr-1 text-xs">#{rank}</span>}
             {sale.sale_name}
           </h3>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-muted-foreground text-[11px]">{sale.platform}</span>
-            <span className="text-muted-foreground text-[10px]">
+            <span className="text-muted-foreground text-[11px] font-medium">{sale.platform}</span>
+            <span className="text-muted-foreground/60 text-[10px] font-normal">
               {formatDate(sale.start_date)} – {formatDate(sale.end_date)}
             </span>
           </div>
@@ -162,7 +149,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             </Badge>
           )}
           <span
-            className={`font-semibold whitespace-nowrap ${isUrgent ? "text-destructive" : "text-muted-foreground"}`}
+            className={`whitespace-nowrap ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
             style={{ fontSize: '11px' }}
           >
             {countdown}
@@ -171,8 +158,8 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
 
         {/* Row 2: Title */}
         <h3
-          className={`line-clamp-2 ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
-          style={{ fontSize: '15px', fontWeight: '650', lineHeight: '1.35' }}
+          className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
+          style={{ fontSize: '15px', fontWeight: '600', lineHeight: '1.35' }}
         >
           {sale.sale_name}
         </h3>
@@ -182,10 +169,10 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
           <div className="w-4.5 h-4.5 rounded bg-accent flex items-center justify-center shrink-0 p-0.5">
             <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" loading="lazy" />
           </div>
-          <span className="text-foreground" style={{ fontSize: '12px', fontWeight: '500' }}>
+          <span className="text-foreground font-medium" style={{ fontSize: '12px' }}>
             {sale.platform}
           </span>
-          <span className="text-muted-foreground" style={{ fontSize: '11px' }}>
+          <span className="text-muted-foreground font-normal" style={{ fontSize: '11px' }}>
             {formatDate(sale.start_date)} – {formatDate(sale.end_date)}
           </span>
         </div>
