@@ -67,6 +67,7 @@ const confidenceTiers: Record<string, { label: string; base: number }> = {
 };
 
 export default function AdminSignals() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [platformFilter, setPlatformFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
