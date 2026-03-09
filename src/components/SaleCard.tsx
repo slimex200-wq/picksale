@@ -2,10 +2,8 @@ import { Sale, getSaleStatus, saleStatusConfig, calculateRankingScore, isCreditC
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { Bell, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 function countdownText(endDate: string) {
   const diffMs = new Date(endDate).getTime() - Date.now();
@@ -13,7 +11,8 @@ function countdownText(endDate: string) {
   const hours = Math.floor(diffMs / 3600000);
   if (hours < 24) return `${hours}시간 남음`;
   const days = Math.ceil(diffMs / 86400000);
-  return `${days}일 남음`;
+  if (days === 1) return "D-1";
+  return `D-${days}`;
 }
 
 function formatDate(d: string) {
@@ -34,6 +33,16 @@ function getCategoryColor(category: string): string {
   return colorMap[category] || "bg-secondary/80 text-secondary-foreground";
 }
 
+function getSourceLabel(sale: Sale): { label: string; className: string } {
+  if (sale.platform === "커뮤니티 핫딜") {
+    return { label: "COMMUNITY", className: "bg-orange-100 text-orange-700 border-orange-300" };
+  }
+  if (sale.signal_id) {
+    return { label: "USER", className: "bg-blue-100 text-blue-700 border-blue-300" };
+  }
+  return { label: "OFFICIAL", className: "bg-green-100 text-green-700 border-green-300" };
+}
+
 interface SaleCardProps {
   sale: Sale;
   rank?: number;
@@ -42,43 +51,51 @@ interface SaleCardProps {
 export default function SaleCard({ sale, rank }: SaleCardProps) {
   const navigate = useNavigate();
   const countdown = countdownText(sale.end_date);
-  const isUrgent = countdown.includes("시간") || countdown === "종료";
+  const isUrgent = countdown.includes("시간") || countdown === "D-1" || countdown === "종료";
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
   const isCardPromo = isCreditCardPromo(sale.sale_name);
   const rankingScore = calculateRankingScore(sale);
+  const source = getSourceLabel(sale);
+  const isEndingToday = status === "ending_today";
 
   return (
     <div
       className={`w-full bg-card rounded-2xl shadow-card hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex flex-col overflow-hidden animate-fade-in border ${
-        isCardPromo ? "border-border opacity-70" : "border-border/50"
+        isEndingToday
+          ? "border-red-200 bg-red-50/30"
+          : isCardPromo
+            ? "border-border opacity-70"
+            : "border-border/50"
       }`}
       onClick={() => navigate(`/sale/${sale.id}`)}
     >
-      {/* Platform strip - Neutral header with state colors */}
-      <div className="bg-muted/50 px-4 py-2.5 flex items-center gap-2">
+      {/* Header: Status + Countdown */}
+      <div className={`px-4 py-2.5 flex items-center gap-2 ${
+        isEndingToday ? "bg-red-50/60" : "bg-muted/50"
+      }`}>
+        {/* 1순위: 상태 */}
+        <Badge variant="outline" className={`text-[10px] font-semibold px-2 py-0.5 ${statusInfo.className}`}>
+          {statusInfo.emoji} {statusInfo.label}
+        </Badge>
+
+        {/* Source label */}
+        <Badge variant="outline" className={`text-[9px] font-semibold px-1.5 py-0 ${source.className}`}>
+          {source.label}
+        </Badge>
+
         {rank && !isCardPromo && (
-          <span className="text-foreground font-extrabold text-sm bg-muted rounded-full w-6 h-6 flex items-center justify-center shrink-0">
+          <span className="text-foreground font-extrabold text-[10px] bg-muted rounded-full w-5 h-5 flex items-center justify-center shrink-0">
             {rank}
           </span>
         )}
-        {/* Logo with background container for visibility */}
-        <div className="w-6 h-6 rounded-md bg-white/90 flex items-center justify-center shrink-0 p-0.5">
-          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" />
-        </div>
-        <span className="text-[11px] font-bold text-foreground">{sale.platform}</span>
-        {isCardPromo && (
-          <Badge variant="outline" className="text-[9px] ml-1 bg-muted text-muted-foreground border-border">
-            카드 프로모션
-          </Badge>
-        )}
+
+        {/* 4순위: D-day / 남은 시간 */}
         <span
           className={`ml-auto text-[10px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full ${
-            isCardPromo
-              ? "bg-muted text-muted-foreground"
-              : isUrgent
-                ? "bg-red-100/80 text-red-700"
-                : "bg-muted text-muted-foreground"
+            isUrgent
+              ? "bg-red-100/80 text-red-700"
+              : "bg-muted text-muted-foreground"
           }`}
         >
           {countdown}
@@ -87,27 +104,25 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
 
       {/* Content */}
       <div className="p-4 flex flex-col gap-2.5 flex-1">
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className={`text-[10px] font-semibold px-2 py-0.5 ${statusInfo.className}`}>
-            {statusInfo.emoji} {statusInfo.label}
-          </Badge>
-          {!isCardPromo && rankingScore >= 6 && (
-            <span className="ml-auto text-[10px] font-semibold text-primary">
-              🔥 주요 세일
-            </span>
-          )}
-        </div>
-
-        <h3 className={`font-bold text-[15px] leading-snug tracking-tight ${
+        {/* 2순위: 세일 제목 (2줄 제한) */}
+        <h3 className={`font-bold text-[15px] leading-snug tracking-tight line-clamp-2 ${
           isCardPromo ? "text-muted-foreground" : "text-card-foreground"
         }`}>
           {sale.sale_name}
         </h3>
 
-        <p className="text-[11px] text-muted-foreground font-medium tracking-wide">
-          {formatDate(sale.start_date)} ~ {formatDate(sale.end_date)}
-        </p>
+        {/* 3순위: 플랫폼 + 기간 */}
+        <div className="flex items-center gap-2">
+          <div className="w-5 h-5 rounded-md bg-white/90 flex items-center justify-center shrink-0 p-0.5">
+            <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain rounded-sm" />
+          </div>
+          <span className="text-[11px] font-bold text-foreground">{sale.platform}</span>
+          <span className="text-[10px] text-muted-foreground font-medium">
+            {formatDate(sale.start_date)} ~ {formatDate(sale.end_date)}
+          </span>
+        </div>
 
+        {/* 5순위: 카테고리 */}
         <div className="flex flex-wrap gap-1.5">
           {sale.category.map((cat) => (
             <Badge
@@ -119,39 +134,27 @@ export default function SaleCard({ sale, rank }: SaleCardProps) {
           ))}
         </div>
 
-        <div className="flex gap-2 mt-auto pt-2">
+        {/* Urgent highlight */}
+        {isEndingToday && (
+          <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-1.5 text-[11px] font-semibold text-red-700 flex items-center gap-1.5">
+            ⏰ {countdown === "종료" ? "세일이 종료되었습니다" : `마감까지 ${countdown}`}
+          </div>
+        )}
+
+        {/* CTA - 통일 */}
+        <div className="mt-auto pt-2">
           <Button
             size="sm"
-            className={`flex-1 rounded-xl text-xs font-semibold gap-1.5 h-9 ${isCardPromo ? "bg-muted text-muted-foreground hover:bg-muted/80" : ""}`}
+            className="w-full rounded-xl text-xs font-semibold gap-1.5 h-9"
             variant={isCardPromo ? "outline" : "default"}
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/sale/${sale.id}`);
             }}
           >
-            {isCardPromo ? "혜택 보기" : "세일 바로가기"}
+            세일 보러가기
             <ArrowRight className="w-3.5 h-3.5" />
           </Button>
-          {!isCardPromo && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="rounded-xl text-xs h-9 w-9 p-0 border-border/70"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toast.success("알림이 설정되었습니다! 🔔");
-                    }}
-                  >
-                    <Bell className="w-3.5 h-3.5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>세일 알림 받기</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
         </div>
       </div>
     </div>
