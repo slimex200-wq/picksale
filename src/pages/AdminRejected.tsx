@@ -1,9 +1,10 @@
 // @ts-nocheck
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAdminSales } from "@/hooks/useSales";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sale, platforms } from "@/data/salesUtils";
+import { getSalePrimaryState } from "@/data/adminStateModel";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -19,11 +20,15 @@ export default function AdminRejected() {
   const [platformFilter, setPlatformFilter] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "importance">("newest");
 
-  const { data: sales = [], isLoading } = useAdminSales({
-    review_status: "rejected",
-    platform: platformFilter || undefined,
-    sort: sortBy,
-  });
+  const { data: rawSales = [], isLoading } = useAdminSales({ sort: sortBy });
+
+  const sales = useMemo(() => {
+    let filtered = rawSales.filter(s => getSalePrimaryState(s) === "rejected");
+    if (platformFilter && platformFilter !== "all") {
+      filtered = filtered.filter(s => s.platform === platformFilter);
+    }
+    return filtered;
+  }, [rawSales, platformFilter]);
 
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["sales"] });

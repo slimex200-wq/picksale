@@ -56,21 +56,23 @@ export default function AdminLayout() {
     queryKey: ["admin_tab_counts"],
     queryFn: async () => {
       const [salesRes, signalsRes, communityRes, submissionsRes] = await Promise.all([
-        supabase.from("sales").select("review_status, publish_status", { count: "exact" }),
-        supabase.from("sale_signals").select("review_status", { count: "exact" }),
+        supabase.from("sales").select("review_status, publish_status, end_date", { count: "exact" }),
+        supabase.from("sale_signals").select("review_status", { count: "exact" }).eq("review_status", "pending"),
         supabase.from("community_posts").select("review_status", { count: "exact" }),
         supabase.from("sale_submissions").select("status", { count: "exact" }),
       ]);
 
+      // Separate query for total signals count
+      const signalsTotalRes = await supabase.from("sale_signals").select("id", { count: "exact", head: true });
+
       const sales = salesRes.data ?? [];
-      const signals = signalsRes.data ?? [];
+      const signalsPending = signalsRes.data?.length ?? 0;
+      const signalsTotal = signalsTotalRes.count ?? 0;
       const community = communityRes.data ?? [];
       const submissions = submissionsRes.data ?? [];
 
       const states = countByPrimaryState(sales);
       const salesTotal = sales.length;
-      const signalsPending = signals.filter((s: any) => s.review_status === "pending").length;
-      const signalsTotal = signals.length;
       const communityPublished = community.filter((p: any) => p.review_status === "published").length;
       const communityTotal = community.length;
       const subsPending = submissions.filter((s: any) => s.status === "pending").length;
