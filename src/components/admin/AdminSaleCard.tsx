@@ -117,6 +117,11 @@ export default memo(function AdminSaleCard({ sale, duplicatePublished, duplicate
                 {upsertConf.label}
               </Badge>
             )}
+            {recentlyUpdated && (
+              <Badge variant="outline" className="text-[10px] h-5 bg-cyan-100 text-cyan-700 border-cyan-300 animate-pulse">
+                🔄 최근 갱신
+              </Badge>
+            )}
             {!hasValidImage && (
               <Badge variant="outline" className="text-[10px] h-5 bg-orange-50 text-orange-600 border-orange-200">
                 <ImageIcon className="w-2.5 h-2.5 mr-0.5" />이미지 없음
