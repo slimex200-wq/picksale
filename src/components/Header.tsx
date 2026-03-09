@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarDays, Radar, Settings, Home, User, LogOut } from "lucide-react";
+import { CalendarDays, Radar, Settings, Home, User, LogOut, Search, Bell } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import logo from "@/assets/logo.png";
@@ -22,19 +22,60 @@ export default function Header() {
   return (
     <>
       {/* Top bar */}
-      <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border px-4 py-3">
-        <div className="max-w-6xl mx-auto flex items-center gap-2 justify-between">
-          <Link to="/home" className="flex items-center gap-2">
-            <img src={logo} alt="PickSale" className="w-8 h-8 rounded-lg object-cover" />
-            <h1 className="text-lg font-extrabold text-foreground tracking-tight">
-              PickSale
-            </h1>
+      <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border shadow-sm">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-2.5">
+          {/* Left: Brand */}
+          <Link to="/home" className="flex items-center gap-2.5">
+            <img src={logo} alt="PickSale" className="w-9 h-9 rounded-xl object-cover" />
+            <div className="flex flex-col">
+              <h1 className="text-lg font-bold text-foreground tracking-tight leading-tight">
+                PickSale
+              </h1>
+              <span className="text-[11px] text-muted-foreground font-medium leading-tight hidden sm:block">
+                모든 쇼핑 세일을 한곳에서
+              </span>
+            </div>
           </Link>
 
-          {/* User area */}
-          <div className="flex items-center gap-2">
+          {/* Center: Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navItems.map(({ to, label, icon: Icon }) => {
+              const active = to === "/home" ? pathname === "/home" : pathname.startsWith(to);
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    active
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-1.5">
+            <Link
+              to="/radar"
+              className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors md:hidden"
+              title="검색"
+            >
+              <Search className="w-[18px] h-[18px]" />
+            </Link>
+            <button
+              className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+              title="알림"
+            >
+              <Bell className="w-[18px] h-[18px]" />
+            </button>
+
             {user ? (
-              <>
+              <div className="flex items-center gap-1.5 ml-1">
                 {profile?.avatar_url ? (
                   <img
                     src={profile.avatar_url}
@@ -51,16 +92,16 @@ export default function Header() {
                 </span>
                 <button
                   onClick={signOut}
-                  className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                  className="text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-lg hover:bg-accent"
                   title="로그아웃"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
-              </>
+              </div>
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors ml-1"
               >
                 <User className="w-3.5 h-3.5" />
                 로그인
@@ -71,7 +112,7 @@ export default function Header() {
       </header>
 
       {/* Bottom nav (mobile) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-lg border-t border-border">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-lg border-t border-border md:hidden">
         <div className="max-w-lg mx-auto flex justify-around py-2">
           {navItems.map(({ to, label, icon: Icon }) => {
             const active = to === "/home" ? pathname === "/home" : pathname.startsWith(to);
