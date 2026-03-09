@@ -76,7 +76,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
           isCardPromo ? "border-border opacity-60" : "border-border/60"
         }`}
         style={{ padding: "10px 12px" }}
-        onClick={() => navigate(`/sale/${sale.id}`)}
+        onClick={goToSale}
       >
         {/* Platform logo */}
         <div className="w-10 h-10 rounded-xl bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-1.5">
