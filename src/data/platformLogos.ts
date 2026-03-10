@@ -2,8 +2,8 @@
 import type { Platform } from "@/data/salesUtils";
 import communityIcon from "@/assets/community_icon.svg";
 
-const getAppIcon = (url: string) =>
-  `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url}&size=128`;
+const getAppIcon = (domain: string) =>
+  `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 
 export const platformLogos: Record<Platform, string> = {
   쿠팡: getAppIcon("https://www.coupang.com"),
