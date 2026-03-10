@@ -94,7 +94,7 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
       >
         {/* Banner / Platform header */}
         <div className="relative shrink-0">
-          <SaleBannerImage imageUrl={currentSale.image_url} platform={currentSale.platform} alt={currentSale.sale_name} heightClass="h-40" />
+          <SaleBannerImage imageUrl={currentSale.image_url} platform={currentSale.platform} alt={currentSale.sale_name} aspectRatio="16/9" />
           <div className="absolute top-3 right-3 flex gap-1.5 z-10">
             {isAdmin && !editing && (
               <button

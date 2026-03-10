@@ -78,7 +78,7 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
         </h3>
       </div>
       <div className="flex-1 min-h-0 overflow-hidden">
-        <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} heightClass="h-full" />
+        <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} aspectRatio="2/1" />
       </div>
       <div className="px-3 flex items-center justify-between">
         <span className="text-muted-foreground font-normal" style={{ fontSize: "11px" }}>
