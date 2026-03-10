@@ -49,9 +49,10 @@ export default function CoverflowCarousel({ children }: Props) {
 
   return (
     <div
-      className="relative coverflow-carousel"
+      className={`relative coverflow-carousel${showHint ? " hint-active" : ""}`}
       style={{ padding: "12px 0 8px" }}
       onPointerDown={dismissHint}
+      onAnimationEnd={() => setShowHint(false)}
     >
       <Swiper
         modules={[EffectCoverflow, Pagination]}
