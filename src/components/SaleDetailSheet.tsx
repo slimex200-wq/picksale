@@ -28,6 +28,8 @@ interface Props {
 }
 
 export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
+  const { requireLogin } = useLoginGate();
+  const { user } = useAuth();
   if (!sale) return null;
 
   const status = getSaleStatus(sale);
