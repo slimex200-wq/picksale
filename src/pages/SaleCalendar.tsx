@@ -194,28 +194,20 @@ export default function SaleCalendar() {
                   </span>
                 </div>
 
-                {/* Pill-style bars — light bg + colored text, platform name only */}
-                <div className="flex flex-col gap-[1px] px-0.5 pb-1 flex-1">
+                {/* Color bars only — no text */}
+                <div className="flex flex-col gap-[2px] px-1 pb-1.5 flex-1">
                   {visibleGroups.map(({ platform }) => (
                     <div
                       key={platform}
-                      className="rounded-[2px] truncate px-1"
+                      className="rounded-[2px]"
                       style={{
-                        height: 10,
-                        lineHeight: "10px",
-                        backgroundColor: PLATFORM_BAR_BG_LIGHT[platform],
+                        height: 4,
+                        backgroundColor: PLATFORM_BAR_COLORS[platform],
                       }}
-                    >
-                      <span
-                        className="text-[8px] font-semibold truncate block"
-                        style={{ color: PLATFORM_BAR_COLORS[platform] }}
-                      >
-                        {platform}
-                      </span>
-                    </div>
+                    />
                   ))}
                   {overflowCount > 0 && (
-                    <span className="text-[8px] text-muted-foreground font-normal px-1 leading-[10px]">
+                    <span className="text-[8px] text-muted-foreground font-normal px-0.5 leading-[10px]">
                       +{overflowCount}개
                     </span>
                   )}
