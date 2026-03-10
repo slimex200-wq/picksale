@@ -88,8 +88,8 @@ const App = () => (
             </Route>
             <Route path="*" element={<><Header /><NotFound /></>} />
           </Routes>
-        </BrowserRouter>
         </LoginGateProvider>
+        </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
