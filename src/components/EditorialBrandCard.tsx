@@ -18,6 +18,8 @@ interface Props {
 }
 
 export default function EditorialBrandCard({ sale, rank, isActive = true, onOpenDetail }: Props) {
+  const { requireLogin } = useLoginGate();
+  const { user } = useAuth();
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
