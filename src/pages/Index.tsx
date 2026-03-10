@@ -142,7 +142,7 @@ export default function Index() {
             />
             {searchFocused && !query.trim() && <SearchSuggestions onSelect={handleSearchSelect} />}
           </div>
-          <QuickFilters activeFilter={quickFilter} onFilter={handleQuickFilter} />
+          <QuickFilters activeFilter={quickFilter} onFilter={handleQuickFilter} sales={activeSales} />
         </div>
       </div>
 
