@@ -304,9 +304,8 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
-  return (
-    <div className="space-y-6">
-      {/* Featured — 2-col grid */}
+  const firstSection = (
+    <>
       {featuredSales.length > 0 && (
         <section className="space-y-3">
           <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
@@ -317,13 +316,11 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           </div>
         </section>
       )}
+    </>
+  );
 
-      {/* Preview Login Gate for non-logged-in users */}
-      {!isLoggedIn && activeSales.length > 3 && (
-        <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
-      )}
-
-      {/* Ending + Live side by side */}
+  const restContent = (
+    <>
       <div className="grid grid-cols-2 gap-4">
         {endingTodaySales.length > 0 && (
           <section className="space-y-2">
@@ -347,7 +344,6 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         )}
       </div>
 
-      {/* Ranking — 2 col */}
       {rankingSales.length > 0 && (
         <section className="space-y-2">
           <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
@@ -361,6 +357,18 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={3} />
+    </>
+  );
+
+  return (
+    <div className="space-y-6">
+      {firstSection}
+
+      {!isLoggedIn ? (
+        <PreviewLoginGate>{restContent}</PreviewLoginGate>
+      ) : (
+        restContent
+      )}
 
       {activeSales.length === 0 && (
         <div className="flex flex-col items-center py-10 text-muted-foreground">
