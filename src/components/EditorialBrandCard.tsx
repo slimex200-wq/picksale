@@ -1,6 +1,6 @@
 import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
 import { formatCategory } from "@/utils/categoryFormat";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
