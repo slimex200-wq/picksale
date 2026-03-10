@@ -57,20 +57,30 @@ export default function PlatformSales() {
     if (!platform) return [];
     const today = getTodayKST();
 
-    // Filter: same platform, major tier, not ended (using KST)
+    // Filter: same platform, not ended (using KST)
+    // NOTE: No sale_tier filter — must match PlatformExplorer home card counts exactly
     let result = allSales.filter(
-      (s) => s.platform === platform && s.sale_tier === "major" && s.end_date >= today
+      (s) => s.platform === platform && s.end_date >= today
     );
 
     if (statusFilter === "live") {
       // "진행중" includes ending_today + ending_soon + live (all currently active)
+      // This matches PlatformExplorer which counts ending_today inside live
+      result = result.filter((s) => {
+        const st = getSaleStatus(s);
+        return st === "live" || st === "ending_today";
+      });
+    } else if (statusFilter === "ending_today") {
+      result = result.filter((s) => getSaleStatus(s) === "ending_today");
+    } else if (statusFilter === "ending_soon") {
       result = result.filter((s) => {
         const st = getDetailedStatus(s);
-        return st === "live" || st === "ending_today" || st === "ending_soon";
+        return st === "ending_soon";
       });
-    } else if (statusFilter !== "all") {
-      result = result.filter((s) => getDetailedStatus(s) === statusFilter);
+    } else if (statusFilter === "starting_soon") {
+      result = result.filter((s) => getDetailedStatus(s) === "starting_soon");
     }
+    // "all" → no extra filter
 
     // Sort
     result = [...result].sort((a, b) => {
