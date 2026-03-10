@@ -1,35 +1,49 @@
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { LogIn, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sale } from "@/data/salesUtils";
-import SaleCard from "./SaleCard";
 
 interface Props {
-  /** Sales to show as blurred preview cards */
-  previewSales: Sale[];
+  /** The content to lock behind the gate */
+  children: ReactNode;
 }
 
-export default function PreviewLoginGate({ previewSales }: Props) {
+export default function PreviewLoginGate({ children }: Props) {
   const [dismissed, setDismissed] = useState(false);
 
-  if (dismissed) return null;
+  if (dismissed) return <>{children}</>;
 
   return (
-    <div className="relative rounded-xl overflow-hidden">
-      {/* Blurred preview cards */}
+    <div className="relative">
+      {/* Gradient fade from visible content into locked area */}
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3 pointer-events-none select-none"
-        style={{ filter: "blur(6px)", opacity: 0.6 }}
+        className="absolute top-0 left-0 right-0 h-16 z-10 pointer-events-none"
+        style={{
+          background: "linear-gradient(to bottom, hsl(var(--background)), transparent)",
+        }}
+      />
+
+      {/* Locked content — blurred, no interaction, clipped height */}
+      <div
+        className="overflow-hidden pointer-events-none select-none"
+        style={{ maxHeight: 480 }}
         aria-hidden="true"
       >
-        {previewSales.slice(0, 6).map((sale) => (
-          <SaleCard key={sale.id} sale={sale} />
-        ))}
+        <div style={{ filter: "blur(6px)", opacity: 0.55 }}>
+          {children}
+        </div>
       </div>
 
-      {/* CTA overlay */}
-      <div className="absolute inset-0 flex items-center justify-center z-10">
+      {/* Bottom fade so it doesn't end abruptly */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
+        style={{
+          background: "linear-gradient(to top, hsl(var(--background)), transparent)",
+        }}
+      />
+
+      {/* CTA overlay — centered on the locked area */}
+      <div className="absolute inset-0 flex items-center justify-center z-20">
         <div className="bg-card/95 backdrop-blur-sm border border-border rounded-2xl px-6 py-8 sm:px-10 sm:py-10 text-center shadow-lg max-w-sm mx-4 space-y-4">
           <h3 className="text-lg font-bold text-foreground">
             더 많은 세일 보기

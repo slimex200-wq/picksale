@@ -217,8 +217,8 @@ interface LayoutProps {
 function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
-  return (
-    <div className="space-y-6">
+  const firstSection = (
+    <>
       {/* Featured — Cover Flow 3D carousel */}
       {featuredSales.length > 0 && (
         <section className="space-y-2 -mx-3">
@@ -233,7 +233,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </section>
       )}
 
-      {/* Ending Today — compact list */}
+      {/* Ending Today — compact list (first 3 cards) */}
       {endingTodaySales.length > 0 && (
         <section className="space-y-2">
           <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
@@ -244,12 +244,11 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           </div>
         </section>
       )}
+    </>
+  );
 
-      {/* Preview Login Gate for non-logged-in users */}
-      {!isLoggedIn && activeSales.length > 3 && (
-        <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
-      )}
-
+  const restContent = (
+    <>
       {/* Live — compact list */}
       {liveSales.length > 0 && (
         <section className="space-y-2">
@@ -276,6 +275,18 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={2} />
+    </>
+  );
+
+  return (
+    <div className="space-y-6">
+      {firstSection}
+
+      {!isLoggedIn ? (
+        <PreviewLoginGate>{restContent}</PreviewLoginGate>
+      ) : (
+        restContent
+      )}
 
       {activeSales.length === 0 && (
         <div className="flex flex-col items-center py-10 text-muted-foreground">
@@ -284,10 +295,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </div>
       )}
 
-      <ExpandedSaleOverlay
-        sale={expandedSale}
-        onClose={() => setExpandedSale(null)}
-      />
+      <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
     </div>
   );
 }
@@ -296,9 +304,8 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
-  return (
-    <div className="space-y-6">
-      {/* Featured — 2-col grid */}
+  const firstSection = (
+    <>
       {featuredSales.length > 0 && (
         <section className="space-y-3">
           <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
@@ -309,13 +316,11 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           </div>
         </section>
       )}
+    </>
+  );
 
-      {/* Preview Login Gate for non-logged-in users */}
-      {!isLoggedIn && activeSales.length > 3 && (
-        <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
-      )}
-
-      {/* Ending + Live side by side */}
+  const restContent = (
+    <>
       <div className="grid grid-cols-2 gap-4">
         {endingTodaySales.length > 0 && (
           <section className="space-y-2">
@@ -339,7 +344,6 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         )}
       </div>
 
-      {/* Ranking — 2 col */}
       {rankingSales.length > 0 && (
         <section className="space-y-2">
           <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
@@ -353,6 +357,18 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={3} />
+    </>
+  );
+
+  return (
+    <div className="space-y-6">
+      {firstSection}
+
+      {!isLoggedIn ? (
+        <PreviewLoginGate>{restContent}</PreviewLoginGate>
+      ) : (
+        restContent
+      )}
 
       {activeSales.length === 0 && (
         <div className="flex flex-col items-center py-10 text-muted-foreground">
@@ -370,68 +386,76 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
+  const firstSection = (
+    <>
+      {rankingSales.length > 0 && (
+        <section className="space-y-3">
+          <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
+          <div className="grid grid-cols-2 gap-1.5">
+            {rankingSales.slice(0, 6).map((sale, i) => (
+              <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {featuredSales.length > 0 && (
+        <section style={{ marginBottom: 32 }}>
+          <div className="mb-3">
+            <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
+          </div>
+          <CoverflowCarousel>
+            {featuredSales.map((sale, i) => (
+              <HeroSaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
+            ))}
+          </CoverflowCarousel>
+        </section>
+      )}
+    </>
+  );
+
+  const restContent = (
+    <>
+      {(endingTodaySales.length > 0 || liveSales.length > 0) && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 gap-5">
+          {endingTodaySales.length > 0 && (
+            <section className="space-y-3">
+              <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
+              <PeekCarousel cardWidth={240} gap={16}>
+                {endingTodaySales.map((sale) => (
+                  <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
+                ))}
+              </PeekCarousel>
+            </section>
+          )}
+          {liveSales.length > 0 && (
+            <section className="space-y-3">
+              <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
+              <PeekCarousel cardWidth={240} gap={16}>
+                {liveSales.slice(0, 6).map((sale) => (
+                  <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
+                ))}
+              </PeekCarousel>
+            </section>
+          )}
+        </div>
+      )}
+
+      <PlatformExplorer sales={activeSales} />
+    </>
+  );
+
   return (
     <>
       <div className="grid grid-cols-[1fr_280px] gap-6 min-w-0">
         <main className="space-y-8 min-w-0 overflow-hidden">
-          {/* Ranking */}
-          {rankingSales.length > 0 && (
-            <section className="space-y-3">
-              <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
-              <div className="grid grid-cols-2 gap-1.5">
-                {rankingSales.slice(0, 6).map((sale, i) => (
-                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
-                ))}
-              </div>
-            </section>
-          )}
+          {firstSection}
 
-          {/* Featured — coverflow carousel */}
-          {featuredSales.length > 0 && (
-            <section style={{ marginBottom: 32 }}>
-              <div className="mb-3">
-                <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
-              </div>
-              <CoverflowCarousel>
-                {featuredSales.map((sale, i) => (
-                  <HeroSaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
-                ))}
-              </CoverflowCarousel>
-            </section>
+          {!isLoggedIn ? (
+            <PreviewLoginGate>{restContent}</PreviewLoginGate>
+          ) : (
+            restContent
           )}
-
-          {/* Preview Login Gate for non-logged-in users */}
-          {!isLoggedIn && activeSales.length > 3 && (
-            <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
-          )}
-
-          {/* Ending Today + Live — peek carousels */}
-          {(endingTodaySales.length > 0 || liveSales.length > 0) && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 gap-5">
-              {endingTodaySales.length > 0 && (
-                <section className="space-y-3">
-                  <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
-                  <PeekCarousel cardWidth={240} gap={16}>
-                    {endingTodaySales.map((sale) => (
-                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
-                    ))}
-                  </PeekCarousel>
-                </section>
-              )}
-              {liveSales.length > 0 && (
-                <section className="space-y-3">
-                  <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-                  <PeekCarousel cardWidth={240} gap={16}>
-                    {liveSales.slice(0, 6).map((sale) => (
-                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
-                    ))}
-                  </PeekCarousel>
-                </section>
-              )}
-            </div>
-          )}
-
-          <PlatformExplorer sales={activeSales} />
 
           {activeSales.length === 0 && (
             <div className="flex flex-col items-center py-10 text-muted-foreground">
@@ -446,10 +470,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
         </aside>
       </div>
 
-      <ExpandedSaleOverlay
-        sale={expandedSale}
-        onClose={() => setExpandedSale(null)}
-      />
+      <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
     </>
   );
 }
