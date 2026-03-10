@@ -175,7 +175,7 @@ export default function SaleCalendar() {
                     ? "bg-accent/50"
                     : "hover:bg-accent/30"
                 }`}
-                style={{ minHeight: 62 }}
+                style={{ minHeight: 93 }}
               >
                 {/* Day Number */}
                 <div className="px-1 pt-1 pb-0.5 flex justify-start">
