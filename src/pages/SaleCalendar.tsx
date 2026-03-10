@@ -56,7 +56,7 @@ function groupByPlatform(sales: Sale[]): { platform: Platform; count: number }[]
 }
 
 export default function SaleCalendar() {
-  const navigate = useNavigate();
+  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
   const bp = useBreakpoint();
   const isMobile = bp === "mobile";
   const [currentMonth, setCurrentMonth] = useState(new Date());
