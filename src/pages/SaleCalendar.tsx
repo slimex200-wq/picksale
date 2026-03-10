@@ -294,7 +294,7 @@ function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => 
         style={{ backgroundColor: PLATFORM_BAR_COLORS[sale.platform] }}
       />
       <div className="w-9 h-9 flex items-center justify-center shrink-0">
-        <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-border/30" />
+        <PlatformLogo platform={sale.platform} className="w-full h-full object-contain" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground truncate">{sale.sale_name}</p>

@@ -54,8 +54,8 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
             <X className="w-4 h-4" />
           </button>
           <div className="flex flex-col items-center pt-2">
-            <div className="w-12 h-12 rounded-xl bg-white/90 shadow-sm flex items-center justify-center p-1.5">
-              <PlatformLogo platform={sale.platform} />
+            <div className="w-12 h-12 flex items-center justify-center shrink-0">
+              <PlatformLogo platform={sale.platform} className="w-full h-full object-contain" />
             </div>
             <p className="text-primary-foreground/80 text-xs font-bold tracking-wide mt-2 uppercase">
               {sale.platform}
