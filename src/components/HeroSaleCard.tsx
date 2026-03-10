@@ -22,6 +22,8 @@ interface HeroSaleCardProps {
 
 export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, onGoNext, isMobile, onOpenDetail }: HeroSaleCardProps) {
   const navigate = useNavigate();
+  const { requireLogin } = useLoginGate();
+  const { user } = useAuth();
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
