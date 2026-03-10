@@ -88,6 +88,8 @@ export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: 
                 <div className={`w-8 h-8 rounded-lg ${stat.bg} flex items-center justify-center`}>
                   {stat.key === "ending_today" ? (
                     <span className="w-2 h-2 rounded-full bg-closing-today animate-closing-pulse" />
+                  ) : stat.key === "live" ? (
+                    <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse-green" style={{ boxShadow: "0 0 6px #22c55e" }} />
                   ) : (
                     <stat.icon className={`w-4 h-4 ${stat.color}`} />
                   )}
