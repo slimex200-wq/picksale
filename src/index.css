@@ -160,6 +160,27 @@
   }
 }
 
+/* ── Skeleton shimmer ── */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.bg-skeleton-base {
+  background-color: #f0f0f0;
+}
+
+.skeleton-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 40%,
+    #f0f0f0 80%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
 @keyframes closing-pulse {
   0%, 100% {
     transform: scale(0.8);

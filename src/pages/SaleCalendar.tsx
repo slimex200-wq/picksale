@@ -6,7 +6,7 @@ import PlatformLogo from "@/components/PlatformLogo";
 import { useSales } from "@/hooks/useSales";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { CalendarSkeleton } from "@/components/skeletons/SaleCardSkeleton";
 import { useNavigate } from "react-router-dom";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
@@ -68,11 +68,7 @@ export default function SaleCalendar() {
   };
 
   if (isLoading && !sales.length) {
-    return (
-      <div className="max-w-lg mx-auto px-4 pt-4 pb-24">
-        <Skeleton className="h-96 w-full rounded-lg" />
-      </div>
-    );
+    return <CalendarSkeleton />;
   }
 
   return (

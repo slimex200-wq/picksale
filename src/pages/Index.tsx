@@ -16,6 +16,7 @@ import TrendingCommunity from "@/components/TrendingCommunity";
 import {
   SaleCardCompactSkeleton,
   SaleCardSkeleton,
+  EditorialCardSkeleton,
   RankingItemSkeleton,
   PlatformCardSkeleton,
   CommunityPostSkeleton,

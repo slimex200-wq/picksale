@@ -5,21 +5,17 @@ import { Sale, getSaleStatus, platforms, platformSlugs } from "@/data/salesUtils
 import PlatformLogo from "@/components/PlatformLogo";
 import StatusExploration from "@/components/StatusExploration";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+  StatusExplorationSkeleton,
+  TimelineSkeletonFull,
+  PlatformGridSkeleton,
+} from "@/components/skeletons/SaleCardSkeleton";
 import { ChevronRight, Radar } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
 
 const SaleTimeline = lazy(() => import("@/components/SaleTimeline"));
 
-function TimelineSkeleton() {
-  return (
-    <div className="space-y-3">
-      <Skeleton className="h-6 w-32" />
-      <Skeleton className="h-48 w-full rounded-xl" />
-    </div>
-  );
-}
 
 export default function RadarPage() {
   const { data: sales = [], isLoading } = useSales();
@@ -45,10 +41,10 @@ export default function RadarPage() {
       </div>
 
       {isLoading && !sales.length ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-14 w-full rounded-xl" />
-          ))}
+        <div className="space-y-6">
+          <StatusExplorationSkeleton />
+          <TimelineSkeletonFull />
+          <PlatformGridSkeleton />
         </div>
       ) : (
         <>
@@ -56,7 +52,7 @@ export default function RadarPage() {
           <StatusExploration sales={activeSales} onOpenDetail={setSelectedSale} />
 
           {/* 2. Sale Timeline */}
-          <Suspense fallback={<TimelineSkeleton />}>
+          <Suspense fallback={<TimelineSkeletonFull />}>
             <SaleTimeline sales={sales} onOpenDetail={setSelectedSale} />
           </Suspense>
 
