@@ -27,6 +27,19 @@ const PLATFORM_BAR_COLORS: Record<Platform, string> = {
   "커뮤니티 핫딜": "hsl(35, 90%, 55%)",
 };
 
+/* Light background (20% opacity) version for pill bg */
+const PLATFORM_BAR_BG_LIGHT: Record<Platform, string> = {
+  쿠팡: "hsla(16, 85%, 58%, 0.15)",
+  올리브영: "hsla(145, 60%, 42%, 0.15)",
+  무신사: "hsla(0, 0%, 13%, 0.12)",
+  KREAM: "hsla(220, 12%, 22%, 0.12)",
+  SSG: "hsla(350, 80%, 55%, 0.15)",
+  오늘의집: "hsla(195, 85%, 48%, 0.15)",
+  "29CM": "hsla(0, 0%, 18%, 0.12)",
+  WCONCEPT: "hsla(0, 0%, 20%, 0.12)",
+  "커뮤니티 핫딜": "hsla(35, 90%, 55%, 0.15)",
+};
+
 const MAX_PILLS = 2;
 
 function shortDate(dateStr: string) {
@@ -34,9 +47,11 @@ function shortDate(dateStr: string) {
   return `${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
 }
 
-/** Truncate text to maxLen chars */
-function truncName(name: string, maxLen = 10): string {
-  return name.length > maxLen ? name.slice(0, maxLen) + "…" : name;
+/** Group sales by platform, return sorted by count desc */
+function groupByPlatform(sales: Sale[]): { platform: Platform; count: number }[] {
+  const map = new Map<Platform, number>();
+  for (const s of sales) map.set(s.platform, (map.get(s.platform) || 0) + 1);
+  return [...map.entries()].sort((a, b) => b[1] - a[1]).map(([platform, count]) => ({ platform, count }));
 }
 
 export default function SaleCalendar() {
@@ -145,8 +160,9 @@ export default function SaleCalendar() {
             const isToday = isCurrentMonth && day === new Date().getDate();
             const isSelected = day === selectedDay;
             const dayOfWeek = (firstDay + day - 1) % 7;
-            const visibleSales = daySales.slice(0, MAX_PILLS);
-            const overflowCount = daySales.length - MAX_PILLS;
+            const groups = groupByPlatform(daySales);
+            const visibleGroups = groups.slice(0, MAX_PILLS);
+            const overflowCount = groups.length - MAX_PILLS;
 
             return (
               <button
@@ -178,25 +194,28 @@ export default function SaleCalendar() {
                   </span>
                 </div>
 
-                {/* Pill-style bars */}
+                {/* Pill-style bars — light bg + colored text, platform name only */}
                 <div className="flex flex-col gap-[1px] px-0.5 pb-1 flex-1">
-                  {visibleSales.map((sale) => (
+                  {visibleGroups.map(({ platform }) => (
                     <div
-                      key={sale.id}
-                      className="rounded-[3px] truncate px-1"
+                      key={platform}
+                      className="rounded-[2px] truncate px-1"
                       style={{
-                        height: 14,
-                        lineHeight: "14px",
-                        backgroundColor: PLATFORM_BAR_COLORS[sale.platform],
+                        height: 10,
+                        lineHeight: "10px",
+                        backgroundColor: PLATFORM_BAR_BG_LIGHT[platform],
                       }}
                     >
-                      <span className="text-[8px] sm:text-[9px] font-medium truncate block text-white/90">
-                        {truncName(sale.sale_name)}
+                      <span
+                        className="text-[8px] font-semibold truncate block"
+                        style={{ color: PLATFORM_BAR_COLORS[platform] }}
+                      >
+                        {platform}
                       </span>
                     </div>
                   ))}
                   {overflowCount > 0 && (
-                    <span className="text-[8px] sm:text-[9px] text-muted-foreground font-normal px-1 leading-[13px]">
+                    <span className="text-[8px] text-muted-foreground font-normal px-1 leading-[10px]">
                       +{overflowCount}개
                     </span>
                   )}
