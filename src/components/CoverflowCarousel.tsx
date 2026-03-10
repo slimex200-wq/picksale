@@ -95,8 +95,32 @@ export default function CoverflowCarousel({ children }: Props) {
     return () => observer.disconnect();
   }, [count, isMobile, triggerHint]);
 
-  // Clean up after animation ends — no debug logging needed
+  useEffect(() => {
+    if (!showHint || !nudgeRef.current) return;
 
+    const wrapper = nudgeRef.current;
+    console.log("[coverflow-hint] animation class added", {
+      className: wrapper.className,
+    });
+
+    const sample = (label: string) => {
+      console.log("[coverflow-hint] computed transform sample", {
+        label,
+        computed: window.getComputedStyle(wrapper).transform,
+      });
+    };
+
+    sample("start");
+    const t1 = window.setTimeout(() => sample("180ms"), 180);
+    const t2 = window.setTimeout(() => sample("520ms"), 520);
+    const t3 = window.setTimeout(() => sample("980ms"), 980);
+
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+    };
+  }, [showHint]);
 
   if (count === 0) return null;
 
