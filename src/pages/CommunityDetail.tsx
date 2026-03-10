@@ -3,13 +3,23 @@ import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
   ThumbsUp, MessageSquare, ExternalLink, ArrowLeft, Send, LogIn, User,
+  Pencil, Trash2, EyeOff,
 } from "lucide-react";
 import JsonLd from "@/components/JsonLd";
 import CanonicalLink from "@/components/CanonicalLink";
@@ -36,8 +46,16 @@ export default function CommunityDetail() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user, profile } = useAuth();
+  const { isAdmin } = useAdmin();
   const [commentText, setCommentText] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  // Admin edit state
+  const [editOpen, setEditOpen] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editLink, setEditLink] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const { data: post, isLoading: postLoading } = useQuery({
     queryKey: ["community_post", id],
@@ -53,7 +71,6 @@ export default function CommunityDetail() {
     enabled: !!id,
   });
 
-  // Fetch author profile for the post
   const { data: postAuthor } = useQuery({
     queryKey: ["profile", post?.author_id],
     queryFn: async () => {
@@ -81,7 +98,6 @@ export default function CommunityDetail() {
     enabled: !!id,
   });
 
-  // Fetch comment author profiles
   const commentAuthorIds = [...new Set(comments.filter(c => c.author_id).map(c => c.author_id!))];
   const { data: commentAuthors = [] } = useQuery({
     queryKey: ["profiles", commentAuthorIds],
@@ -148,6 +164,62 @@ export default function CommunityDetail() {
     }
   };
 
+  // Admin actions
+  const openEdit = () => {
+    if (!post) return;
+    setEditTitle(post.title);
+    setEditContent(post.content || "");
+    setEditLink(post.external_link || "");
+    setEditOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editTitle.trim() || !id) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from("community_posts")
+        .update({ title: editTitle.trim(), content: editContent.trim() || null, external_link: editLink.trim() })
+        .eq("id", id);
+      if (error) throw error;
+      toast.success("수정되었습니다.");
+      setEditOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["community_post", id] });
+      queryClient.invalidateQueries({ queryKey: ["community_posts"] });
+    } catch (err: any) {
+      toast.error(err.message || "수정에 실패했습니다.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleHide = async () => {
+    if (!id) return;
+    try {
+      const { error } = await supabase.from("community_posts").update({ review_status: "hidden" }).eq("id", id);
+      if (error) throw error;
+      toast.success("숨김 처리되었습니다.");
+      navigate("/community");
+      queryClient.invalidateQueries({ queryKey: ["community_posts"] });
+    } catch (err: any) {
+      toast.error(err.message || "실패했습니다.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    if (!confirm("정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) return;
+    try {
+      const { error } = await supabase.from("community_posts").delete().eq("id", id);
+      if (error) throw error;
+      toast.success("삭제되었습니다.");
+      navigate("/community");
+      queryClient.invalidateQueries({ queryKey: ["community_posts"] });
+    } catch (err: any) {
+      toast.error(err.message || "삭제에 실패했습니다.");
+    }
+  };
+
   const timeAgo = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
@@ -201,9 +273,27 @@ export default function CommunityDetail() {
         ],
         ...(authorDisplay !== "익명" ? { author: { "@type": "Person", name: authorDisplay } } : {}),
       }} />
-      <Link to="/community" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="w-4 h-4" />목록
-      </Link>
+
+      <div className="flex items-center justify-between">
+        <Link to="/community" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="w-4 h-4" />목록
+        </Link>
+
+        {/* Admin controls */}
+        {isAdmin && (
+          <div className="flex items-center gap-1.5">
+            <Button size="sm" variant="outline" className="gap-1 text-xs h-7" onClick={openEdit}>
+              <Pencil className="w-3 h-3" />수정
+            </Button>
+            <Button size="sm" variant="outline" className="gap-1 text-xs h-7" onClick={handleHide}>
+              <EyeOff className="w-3 h-3" />숨김
+            </Button>
+            <Button size="sm" variant="ghost" className="gap-1 text-xs h-7 text-destructive hover:text-destructive" onClick={handleDelete}>
+              <Trash2 className="w-3 h-3" />삭제
+            </Button>
+          </div>
+        )}
+      </div>
 
       {/* Post */}
       <article className="bg-card border border-border rounded-xl p-4 space-y-3">
@@ -337,6 +427,35 @@ export default function CommunityDetail() {
           </div>
         )}
       </section>
+
+      {/* Admin Edit Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-base">게시글 수정</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 pt-2">
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">제목</label>
+              <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">내용</label>
+              <Textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={4} />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">외부 링크</label>
+              <Input value={editLink} onChange={(e) => setEditLink(e.target.value)} placeholder="https://..." />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditOpen(false)}>취소</Button>
+            <Button onClick={handleSaveEdit} disabled={saving || !editTitle.trim()}>
+              {saving ? "저장 중..." : "저장"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

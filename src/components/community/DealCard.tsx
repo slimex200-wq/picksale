@@ -3,8 +3,26 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { toast } from "sonner";
-import { ThumbsUp, MessageSquare, ExternalLink, Clock } from "lucide-react";
+import { ThumbsUp, MessageSquare, ExternalLink, Clock, Pencil, Trash2, EyeOff, MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import type { CommunityPost } from "@/hooks/useCommunityPosts";
 
 const categoryStyle: Record<string, { label: string; className: string }> = {
@@ -27,7 +45,13 @@ export default function DealCard({ post }: { post: CommunityPost }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const [upvoting, setUpvoting] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editLink, setEditLink] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const handleUpvote = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -53,77 +77,188 @@ export default function DealCard({ post }: { post: CommunityPost }) {
     }
   };
 
+  const openEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setEditTitle(post.title);
+    setEditContent(post.content || "");
+    setEditLink(post.external_link || "");
+    setEditOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editTitle.trim()) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from("community_posts")
+        .update({ title: editTitle.trim(), content: editContent.trim() || null, external_link: editLink.trim() })
+        .eq("id", post.id);
+      if (error) throw error;
+      toast.success("수정되었습니다.");
+      setEditOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["community_posts"] });
+    } catch (err: any) {
+      toast.error(err.message || "수정에 실패했습니다.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleHide = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const { error } = await supabase.from("community_posts").update({ review_status: "hidden" }).eq("id", post.id);
+      if (error) throw error;
+      toast.success("숨김 처리되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["community_posts"] });
+    } catch (err: any) {
+      toast.error(err.message || "실패했습니다.");
+    }
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!confirm("정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) return;
+    try {
+      const { error } = await supabase.from("community_posts").delete().eq("id", post.id);
+      if (error) throw error;
+      toast.success("삭제되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["community_posts"] });
+    } catch (err: any) {
+      toast.error(err.message || "삭제에 실패했습니다.");
+    }
+  };
+
   return (
-    <Link
-      to={`/community/${post.id}`}
-      className="group block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-border/80 transition-all"
-    >
-      <div className="p-4 space-y-2.5">
-        {/* Category + Platform badges */}
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {post.category.map((c) => {
-            const cfg = categoryStyle[c];
-            return cfg ? (
-              <span key={c} className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${cfg.className}`}>
-                {cfg.label}
+    <>
+      <Link
+        to={`/community/${post.id}`}
+        className="group block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-border/80 transition-all"
+      >
+        <div className="p-4 space-y-2.5">
+          {/* Category + Platform badges */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {post.category.map((c) => {
+              const cfg = categoryStyle[c];
+              return cfg ? (
+                <span key={c} className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${cfg.className}`}>
+                  {cfg.label}
+                </span>
+              ) : null;
+            })}
+            {post.platform && (
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                {post.platform}
               </span>
-            ) : null;
-          })}
-          {post.platform && (
-            <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-              {post.platform}
-            </span>
-          )}
-        </div>
+            )}
 
-        {/* Title */}
-        <h3 className="text-[15px] font-bold text-card-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-          {post.title}
-        </h3>
-
-        {/* Content preview */}
-        {post.content && (
-          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-            {post.content}
-          </p>
-        )}
-
-        {/* Footer: meta + actions */}
-        <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
-          <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-            {post.author && <span className="font-medium text-foreground/80">{post.author}</span>}
-            <span className="flex items-center gap-0.5">
-              <Clock className="w-3 h-3" />
-              {timeAgo(post.created_at)}
-            </span>
-            {post.external_link && (
-              <span className="flex items-center gap-0.5 text-primary">
-                <ExternalLink className="w-3 h-3" />
-                링크
-              </span>
+            {/* Admin menu */}
+            {isAdmin && (
+              <div className="ml-auto" onClick={(e) => e.preventDefault()}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-1 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
+                      <MoreHorizontal className="w-4 h-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-32">
+                    <DropdownMenuItem onClick={openEdit}>
+                      <Pencil className="w-3.5 h-3.5 mr-2" />수정
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleHide}>
+                      <EyeOff className="w-3.5 h-3.5 mr-2" />숨김
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleDelete} className="text-destructive focus:text-destructive">
+                      <Trash2 className="w-3.5 h-3.5 mr-2" />삭제
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             )}
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-              <MessageSquare className="w-3.5 h-3.5" />
-              {post.comments_count}
-            </span>
-            <button
-              onClick={handleUpvote}
-              disabled={upvoting}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors ${
-                post.upvotes > 0
-                  ? "bg-primary/10 text-primary hover:bg-primary/20"
-                  : "bg-muted text-muted-foreground hover:bg-accent"
-              }`}
-            >
-              <ThumbsUp className="w-3.5 h-3.5" />
-              {post.upvotes > 0 ? post.upvotes : "첫 추천"}
-            </button>
+          {/* Title */}
+          <h3 className="text-[15px] font-bold text-card-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+            {post.title}
+          </h3>
+
+          {/* Content preview */}
+          {post.content && (
+            <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+              {post.content}
+            </p>
+          )}
+
+          {/* Footer: meta + actions */}
+          <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
+            <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+              {post.author && <span className="font-medium text-foreground/80">{post.author}</span>}
+              <span className="flex items-center gap-0.5">
+                <Clock className="w-3 h-3" />
+                {timeAgo(post.created_at)}
+              </span>
+              {post.external_link && (
+                <span className="flex items-center gap-0.5 text-primary">
+                  <ExternalLink className="w-3 h-3" />
+                  링크
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                <MessageSquare className="w-3.5 h-3.5" />
+                {post.comments_count}
+              </span>
+              <button
+                onClick={handleUpvote}
+                disabled={upvoting}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors ${
+                  post.upvotes > 0
+                    ? "bg-primary/10 text-primary hover:bg-primary/20"
+                    : "bg-muted text-muted-foreground hover:bg-accent"
+                }`}
+              >
+                <ThumbsUp className="w-3.5 h-3.5" />
+                {post.upvotes > 0 ? post.upvotes : "첫 추천"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+
+      {/* Admin Edit Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-base">게시글 수정</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 pt-2">
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">제목</label>
+              <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">내용</label>
+              <Textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={4} />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">외부 링크</label>
+              <Input value={editLink} onChange={(e) => setEditLink(e.target.value)} placeholder="https://..." />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditOpen(false)}>취소</Button>
+            <Button onClick={handleSaveEdit} disabled={saving || !editTitle.trim()}>
+              {saving ? "저장 중..." : "저장"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
