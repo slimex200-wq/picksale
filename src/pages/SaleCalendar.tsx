@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useMemo, useCallback } from "react";
 import { getSaleStatus, saleStatusConfig } from "@/data/salesUtils";
 import type { Sale, Platform } from "@/data/salesUtils";
@@ -11,11 +10,13 @@ import { useNavigate } from "react-router-dom";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
 import { Switch } from "@/components/ui/switch";
+import { countdownText } from "@/utils/countdown";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
 /* ── Platform → HSL color string (matches index.css tokens) ── */
-const PLATFORM_BAR_COLORS: Record<Platform, string> = {
+const PLATFORM_COLORS: Record<Platform, string> = {
   쿠팡: "hsl(4, 60%, 59%)",
   올리브영: "hsl(153, 38%, 48%)",
   무신사: "hsl(0, 0%, 27%)",
@@ -27,20 +28,21 @@ const PLATFORM_BAR_COLORS: Record<Platform, string> = {
   "커뮤니티 핫딜": "hsl(35, 90%, 55%)",
 };
 
-/* Light background (20% opacity) version for pill bg */
-const PLATFORM_BAR_BG_LIGHT: Record<Platform, string> = {
-  쿠팡: "hsla(4, 60%, 59%, 0.15)",
-  올리브영: "hsla(153, 38%, 48%, 0.15)",
-  무신사: "hsla(0, 0%, 27%, 0.12)",
-  KREAM: "hsla(15, 73%, 56%, 0.15)",
-  SSG: "hsla(340, 55%, 52%, 0.15)",
-  오늘의집: "hsla(185, 63%, 44%, 0.15)",
-  "29CM": "hsla(31, 24%, 44%, 0.12)",
-  WCONCEPT: "hsla(264, 28%, 51%, 0.15)",
-  "커뮤니티 핫딜": "hsla(35, 90%, 55%, 0.15)",
+/* 10% opacity background for pills */
+const PLATFORM_BG: Record<Platform, string> = {
+  쿠팡: "hsla(4, 60%, 59%, 0.10)",
+  올리브영: "hsla(153, 38%, 48%, 0.10)",
+  무신사: "hsla(0, 0%, 27%, 0.10)",
+  KREAM: "hsla(15, 73%, 56%, 0.10)",
+  SSG: "hsla(340, 55%, 52%, 0.10)",
+  오늘의집: "hsla(185, 63%, 44%, 0.10)",
+  "29CM": "hsla(31, 24%, 44%, 0.10)",
+  WCONCEPT: "hsla(264, 28%, 51%, 0.10)",
+  "커뮤니티 핫딜": "hsla(35, 90%, 55%, 0.10)",
 };
 
-const MAX_PILLS = 3;
+const MAX_PILLS_DESKTOP = 2;
+const MAX_DOTS_MOBILE = 3;
 
 function shortDate(dateStr: string) {
   const d = new Date(dateStr);
@@ -56,6 +58,8 @@ function groupByPlatform(sales: Sale[]): { platform: Platform; count: number }[]
 
 export default function SaleCalendar() {
   const navigate = useNavigate();
+  const bp = useBreakpoint();
+  const isMobile = bp === "mobile";
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(new Date().getDate());
   const [showCommunity, setShowCommunity] = useState(false);
@@ -151,7 +155,7 @@ export default function SaleCalendar() {
                 <div
                   key={`empty-${i}`}
                   className="border-b border-r border-border/30"
-                  style={{ minHeight: 93 }}
+                  style={{ minHeight: isMobile ? 52 : 93 }}
                 />
               );
             }
@@ -161,21 +165,22 @@ export default function SaleCalendar() {
             const isSelected = day === selectedDay;
             const dayOfWeek = (firstDay + day - 1) % 7;
             const groups = groupByPlatform(daySales);
-            const visibleGroups = groups.slice(0, MAX_PILLS);
-            const overflowCount = groups.length - MAX_PILLS;
 
             return (
               <button
                 key={day}
                 onClick={() => setSelectedDay(day === selectedDay ? null : day)}
                 className={`flex flex-col text-left border-b border-r border-border/30 transition-colors relative ${
-                  isToday
+                  isSelected
+                    ? ""
+                    : isToday
                     ? "bg-primary/[0.04]"
-                    : isSelected
-                    ? "bg-accent/50"
                     : "hover:bg-accent/30"
                 }`}
-                style={{ minHeight: 93 }}
+                style={{
+                  minHeight: isMobile ? 52 : 93,
+                  backgroundColor: isSelected ? "#eff6ff" : undefined,
+                }}
               >
                 {/* Day Number */}
                 <div className="px-1 pt-1 pb-0.5 flex justify-start">
@@ -194,24 +199,12 @@ export default function SaleCalendar() {
                   </span>
                 </div>
 
-                {/* Color bars only — no text */}
-                <div className="flex flex-col gap-[2px] px-1 pb-1.5 flex-1">
-                  {visibleGroups.map(({ platform }) => (
-                    <div
-                      key={platform}
-                      className="rounded-[2px]"
-                      style={{
-                        height: 4,
-                        backgroundColor: PLATFORM_BAR_COLORS[platform],
-                      }}
-                    />
-                  ))}
-                  {overflowCount > 0 && (
-                    <span className="text-[8px] text-muted-foreground font-normal px-0.5 leading-[10px]">
-                      +{overflowCount}개
-                    </span>
-                  )}
-                </div>
+                {/* Desktop: Platform Pills / Mobile: Color Dots */}
+                {isMobile ? (
+                  <MobileDots groups={groups} />
+                ) : (
+                  <DesktopPills groups={groups} />
+                )}
 
                 {/* Selected indicator */}
                 {isSelected && (
@@ -225,7 +218,7 @@ export default function SaleCalendar() {
         {/* Legend + Community Toggle */}
         <div className="flex flex-wrap items-center justify-between gap-y-2 px-4 py-2.5 border-t border-border bg-accent/20">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            {Object.entries(PLATFORM_BAR_COLORS)
+            {Object.entries(PLATFORM_COLORS)
               .filter(([name]) => name !== "커뮤니티 핫딜")
               .map(([name, color]) => (
                 <span key={name} className="flex items-center gap-1 text-[10px] text-muted-foreground">
@@ -271,19 +264,82 @@ export default function SaleCalendar() {
   );
 }
 
+/* ── Desktop: Platform name pills ── */
+function DesktopPills({ groups }: { groups: { platform: Platform; count: number }[] }) {
+  const visible = groups.slice(0, MAX_PILLS_DESKTOP);
+  const overflow = groups.length - MAX_PILLS_DESKTOP;
+
+  return (
+    <div className="flex flex-col gap-[3px] px-1 pb-1 flex-1">
+      {visible.map(({ platform }) => (
+        <span
+          key={platform}
+          className="block truncate"
+          style={{
+            backgroundColor: PLATFORM_BG[platform],
+            color: PLATFORM_COLORS[platform],
+            borderRadius: 4,
+            fontSize: 9,
+            fontWeight: 600,
+            padding: "2px 5px",
+            lineHeight: "12px",
+          }}
+        >
+          {platform}
+        </span>
+      ))}
+      {overflow > 0 && (
+        <span className="text-[8px] text-muted-foreground font-medium px-0.5 leading-[10px]">
+          +{overflow}개
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ── Mobile: Color dots ── */
+function MobileDots({ groups }: { groups: { platform: Platform; count: number }[] }) {
+  const visible = groups.slice(0, MAX_DOTS_MOBILE);
+  const overflow = groups.length - MAX_DOTS_MOBILE;
+
+  return (
+    <div className="flex items-center gap-[3px] px-1 pb-1 flex-1 flex-wrap">
+      {visible.map(({ platform }) => (
+        <span
+          key={platform}
+          className="rounded-full shrink-0"
+          style={{
+            width: 7,
+            height: 7,
+            backgroundColor: PLATFORM_COLORS[platform],
+          }}
+        />
+      ))}
+      {overflow > 0 && (
+        <span className="text-[8px] text-muted-foreground font-medium leading-[10px]">
+          +{overflow}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ── Sale list item with D-day ── */
 function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => void }) {
   const status = getSaleStatus(sale);
   const statusConf = saleStatusConfig[status];
   const isEndingToday = status === "ending_today";
+  const dday = countdownText(sale.end_date);
 
   return (
     <div
       onClick={() => navigate(`/sale/${sale.id}`)}
       className="flex items-center gap-3 p-3 bg-card rounded-xl border border-border cursor-pointer hover:shadow-card-hover transition-shadow"
     >
-      <div
-        className="w-1 self-stretch rounded-full shrink-0"
-        style={{ backgroundColor: PLATFORM_BAR_COLORS[sale.platform] }}
+      {/* Platform color dot */}
+      <span
+        className="w-2.5 h-2.5 rounded-full shrink-0"
+        style={{ backgroundColor: PLATFORM_COLORS[sale.platform] }}
       />
       <div className="w-9 h-9 flex items-center justify-center shrink-0">
         <PlatformLogo platform={sale.platform} className="w-full h-full object-contain" />
@@ -301,7 +357,7 @@ function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => 
             </span>
           ) : (
             <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-medium ${statusConf.className}`}>
-              {statusConf.emoji} {statusConf.label}
+              {dday}
             </span>
           )}
         </div>
