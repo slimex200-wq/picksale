@@ -22,35 +22,72 @@ export default function CoverflowCarousel({ children }: Props) {
   const [activeIndex, setActiveIndex] = useState(Math.floor(count / 2));
   const [showHint, setShowHint] = useState(false);
   const swiperRef = useRef<SwiperType | null>(null);
-  const hintDismissed = useRef(false);
+  const hintEligible = useRef(false); // true if hint hasn't been shown or dismissed yet
+  const hintPlayed = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // One-time nudge hint per session
+  // Check eligibility on mount (no auto-trigger)
   useEffect(() => {
     if (count < 2) return;
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
     if (sessionStorage.getItem(HINT_SESSION_KEY)) return;
-
-    const timer = setTimeout(() => {
-      setShowHint(true);
-      sessionStorage.setItem(HINT_SESSION_KEY, "1");
-    }, 800);
-    return () => clearTimeout(timer);
+    hintEligible.current = true;
   }, [count]);
 
-  const dismissHint = useCallback(() => {
-    if (!hintDismissed.current) {
-      hintDismissed.current = true;
-      setShowHint(false);
-    }
+  // Mobile: use IntersectionObserver to trigger hint on first visibility
+  useEffect(() => {
+    if (!isMobile || count < 2) return;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) return;
+    if (sessionStorage.getItem(HINT_SESSION_KEY)) return;
+
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hintEligible.current && !hintPlayed.current) {
+          triggerHint();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isMobile, count]);
+
+  const triggerHint = useCallback(() => {
+    if (hintPlayed.current || !hintEligible.current) return;
+    hintPlayed.current = true;
+    hintEligible.current = false;
+    sessionStorage.setItem(HINT_SESSION_KEY, "1");
+    setShowHint(true);
   }, []);
+
+  const dismissHint = useCallback(() => {
+    hintEligible.current = false;
+    hintPlayed.current = true;
+    sessionStorage.setItem(HINT_SESSION_KEY, "1");
+    setShowHint(false);
+  }, []);
+
+  // Desktop: trigger on first hover
+  const handleMouseEnter = useCallback(() => {
+    if (!isMobile && hintEligible.current && !hintPlayed.current) {
+      triggerHint();
+    }
+  }, [isMobile, triggerHint]);
 
   if (count === 0) return null;
 
   return (
     <div
+      ref={containerRef}
       className={`relative coverflow-carousel${showHint ? " hint-active" : ""}`}
       style={{ padding: "12px 0 8px" }}
+      onMouseEnter={handleMouseEnter}
       onPointerDown={dismissHint}
       onAnimationEnd={() => setShowHint(false)}
     >
@@ -179,7 +216,6 @@ export default function CoverflowCarousel({ children }: Props) {
           background: linear-gradient(to left, hsl(var(--background)), transparent);
         }
       `}</style>
-
     </div>
   );
 }
