@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useLoginGate, promptMessages } from "@/hooks/useLoginGate";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -54,7 +55,10 @@ export default function LoginPrompt() {
         </Button>
         <button
           onClick={handleGoogleLogin}
-          className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-[13px] text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center justify-center gap-2 w-full h-10 rounded-xl text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+          style={{
+            background: "rgba(0,0,0,0.04)",
+          }}
         >
           <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -76,33 +80,36 @@ export default function LoginPrompt() {
   );
 
   if (isMobile) {
-    return (
-      <Drawer open={isPromptOpen} onOpenChange={(open) => !open && closePrompt()}>
-        <DrawerContent
-          className="px-6 pb-8 pt-4 border-0"
-          style={{
-            background: "rgba(255,255,255,0.72)",
-            WebkitBackdropFilter: "blur(14px) saturate(140%)",
-            backdropFilter: "blur(14px) saturate(140%)",
-            borderRadius: "20px 20px 0 0",
-            border: "1px solid rgba(255,255,255,0.45)",
-            boxShadow: "0 -8px 32px rgba(0,0,0,0.06)",
-          }}
-        >
-          <DrawerHeader className="sr-only">
-            <DrawerTitle>{msg.title}</DrawerTitle>
-            <DrawerDescription>{msg.description}</DrawerDescription>
-          </DrawerHeader>
-          {body}
-        </DrawerContent>
-      </Drawer>
+    return createPortal(
+      <div style={{ position: "relative", zIndex: 2000 }}>
+        <Drawer open={isPromptOpen} onOpenChange={(open) => !open && closePrompt()}>
+          <DrawerContent
+            className="px-6 pb-8 pt-4 border-0"
+            style={{
+              background: "rgba(255,255,255,0.72)",
+              WebkitBackdropFilter: "blur(14px) saturate(140%)",
+              backdropFilter: "blur(14px) saturate(140%)",
+              borderRadius: "20px 20px 0 0",
+              border: "1px solid rgba(255,255,255,0.45)",
+              boxShadow: "0 -8px 32px rgba(0,0,0,0.06)",
+            }}
+          >
+            <DrawerHeader className="sr-only">
+              <DrawerTitle>{msg.title}</DrawerTitle>
+              <DrawerDescription>{msg.description}</DrawerDescription>
+            </DrawerHeader>
+            {body}
+          </DrawerContent>
+        </Drawer>
+      </div>,
+      document.body
     );
   }
 
   if (!isPromptOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+  return createPortal(
+    <div className="fixed inset-0 flex items-center justify-center" style={{ zIndex: 2000 }}>
       <div
         className="absolute inset-0"
         style={{ background: "rgba(0,0,0,0.06)" }}
@@ -136,6 +143,7 @@ export default function LoginPrompt() {
           to { opacity: 1; transform: scale(1) translateY(0); }
         }
       `}</style>
-    </div>
+    </div>,
+    document.body
   );
 }
