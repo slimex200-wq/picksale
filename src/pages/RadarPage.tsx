@@ -5,7 +5,11 @@ import { Sale, getSaleStatus, platforms, platformSlugs } from "@/data/salesUtils
 import PlatformLogo from "@/components/PlatformLogo";
 import StatusExploration from "@/components/StatusExploration";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+  StatusExplorationSkeleton,
+  TimelineSkeletonFull,
+  PlatformGridSkeleton,
+} from "@/components/skeletons/SaleCardSkeleton";
 import { ChevronRight, Radar } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
