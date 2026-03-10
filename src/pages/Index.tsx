@@ -217,8 +217,8 @@ interface LayoutProps {
 function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
-  return (
-    <div className="space-y-6">
+  const firstSection = (
+    <>
       {/* Featured — Cover Flow 3D carousel */}
       {featuredSales.length > 0 && (
         <section className="space-y-2 -mx-3">
@@ -233,7 +233,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </section>
       )}
 
-      {/* Ending Today — compact list */}
+      {/* Ending Today — compact list (first 3 cards) */}
       {endingTodaySales.length > 0 && (
         <section className="space-y-2">
           <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
@@ -244,12 +244,11 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           </div>
         </section>
       )}
+    </>
+  );
 
-      {/* Preview Login Gate for non-logged-in users */}
-      {!isLoggedIn && activeSales.length > 3 && (
-        <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
-      )}
-
+  const restContent = (
+    <>
       {/* Live — compact list */}
       {liveSales.length > 0 && (
         <section className="space-y-2">
@@ -276,6 +275,18 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={2} />
+    </>
+  );
+
+  return (
+    <div className="space-y-6">
+      {firstSection}
+
+      {!isLoggedIn ? (
+        <PreviewLoginGate>{restContent}</PreviewLoginGate>
+      ) : (
+        restContent
+      )}
 
       {activeSales.length === 0 && (
         <div className="flex flex-col items-center py-10 text-muted-foreground">
@@ -284,10 +295,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </div>
       )}
 
-      <ExpandedSaleOverlay
-        sale={expandedSale}
-        onClose={() => setExpandedSale(null)}
-      />
+      <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
     </div>
   );
 }
