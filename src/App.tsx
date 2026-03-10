@@ -5,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider, keepPreviousData } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { LoginGateProvider } from "@/hooks/useLoginGate";
+import LoginPrompt from "@/components/LoginPrompt";
 import Header from "@/components/Header";
 
 import Index from "./pages/Index";
