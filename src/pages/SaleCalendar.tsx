@@ -281,7 +281,7 @@ export default function SaleCalendar() {
           <div
             className="flex-[4] min-w-0 rounded-2xl border border-border bg-card shadow-sm overflow-hidden flex flex-col"
           >
-            <div className="h-full overflow-y-auto">
+            <div className="flex-1 overflow-y-auto">
               {salesListContent}
             </div>
           </div>
