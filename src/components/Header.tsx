@@ -29,7 +29,7 @@ export default function Header() {
           <Link to="/home" className="flex items-center gap-2.5">
             <img src={logo} alt="PickSale" className="w-9 h-9 rounded-xl object-cover" />
             <div className="flex flex-col">
-              <h1 className="text-lg font-bold text-foreground tracking-tight leading-tight">
+              <h1 className="text-lg font-bold text-foreground tracking-tight leading-tight font-display">
                 PickSale
               </h1>
               <span className="text-[11px] text-muted-foreground font-medium leading-tight hidden sm:block">

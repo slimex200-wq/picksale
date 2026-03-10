@@ -52,7 +52,7 @@ export default function SaleRankingItem({ sale, rank, onOpenDetail }: Props) {
         </span>
       ) : (
         <span
-          className={`shrink-0 whitespace-nowrap px-1.5 py-0.5 rounded-md ${
+          className={`shrink-0 whitespace-nowrap px-1.5 py-0.5 rounded-md font-display ${
             isUrgent ? "bg-destructive/10 text-destructive font-semibold" : "text-muted-foreground font-normal"
           }`}
           style={{ fontSize: '10px' }}
