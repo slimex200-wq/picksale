@@ -176,11 +176,8 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
               <div className="flex flex-col gap-2.5 pt-2">
                 <Button
                   className="w-full rounded-xl gap-2 h-11 font-semibold"
-                  onClick={() => {
-                    requireLogin(() => window.open(currentSale.link, "_blank"));
-                  }}
+                  onClick={() => window.open(currentSale.link, "_blank")}
                 >
-                  {!user && <Lock className="w-3.5 h-3.5" />}
                   <ExternalLink className="w-4 h-4" />
                   세일 바로가기
                 </Button>
@@ -188,10 +185,10 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
                   variant="outline"
                   className="w-full rounded-xl gap-2 h-11 font-semibold border-border/70"
                   onClick={() => {
-                    requireLogin(() => toast.success("알림이 설정되었습니다! 🔔"));
+                    requireLogin(() => toast.success("알림이 설정되었습니다! 🔔"), "alert");
                   }}
                 >
-                  {!user && <Lock className="w-3.5 h-3.5" />}
+                  {!user && <Lock className="w-3 h-3 opacity-50" />}
                   <Bell className="w-4 h-4" />
                   알림받기
                 </Button>
