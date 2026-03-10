@@ -110,7 +110,7 @@ export default function CommunityPage() {
       ) : (
         <div className="space-y-3">
           {posts.map((post) => (
-            <DealCard key={post.id} post={post} />
+            <DealCard key={post.id} post={post} onOpenDetail={setExpandedPost} />
           ))}
         </div>
       )}
