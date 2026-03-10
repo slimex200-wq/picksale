@@ -94,37 +94,16 @@ export default function CoverflowCarousel({ children }: Props) {
     if (prefersReduced || sessionValue) return;
 
     const container = containerRef.current;
-    const swiperEl = container?.querySelector(".swiper");
-    const activeSlideEl = container?.querySelector(".swiper-slide-active");
+    if (!container) return;
 
-    const handleHover = (source: string) => () => {
-      console.log("[coverflow-hint] mouse enter fired", {
-        source,
-        hintEligible: hintEligible.current,
-        hintPlayed: hintPlayed.current,
-        sessionValue: sessionStorage.getItem(HINT_SESSION_KEY),
-      });
-      triggerHint(source);
-    };
+    // Only attach to visible slide elements — not the container background
+    const slides = container.querySelectorAll(".swiper-slide");
+    const handler = () => triggerHint("slide-card");
 
-    const containerHover = handleHover("container");
-    const swiperHover = handleHover("swiper");
-    const activeSlideHover = handleHover("active-slide");
-
-    container?.addEventListener("mouseenter", containerHover);
-    swiperEl?.addEventListener("mouseenter", swiperHover);
-    activeSlideEl?.addEventListener("mouseenter", activeSlideHover);
-
-    console.log("[coverflow-hint] hover listeners attached", {
-      hasContainer: !!container,
-      hasSwiper: !!swiperEl,
-      hasActiveSlide: !!activeSlideEl,
-    });
+    slides.forEach((slide) => slide.addEventListener("mouseenter", handler));
 
     return () => {
-      container?.removeEventListener("mouseenter", containerHover);
-      swiperEl?.removeEventListener("mouseenter", swiperHover);
-      activeSlideEl?.removeEventListener("mouseenter", activeSlideHover);
+      slides.forEach((slide) => slide.removeEventListener("mouseenter", handler));
     };
   }, [activeIndex, count, isMobile, triggerHint]);
 
