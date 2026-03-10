@@ -41,10 +41,6 @@ export default function CoverflowCarousel({ children }: Props) {
     hintEligible.current = false;
     hintPlayed.current = true;
     sessionStorage.setItem(HINT_SESSION_KEY, "1");
-    console.log("[coverflow-hint] hint dismissed", {
-      reason,
-      sessionValue: sessionStorage.getItem(HINT_SESSION_KEY),
-    });
     setShowHint(false);
   }, []);
 
