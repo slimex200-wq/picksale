@@ -2,9 +2,11 @@ import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data
 import { formatCategory } from "@/utils/categoryFormat";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
+import { useLoginGate } from "@/hooks/useLoginGate";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Props {
   sale: Sale;
@@ -16,6 +18,8 @@ interface Props {
 }
 
 export default function EditorialBrandCard({ sale, rank, isActive = true, onOpenDetail }: Props) {
+  const { requireLogin } = useLoginGate();
+  const { user } = useAuth();
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
@@ -92,8 +96,9 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
         {isActive && (
           <button
             className="w-full rounded-lg text-xs font-semibold h-7 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            onClick={(e) => { e.stopPropagation(); handleClick(); }}
+            onClick={(e) => { e.stopPropagation(); requireLogin(() => handleClick()); }}
           >
+            {!user && <Lock className="w-3 h-3" />}
             세일 보러가기
             <ArrowRight className="w-3 h-3" />
           </button>

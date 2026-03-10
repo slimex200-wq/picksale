@@ -3,10 +3,12 @@ import { formatCategory } from "@/utils/categoryFormat";
 import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
+import { useLoginGate } from "@/hooks/useLoginGate";
+import { useAuth } from "@/hooks/useAuth";
 
 interface HeroSaleCardProps {
   sale: Sale;
@@ -20,6 +22,8 @@ interface HeroSaleCardProps {
 
 export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, onGoNext, isMobile, onOpenDetail }: HeroSaleCardProps) {
   const navigate = useNavigate();
+  const { requireLogin } = useLoginGate();
+  const { user } = useAuth();
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
@@ -119,8 +123,9 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
         <div className="px-3 pb-3 pt-2 mt-auto relative z-30">
           <button
             className="w-full rounded-lg text-xs font-semibold h-7 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            onClick={(e) => { e.stopPropagation(); handleOpen(); }}
+            onClick={(e) => { e.stopPropagation(); requireLogin(() => handleOpen()); }}
           >
+            {!user && <Lock className="w-3 h-3" />}
             세일 보러가기
             <ArrowRight className="w-3 h-3" />
           </button>

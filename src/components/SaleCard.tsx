@@ -2,12 +2,14 @@ import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data
 import { formatCategory } from "@/utils/categoryFormat";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 import SaleBannerImage from "@/components/SaleBannerImage";
+import { useLoginGate } from "@/hooks/useLoginGate";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SaleCardProps {
   sale: Sale;
@@ -22,6 +24,8 @@ interface SaleCardProps {
 export default function SaleCard({ sale, rank, isActive = true, compact = false, onGoPrev, onGoNext, onOpenDetail }: SaleCardProps) {
   const navigate = useNavigate();
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
+  const { requireLogin } = useLoginGate();
+  const { user } = useAuth();
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
@@ -207,9 +211,10 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             className="mt-auto w-full rounded-lg text-xs font-semibold h-8 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             onClick={(e) => {
               e.stopPropagation();
-              goToSale();
+              requireLogin(() => goToSale());
             }}
           >
+            {!user && <Lock className="w-3 h-3" />}
             세일 보러가기
             <ArrowRight className="w-3 h-3" />
           </button>

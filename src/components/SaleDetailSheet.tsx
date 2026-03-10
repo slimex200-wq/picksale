@@ -10,9 +10,11 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import { ExternalLink, Calendar, Bell, X } from "lucide-react";
+import { ExternalLink, Calendar, Bell, X, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
+import { useLoginGate } from "@/hooks/useLoginGate";
+import { useAuth } from "@/hooks/useAuth";
 
 function formatDate(d: string) {
   const date = new Date(d);
@@ -26,6 +28,8 @@ interface Props {
 }
 
 export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
+  const { requireLogin } = useLoginGate();
+  const { user } = useAuth();
   if (!sale) return null;
 
   const status = getSaleStatus(sale);
@@ -107,16 +111,18 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
           <div className="flex flex-col gap-2.5 pt-2">
             <Button
               className="w-full rounded-xl gap-2 h-11 font-semibold"
-              onClick={() => window.open(sale.link, "_blank")}
+              onClick={() => requireLogin(() => window.open(sale.link, "_blank"))}
             >
+              {!user && <Lock className="w-3.5 h-3.5" />}
               <ExternalLink className="w-4 h-4" />
               세일 바로가기
             </Button>
             <Button
               variant="outline"
               className="w-full rounded-xl gap-2 h-11 font-semibold border-border/70"
-              onClick={() => toast.success("알림이 설정되었습니다! 🔔")}
+              onClick={() => requireLogin(() => toast.success("알림이 설정되었습니다! 🔔"))}
             >
+              {!user && <Lock className="w-3.5 h-3.5" />}
               <Bell className="w-4 h-4" />
               알림받기
             </Button>

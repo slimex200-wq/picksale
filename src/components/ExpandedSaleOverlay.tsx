@@ -4,12 +4,14 @@ import { Sale, getSaleStatus, saleStatusConfig, platformColors } from "@/data/sa
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Calendar, Bell, X, Pencil } from "lucide-react";
+import { ExternalLink, Calendar, Bell, X, Pencil, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
 import SaleInlineEditor from "@/components/SaleInlineEditor";
 import { useAdmin } from "@/hooks/useAdmin";
+import { useLoginGate } from "@/hooks/useLoginGate";
+import { useAuth } from "@/hooks/useAuth";
 
 function formatDate(d: string) {
   const date = new Date(d);
@@ -26,6 +28,8 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
   const [editing, setEditing] = useState(false);
   const [currentSale, setCurrentSale] = useState<Sale | null>(sale);
   const { isAdmin } = useAdmin();
+  const { user } = useAuth();
+  const { requireLogin } = useLoginGate();
 
   // Sync when sale prop changes
   useEffect(() => {
@@ -172,16 +176,22 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
               <div className="flex flex-col gap-2.5 pt-2">
                 <Button
                   className="w-full rounded-xl gap-2 h-11 font-semibold"
-                  onClick={() => window.open(currentSale.link, "_blank")}
+                  onClick={() => {
+                    requireLogin(() => window.open(currentSale.link, "_blank"));
+                  }}
                 >
+                  {!user && <Lock className="w-3.5 h-3.5" />}
                   <ExternalLink className="w-4 h-4" />
                   세일 바로가기
                 </Button>
                 <Button
                   variant="outline"
                   className="w-full rounded-xl gap-2 h-11 font-semibold border-border/70"
-                  onClick={() => toast.success("알림이 설정되었습니다! 🔔")}
+                  onClick={() => {
+                    requireLogin(() => toast.success("알림이 설정되었습니다! 🔔"));
+                  }}
                 >
+                  {!user && <Lock className="w-3.5 h-3.5" />}
                   <Bell className="w-4 h-4" />
                   알림받기
                 </Button>
