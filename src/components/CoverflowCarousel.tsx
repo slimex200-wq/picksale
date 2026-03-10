@@ -143,19 +143,14 @@ export default function CoverflowCarousel({ children }: Props) {
             swiperRef.current = swiper;
           }}
           onSlideChange={(swiper: SwiperType) => {
-            console.log("[coverflow-hint] slide change", {
-              activeIndex: swiper.activeIndex,
-              userInteracted: userInteracted.current,
-            });
             setActiveIndex(swiper.activeIndex);
             if (userInteracted.current) {
-              dismissHint("slide-change-after-user-interaction");
+              dismissHint("slide-change");
             }
           }}
           onTouchStart={() => dismissHint("touchstart")}
           onTouchMove={() => {
             userInteracted.current = true;
-            console.log("[coverflow-hint] touch move detected");
           }}
           style={{ overflow: "visible", paddingBottom: 8 }}
         >
