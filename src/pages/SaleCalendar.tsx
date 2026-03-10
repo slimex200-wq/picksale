@@ -63,6 +63,17 @@ export default function SaleCalendar() {
   const [selectedDay, setSelectedDay] = useState<number | null>(new Date().getDate());
   const [showCommunity, setShowCommunity] = useState(false);
   const { data: sales = [], isLoading } = useSales();
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const [calendarHeight, setCalendarHeight] = useState(500);
+
+  useEffect(() => {
+    if (!calendarRef.current || isMobile) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setCalendarHeight(entry.contentRect.height);
+    });
+    ro.observe(calendarRef.current);
+    return () => ro.disconnect();
+  }, [isMobile]);
 
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
