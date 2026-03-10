@@ -138,7 +138,7 @@ export default function DealCard({ post }: { post: CommunityPost }) {
         to={`/community/${post.id}`}
         className="group block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-border/80 transition-all"
       >
-        <div className="p-4 space-y-2.5">
+        <div className="px-5 sm:px-6 py-4 space-y-2.5">
           {/* Category + Platform badges */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {post.category.map((c) => {
