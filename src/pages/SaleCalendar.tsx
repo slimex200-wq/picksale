@@ -160,8 +160,9 @@ export default function SaleCalendar() {
             const isToday = isCurrentMonth && day === new Date().getDate();
             const isSelected = day === selectedDay;
             const dayOfWeek = (firstDay + day - 1) % 7;
-            const visibleSales = daySales.slice(0, MAX_PILLS);
-            const overflowCount = daySales.length - MAX_PILLS;
+            const groups = groupByPlatform(daySales);
+            const visibleGroups = groups.slice(0, MAX_PILLS);
+            const overflowCount = groups.length - MAX_PILLS;
 
             return (
               <button
@@ -193,25 +194,28 @@ export default function SaleCalendar() {
                   </span>
                 </div>
 
-                {/* Pill-style bars */}
+                {/* Pill-style bars — light bg + colored text, platform name only */}
                 <div className="flex flex-col gap-[1px] px-0.5 pb-1 flex-1">
-                  {visibleSales.map((sale) => (
+                  {visibleGroups.map(({ platform }) => (
                     <div
-                      key={sale.id}
-                      className="rounded-[3px] truncate px-1"
+                      key={platform}
+                      className="rounded-[2px] truncate px-1"
                       style={{
-                        height: 14,
-                        lineHeight: "14px",
-                        backgroundColor: PLATFORM_BAR_COLORS[sale.platform],
+                        height: 10,
+                        lineHeight: "10px",
+                        backgroundColor: PLATFORM_BAR_BG_LIGHT[platform],
                       }}
                     >
-                      <span className="text-[8px] sm:text-[9px] font-medium truncate block text-white/90">
-                        {truncName(sale.sale_name)}
+                      <span
+                        className="text-[8px] font-semibold truncate block"
+                        style={{ color: PLATFORM_BAR_COLORS[platform] }}
+                      >
+                        {platform}
                       </span>
                     </div>
                   ))}
                   {overflowCount > 0 && (
-                    <span className="text-[8px] sm:text-[9px] text-muted-foreground font-normal px-1 leading-[13px]">
+                    <span className="text-[8px] text-muted-foreground font-normal px-1 leading-[10px]">
                       +{overflowCount}개
                     </span>
                   )}
