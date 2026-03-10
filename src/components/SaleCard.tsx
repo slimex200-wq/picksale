@@ -81,7 +81,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         onClick={goToSale}
       >
         <div className="w-10 h-10 rounded-xl bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-1.5">
-          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain" loading="lazy" />
+          <PlatformLogo platform={sale.platform} />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
