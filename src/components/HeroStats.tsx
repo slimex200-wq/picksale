@@ -23,7 +23,7 @@ export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: 
   }, [sales]);
 
   const stats = [
-    { key: "live" as SaleStatus, label: "진행중", count: liveCount, color: "text-green-600", bg: "bg-green-100/80", activeBorder: "border-green-400", icon: TrendingUp, emoji: "🟢" },
+    { key: "live" as SaleStatus, label: "진행중", count: liveCount, color: "text-green-600", bg: "bg-green-100/80", activeBorder: "border-green-400", icon: TrendingUp, emoji: null },
     { key: "starting_soon" as SaleStatus, label: "예정", count: startingSoonCount, color: "text-yellow-600", bg: "bg-yellow-100/80", activeBorder: "border-yellow-400", icon: Clock, emoji: "⏰" },
     { key: "ending_today" as SaleStatus, label: "오늘 마감", count: endingTodayCount, color: "text-closing-today", bg: "bg-closing-today-bg", activeBorder: "border-closing-today", icon: null, emoji: "" },
   ];
@@ -58,6 +58,8 @@ export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: 
               >
                 {stat.key === "ending_today" ? (
                   <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+                ) : stat.key === "live" ? (
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse-green" style={{ boxShadow: "0 0 6px #22c55e" }} />
                 ) : (
                   <span className="text-xs">{stat.emoji}</span>
                 )}
@@ -86,6 +88,8 @@ export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: 
                 <div className={`w-8 h-8 rounded-lg ${stat.bg} flex items-center justify-center`}>
                   {stat.key === "ending_today" ? (
                     <span className="w-2 h-2 rounded-full bg-closing-today animate-closing-pulse" />
+                  ) : stat.key === "live" ? (
+                    <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse-green" style={{ boxShadow: "0 0 6px #22c55e" }} />
                   ) : (
                     <stat.icon className={`w-4 h-4 ${stat.color}`} />
                   )}
