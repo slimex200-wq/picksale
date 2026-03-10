@@ -135,8 +135,6 @@ export default function CoverflowCarousel({ children }: Props) {
       ref={containerRef}
       className="relative coverflow-carousel"
       style={{ padding: "12px 0 8px" }}
-      onPointerDown={() => dismissHint("pointerdown")}
-      onWheel={() => dismissHint("wheel")}
       onKeyDown={() => dismissHint("keyboard")}
       tabIndex={0}
     >
