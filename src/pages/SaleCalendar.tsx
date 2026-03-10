@@ -151,7 +151,7 @@ export default function SaleCalendar() {
                 <div
                   key={`empty-${i}`}
                   className="border-b border-r border-border/30"
-                  style={{ minHeight: 62 }}
+                  style={{ minHeight: 93 }}
                 />
               );
             }
