@@ -127,7 +127,7 @@ export default {
   					opacity: '1',
   					boxShadow: '0 0 4px hsl(var(--closing-today) / 0.4)'
   				}
-  			}
+  			},
 			'pulse-green': {
 				'0%, 100%': {
 					transform: 'scale(1)',
