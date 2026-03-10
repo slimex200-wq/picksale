@@ -168,7 +168,7 @@ export default function SaleCalendar() {
       {/* Desktop: 2-column / Mobile: stacked */}
       <div className={isMobile ? "" : "flex gap-4 items-start"}>
         {/* Calendar Card */}
-        <div className={`rounded-2xl border border-border bg-card shadow-sm overflow-hidden ${isMobile ? "" : "flex-[6] min-w-0"}`}>
+        <div ref={calendarRef} className={`rounded-2xl border border-border bg-card shadow-sm overflow-hidden ${isMobile ? "" : "flex-[6] min-w-0"}`}>
           {/* Month Header */}
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
             <Button variant="ghost" size="icon" onClick={prev} className="h-8 w-8 rounded-full">
