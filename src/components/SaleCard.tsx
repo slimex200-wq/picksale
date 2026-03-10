@@ -95,7 +95,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
                 {statusInfo.emoji} {statusInfo.label}
               </Badge>
             )}
-            <span className={`text-[10px] shrink-0 ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
+            <span className={`text-[10px] shrink-0 font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
               {countdown}
             </span>
           </div>

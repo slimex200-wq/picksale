@@ -30,7 +30,7 @@ export default function LandingPage() {
       <div className="relative z-10 flex flex-col items-center text-center max-w-lg space-y-16">
         {/* Brand mark */}
         <div className="space-y-8">
-          <h1 className="text-white text-[clamp(2.5rem,8vw,4.5rem)] font-black tracking-[-0.03em] leading-none">
+          <h1 className="text-white text-[clamp(2.5rem,8vw,4.5rem)] font-black tracking-[-0.03em] leading-none font-display">
             PickSale
           </h1>
           <p className="text-[#a1a1aa] text-base sm:text-lg font-medium tracking-tight">

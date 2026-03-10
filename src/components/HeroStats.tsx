@@ -90,7 +90,7 @@ export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: 
                     <stat.icon className={`w-4 h-4 ${stat.color}`} />
                   )}
                 </div>
-                <span className="text-xl font-extrabold text-card-foreground tabular-nums">{stat.count}</span>
+                <span className="text-xl font-extrabold text-card-foreground tabular-nums font-display">{stat.count}</span>
                 <span className="text-[10px] font-semibold text-muted-foreground whitespace-nowrap">{stat.label}</span>
               </button>
             );
