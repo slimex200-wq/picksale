@@ -41,10 +41,10 @@ export default function RadarPage() {
       </div>
 
       {isLoading && !sales.length ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-14 w-full rounded-xl" />
-          ))}
+        <div className="space-y-6">
+          <StatusExplorationSkeleton />
+          <TimelineSkeletonFull />
+          <PlatformGridSkeleton />
         </div>
       ) : (
         <>
