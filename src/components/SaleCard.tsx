@@ -2,14 +2,12 @@ import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data
 import { formatCategory } from "@/utils/categoryFormat";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, ChevronLeft, ChevronRight, Lock } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 import SaleBannerImage from "@/components/SaleBannerImage";
-import { useLoginGate } from "@/hooks/useLoginGate";
-import { useAuth } from "@/hooks/useAuth";
 
 interface SaleCardProps {
   sale: Sale;
@@ -24,8 +22,6 @@ interface SaleCardProps {
 export default function SaleCard({ sale, rank, isActive = true, compact = false, onGoPrev, onGoNext, onOpenDetail }: SaleCardProps) {
   const navigate = useNavigate();
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
-  const { requireLogin } = useLoginGate();
-  const { user } = useAuth();
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
@@ -84,12 +80,9 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         style={{ padding: "10px 12px" }}
         onClick={goToSale}
       >
-        {/* Platform logo */}
         <div className="w-10 h-10 rounded-xl bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-1.5">
           <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain" loading="lazy" />
         </div>
-
-        {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
             {status === "ending_today" ? (
@@ -102,9 +95,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
                 {statusInfo.emoji} {statusInfo.label}
               </Badge>
             )}
-            <span
-              className={`text-[10px] shrink-0 ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
-            >
+            <span className={`text-[10px] shrink-0 ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
               {countdown}
             </span>
           </div>
@@ -122,8 +113,6 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             </span>
           </div>
         </div>
-
-        {/* Arrow */}
         <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
       </div>
     );
@@ -139,7 +128,6 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setHoverZone(null)}
     >
-      {/* Hover zone indicators — desktop only */}
       {hasZoneNav && hoverZone === "left" && onGoPrev && (
         <div className="absolute left-0 top-0 bottom-0 w-[20%] z-20 flex items-center justify-center bg-foreground/5 rounded-l-xl transition-opacity">
           <ChevronLeft className="w-5 h-5 text-muted-foreground" />
@@ -150,10 +138,8 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
           <ChevronRight className="w-5 h-5 text-muted-foreground" />
         </div>
       )}
-      {/* Banner image */}
       <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} heightClass="h-32" className="rounded-t-xl" />
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
-        {/* Row 1: Status badge + countdown */}
         <div className="flex items-center justify-between">
           {status === "ending_today" ? (
             <span className="inline-flex items-center gap-1.5 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: "11px", fontWeight: 700, padding: "2px 8px" }}>
@@ -172,29 +158,21 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             {countdown}
           </span>
         </div>
-
-        {/* Row 2: Title */}
         <h3
           className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
           style={{ fontSize: '15px', fontWeight: '700', lineHeight: '1.35' }}
         >
           {sale.sale_name}
         </h3>
-
-        {/* Row 3: Platform + Date */}
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-0.5">
             <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain" loading="lazy" />
           </div>
-          <span className="text-foreground font-medium" style={{ fontSize: '12px' }}>
-            {sale.platform}
-          </span>
+          <span className="text-foreground font-medium" style={{ fontSize: '12px' }}>{sale.platform}</span>
           <span className="text-muted-foreground font-normal" style={{ fontSize: '11px' }}>
             {formatDate(sale.start_date)} – {formatDate(sale.end_date)}
           </span>
         </div>
-
-        {/* Row 4: Categories */}
         {sale.category.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {sale.category.slice(0, 3).map((c) => (
@@ -204,17 +182,14 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             ))}
           </div>
         )}
-
-        {/* CTA — only when active */}
         {isActive && (
           <button
             className="mt-auto w-full rounded-lg text-xs font-semibold h-8 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             onClick={(e) => {
               e.stopPropagation();
-              requireLogin(() => goToSale());
+              goToSale();
             }}
           >
-            {!user && <Lock className="w-3 h-3" />}
             세일 보러가기
             <ArrowRight className="w-3 h-3" />
           </button>

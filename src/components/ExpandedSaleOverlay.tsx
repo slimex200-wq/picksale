@@ -185,10 +185,10 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
                   variant="outline"
                   className="w-full rounded-xl gap-2 h-11 font-semibold border-border/70"
                   onClick={() => {
-                    requireLogin(() => toast.success("알림이 설정되었습니다! 🔔"));
+                    requireLogin(() => toast.success("알림이 설정되었습니다! 🔔"), "alert");
                   }}
                 >
-                  {!user && <Lock className="w-3.5 h-3.5" />}
+                  {!user && <Lock className="w-3 h-3 opacity-50" />}
                   <Bell className="w-4 h-4" />
                   알림받기
                 </Button>
