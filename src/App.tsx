@@ -51,11 +51,11 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
-        <LoginGateProvider>
         <Toaster />
         <Sonner />
-        <LoginPrompt />
         <BrowserRouter>
+        <LoginGateProvider>
+        <LoginPrompt />
           <Routes>
             {/* Home — accessible without login */}
             <Route path="/" element={<><Header /><Index /></>} />
@@ -88,8 +88,8 @@ const App = () => (
             </Route>
             <Route path="*" element={<><Header /><NotFound /></>} />
           </Routes>
-        </BrowserRouter>
         </LoginGateProvider>
+        </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
