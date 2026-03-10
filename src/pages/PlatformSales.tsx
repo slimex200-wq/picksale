@@ -101,24 +101,36 @@ export default function PlatformSales() {
     return result;
   }, [allSales, platform, statusFilter, sortBy]);
 
-  // Debug logging
   useEffect(() => {
     if (!platform) return;
     const today = getTodayKST();
     const allForPlatform = allSales.filter((s) => s.platform === platform);
-    const majorPublished = allForPlatform.filter((s) => s.sale_tier === "major");
-    const notEnded = majorPublished.filter((s) => s.end_date >= today);
+    const notEnded = allForPlatform.filter((s) => s.end_date >= today);
+
+    // Replicate home card logic (PlatformExplorer) for comparison
+    let homeLive = 0, homeEnding = 0;
+    for (const s of notEnded) {
+      const st = getSaleStatus(s);
+      if (st === "ending_today") { homeEnding++; homeLive++; }
+      else if (st === "live") { homeLive++; }
+    }
 
     console.group(`[PlatformSales Debug] ${platform}`);
     console.log("selected platform:", platform);
     console.log("selected tab:", statusFilter);
     console.log("today (KST):", today);
+    console.log("timezone:", Intl.DateTimeFormat().resolvedOptions().timeZone);
     console.log("all sales for platform:", allForPlatform.length);
-    console.log("major+published:", majorPublished.length);
     console.log("not ended (end_date >= today):", notEnded.length);
-    console.log("filtered result:", filtered.length);
+    console.log("HOME card counts → live:", homeLive, "ending:", homeEnding);
+    console.log("DETAIL filtered result:", filtered.length);
+    
+    // Log each sale with its status
     notEnded.forEach((s) => {
-      console.log(`  - ${s.sale_name} | start: ${s.start_date} | end: ${s.end_date} | status: ${getDetailedStatus(s)} | tier: ${s.sale_tier}`);
+      const detailedSt = getDetailedStatus(s);
+      const mainSt = getSaleStatus(s);
+      const inFiltered = filtered.some(f => f.id === s.id);
+      console.log(`  ${inFiltered ? "✅" : "❌"} ${s.sale_name} | tier: ${s.sale_tier} | start: ${s.start_date} | end: ${s.end_date} | getSaleStatus: ${mainSt} | detailedStatus: ${detailedSt} | ${!inFiltered ? "EXCLUDED by tab=" + statusFilter : "included"}`);
     });
     console.groupEnd();
   }, [platform, allSales, statusFilter, filtered]);
