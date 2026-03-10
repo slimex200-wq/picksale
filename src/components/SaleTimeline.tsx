@@ -43,8 +43,8 @@ export default function SaleTimeline({ sales, onOpenDetail }: Props) {
               {timeline[section.key].length}
             </span>
           </h3>
-          <div className="rounded-xl border border-border bg-card overflow-hidden divide-y divide-border">
-            {timeline[section.key].map((sale) => {
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            {timeline[section.key].map((sale, idx) => {
               const status = getSaleStatus(sale);
               const statusInfo = saleStatusConfig[status];
               const countdown = countdownText(sale.end_date);
@@ -54,14 +54,19 @@ export default function SaleTimeline({ sales, onOpenDetail }: Props) {
                 <div
                   key={sale.id}
                   onClick={() => onOpenDetail ? onOpenDetail(sale) : navigate(`/sale/${sale.id}`)}
-                  className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-accent/50 cursor-pointer transition-colors"
+                  className={`flex items-center gap-2.5 px-3 py-3 hover:bg-accent/50 cursor-pointer transition-colors ${idx > 0 ? "border-t border-border/60" : ""}`}
                 >
                   <div className="w-7 h-7 rounded-lg overflow-hidden shrink-0 bg-accent p-1">
                     <PlatformLogo platform={sale.platform} />
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-card-foreground truncate tracking-tight">{sale.sale_name}</p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-sm font-semibold text-card-foreground truncate tracking-tight">{sale.sale_name}</p>
+                      <span className={`text-[10px] shrink-0 px-1.5 py-0.5 rounded-full font-semibold ${isEndingToday ? "bg-closing-today-bg text-closing-today" : isUrgent ? "text-destructive bg-destructive/10" : "text-muted-foreground bg-muted"}`}>
+                        {countdown}
+                      </span>
+                    </div>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="text-[10px] text-muted-foreground font-medium">{sale.platform}</span>
                       <span className="text-[10px] text-muted-foreground/60 font-normal">
@@ -70,7 +75,7 @@ export default function SaleTimeline({ sales, onOpenDetail }: Props) {
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-end gap-1 shrink-0">
+                  <div className="shrink-0">
                     {isEndingToday ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-closing-today-bg text-closing-today" style={{ fontSize: '9px', fontWeight: 700, padding: '1px 6px' }}>
                         <span className="w-1 h-1 rounded-full bg-closing-today animate-closing-pulse" />
@@ -81,9 +86,6 @@ export default function SaleTimeline({ sales, onOpenDetail }: Props) {
                         {statusInfo.emoji} {statusInfo.label}
                       </span>
                     )}
-                    <span className={`text-[10px] ${isEndingToday ? "text-muted-foreground/40 font-normal" : isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
-                      {countdown}
-                    </span>
                   </div>
                 </div>
               );

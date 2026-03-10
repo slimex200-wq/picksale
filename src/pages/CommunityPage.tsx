@@ -115,7 +115,7 @@ export default function CommunityPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-20 sm:pb-24">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-28 sm:pb-24">
       <PageMeta
         title="딜 발견 - 커뮤니티 | PickSale"
         description="유저들이 발견한 핫딜, 세일 정보, 쇼핑 팁을 확인하세요."
@@ -134,7 +134,7 @@ export default function CommunityPage() {
       {/* Floating CTA (mobile) */}
       <Link
         to={user ? "/submit" : "/login"}
-        className="fixed bottom-20 right-4 z-40 md:hidden flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-primary-foreground text-sm font-bold shadow-lg hover:bg-primary/90 transition-colors"
+        className="fixed bottom-[5.5rem] right-4 z-40 md:hidden flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-primary-foreground text-sm font-bold shadow-lg hover:bg-primary/90 transition-colors"
       >
         <Plus className="w-4 h-4" />
         딜 공유

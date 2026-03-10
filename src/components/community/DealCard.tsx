@@ -138,7 +138,7 @@ export default function DealCard({ post }: { post: CommunityPost }) {
         to={`/community/${post.id}`}
         className="group block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-border/80 transition-all"
       >
-        <div className="p-4 space-y-2.5">
+        <div className="px-5 sm:px-6 py-4 space-y-2.5">
           {/* Category + Platform badges */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {post.category.map((c) => {
@@ -220,7 +220,7 @@ export default function DealCard({ post }: { post: CommunityPost }) {
                 className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors ${
                   post.upvotes > 0
                     ? "bg-primary/10 text-primary hover:bg-primary/20"
-                    : "bg-muted text-muted-foreground hover:bg-accent"
+                    : "bg-transparent border border-border text-muted-foreground hover:bg-accent"
                 }`}
               >
                 <ThumbsUp className="w-3.5 h-3.5" />

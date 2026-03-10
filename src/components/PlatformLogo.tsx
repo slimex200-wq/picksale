@@ -19,14 +19,14 @@ export default function PlatformLogo({ platform, className = "w-full h-full obje
   const src = platformLogos[platform];
 
   if (broken || !src) {
+    const initial = platform.charAt(0);
     return (
-      <img
-        src={EMPTY_SVG}
-        alt=""
-        className={`bg-transparent ${className}`}
-        style={style}
-        draggable={false}
-      />
+      <span
+        className={`inline-flex items-center justify-center rounded-full bg-muted text-muted-foreground font-bold ${className}`}
+        style={{ fontSize: "0.55em", ...style }}
+      >
+        {initial}
+      </span>
     );
   }
 

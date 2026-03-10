@@ -76,7 +76,7 @@ export default function SaleCalendar() {
   }
 
   return (
-    <div className="max-w-lg mx-auto px-4 pt-4 pb-24 overflow-x-hidden">
+    <div className="max-w-lg mx-auto px-4 pt-4 pb-28 overflow-x-hidden">
       <PageMeta title={`${year}년 ${month + 1}월 세일 캘린더 | PickSale`} description={`${year}년 ${month + 1}월 쇼핑몰 세일 일정을 캘린더로 확인하세요.`} />
       <CanonicalLink href={window.location.origin + "/calendar"} />
       <div className="rounded-3xl border border-white/40 bg-white/30 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] p-4"

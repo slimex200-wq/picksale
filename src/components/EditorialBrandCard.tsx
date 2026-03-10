@@ -60,7 +60,7 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
       <div className="flex-1" />
       <div className="relative z-10 px-3 pb-3 space-y-2">
         <h3
-          className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
+          className={`line-clamp-2 tracking-tight leading-snug w-[90%] ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
           style={{ fontSize: 14, fontWeight: 700, lineHeight: "1.35" }}
         >
           {rank && <span className="text-primary mr-1" style={{ fontSize: 12 }}>#{rank}</span>}
