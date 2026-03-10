@@ -150,13 +150,10 @@ export default {
 			],
 			display: [
 				'Playfair Display',
-				'Georgia',
 				'serif'
 			],
 			serif: [
-				'Noto Sans KR',
-				'ui-serif',
-				'Georgia',
+				'Playfair Display',
 				'serif'
 			],
 			mono: [
