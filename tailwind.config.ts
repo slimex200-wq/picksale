@@ -128,13 +128,24 @@ export default {
   					boxShadow: '0 0 4px hsl(var(--closing-today) / 0.4)'
   				}
   			}
-  		},
-  		animation: {
-  			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out',
-  			'fade-in': 'fade-in 0.4s ease-out forwards',
-  			'closing-pulse': 'closing-pulse 1.5s ease-in-out infinite'
-  		},
+			'pulse-green': {
+				'0%, 100%': {
+					transform: 'scale(1)',
+					opacity: '1'
+				},
+				'50%': {
+					transform: 'scale(1.4)',
+					opacity: '0.6'
+				}
+			}
+		},
+		animation: {
+			'accordion-down': 'accordion-down 0.2s ease-out',
+			'accordion-up': 'accordion-up 0.2s ease-out',
+			'fade-in': 'fade-in 0.4s ease-out forwards',
+			'closing-pulse': 'closing-pulse 1.5s ease-in-out infinite',
+			'pulse-green': 'pulse-green 1.5s infinite'
+		},
 		fontFamily: {
 			sans: [
 				'Noto Sans KR',
