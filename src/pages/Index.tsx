@@ -70,11 +70,7 @@ export default function Index() {
     let result = activeSales;
     if (heroFilter) result = result.filter((s) => getSaleStatus(s) === heroFilter);
     if (quickFilter) {
-      if (quickFilter === "ending_today") {
-        result = result.filter((s) => getSaleStatus(s) === "ending_today");
-      } else {
-        result = result.filter((s) => s.category.some((c) => c.includes(quickFilter)));
-      }
+      result = result.filter((s) => matchesQuickFilter(s, quickFilter));
     }
     if (query.trim()) {
       const q = query.trim().toLowerCase();
