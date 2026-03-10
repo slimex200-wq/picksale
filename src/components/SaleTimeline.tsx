@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sale, categorizeTimeline, timelineSections, getSaleStatus, saleStatusConfig } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 
 interface Props {

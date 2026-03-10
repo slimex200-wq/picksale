@@ -2,7 +2,7 @@
 import { useState, useMemo } from "react";
 import { platformColors, platformEmojis, getSaleStatus, saleStatusConfig } from "@/data/salesUtils";
 import type { Sale, Platform } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { useSales } from "@/hooks/useSales";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";

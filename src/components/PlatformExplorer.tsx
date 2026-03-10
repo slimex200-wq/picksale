@@ -1,7 +1,7 @@
 import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Sale, getSaleStatus, platforms, platformSlugs, Platform } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { ChevronRight } from "lucide-react";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 

@@ -2,7 +2,7 @@ import { lazy, Suspense, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSales } from "@/hooks/useSales";
 import { Sale, getSaleStatus, platforms, platformSlugs } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import StatusExploration from "@/components/StatusExploration";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import { Skeleton } from "@/components/ui/skeleton";

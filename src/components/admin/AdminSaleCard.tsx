@@ -14,7 +14,7 @@ import {
   getUpsertState, upsertStateConfig,
   isRecentlyUpdated,
 } from "@/data/adminStateModel";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { toast } from "sonner";
 
 interface AdminSaleCardProps {

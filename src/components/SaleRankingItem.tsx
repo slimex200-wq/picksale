@@ -1,5 +1,5 @@
 import { Sale, isCreditCardPromo, getSaleStatus } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
 

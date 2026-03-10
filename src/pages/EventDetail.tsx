@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, ExternalLink, ArrowLeft, Layers } from "lucide-react";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import type { Platform } from "@/data/salesUtils";
 import JsonLd from "@/components/JsonLd";
 import CanonicalLink from "@/components/CanonicalLink";

@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useState } from "react";
 import { formatCategory } from "@/utils/categoryFormat";
 import { Sale, getSaleStatus, saleStatusConfig, platformColors } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Calendar, Bell, X, Pencil, Lock } from "lucide-react";
