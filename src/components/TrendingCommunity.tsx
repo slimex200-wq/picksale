@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useCommunityPosts } from "@/hooks/useCommunityPosts";
-import { ThumbsUp, MessageSquare, ChevronRight, Flame } from "lucide-react";
+import { ThumbsUp, MessageSquare, ChevronRight } from "lucide-react";
+import communityIcon from "@/assets/community_icon.svg";
 
 interface Props {
   maxPosts?: number;
