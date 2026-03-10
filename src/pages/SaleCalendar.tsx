@@ -40,7 +40,7 @@ const PLATFORM_BAR_BG_LIGHT: Record<Platform, string> = {
   "커뮤니티 핫딜": "hsla(35, 90%, 55%, 0.15)",
 };
 
-const MAX_PILLS = 2;
+const MAX_PILLS = 3;
 
 function shortDate(dateStr: string) {
   const d = new Date(dateStr);
@@ -107,7 +107,7 @@ export default function SaleCalendar() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-3 sm:px-4 pt-4 pb-28 overflow-x-hidden">
+    <div className="mx-auto px-3 sm:px-4 pt-4 pb-28 overflow-x-hidden">
       <PageMeta
         title={`${year}년 ${month + 1}월 세일 캘린더 | PickSale`}
         description={`${year}년 ${month + 1}월 쇼핑몰 세일 일정을 캘린더로 확인하세요.`}
@@ -151,7 +151,7 @@ export default function SaleCalendar() {
                 <div
                   key={`empty-${i}`}
                   className="border-b border-r border-border/30"
-                  style={{ minHeight: 62 }}
+                  style={{ minHeight: 93 }}
                 />
               );
             }
@@ -175,14 +175,14 @@ export default function SaleCalendar() {
                     ? "bg-accent/50"
                     : "hover:bg-accent/30"
                 }`}
-                style={{ minHeight: 62 }}
+                style={{ minHeight: 93 }}
               >
                 {/* Day Number */}
                 <div className="px-1 pt-1 pb-0.5 flex justify-start">
                   <span
-                    className={`text-[11px] inline-flex items-center justify-center leading-none ${
+                    className={`text-[13px] inline-flex items-center justify-center leading-none ${
                       isToday
-                        ? "bg-primary text-primary-foreground w-[22px] h-[22px] rounded-full font-bold"
+                        ? "bg-primary text-primary-foreground w-[24px] h-[24px] rounded-full font-bold"
                         : dayOfWeek === 0
                         ? "text-destructive/70 font-medium"
                         : dayOfWeek === 6
@@ -194,28 +194,20 @@ export default function SaleCalendar() {
                   </span>
                 </div>
 
-                {/* Pill-style bars — light bg + colored text, platform name only */}
-                <div className="flex flex-col gap-[1px] px-0.5 pb-1 flex-1">
+                {/* Color bars only — no text */}
+                <div className="flex flex-col gap-[2px] px-1 pb-1.5 flex-1">
                   {visibleGroups.map(({ platform }) => (
                     <div
                       key={platform}
-                      className="rounded-[2px] truncate px-1"
+                      className="rounded-[2px]"
                       style={{
-                        height: 10,
-                        lineHeight: "10px",
-                        backgroundColor: PLATFORM_BAR_BG_LIGHT[platform],
+                        height: 4,
+                        backgroundColor: PLATFORM_BAR_COLORS[platform],
                       }}
-                    >
-                      <span
-                        className="text-[8px] font-semibold truncate block"
-                        style={{ color: PLATFORM_BAR_COLORS[platform] }}
-                      >
-                        {platform}
-                      </span>
-                    </div>
+                    />
                   ))}
                   {overflowCount > 0 && (
-                    <span className="text-[8px] text-muted-foreground font-normal px-1 leading-[10px]">
+                    <span className="text-[8px] text-muted-foreground font-normal px-0.5 leading-[10px]">
                       +{overflowCount}개
                     </span>
                   )}
