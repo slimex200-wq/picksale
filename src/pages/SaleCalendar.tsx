@@ -381,7 +381,7 @@ function MobileDots({ groups }: { groups: { platform: Platform; count: number }[
 }
 
 /* ── Sale list item with D-day ── */
-function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => void }) {
+function SaleItem({ sale, onOpenDetail }: { sale: Sale; onOpenDetail: (s: Sale) => void }) {
   const status = getSaleStatus(sale);
   const statusConf = saleStatusConfig[status];
   const isEndingToday = status === "ending_today";
@@ -389,7 +389,7 @@ function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => 
 
   return (
     <div
-      onClick={() => navigate(`/sale/${sale.id}`)}
+      onClick={() => onOpenDetail(sale)}
       className="flex items-center gap-3 p-3 bg-card rounded-xl border border-border cursor-pointer hover:shadow-card-hover transition-shadow"
     >
       {/* Platform color dot */}
