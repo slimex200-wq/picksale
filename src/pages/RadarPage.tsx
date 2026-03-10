@@ -16,14 +16,6 @@ import PageMeta from "@/components/PageMeta";
 
 const SaleTimeline = lazy(() => import("@/components/SaleTimeline"));
 
-function TimelineSkeleton() {
-  return (
-    <div className="space-y-3">
-      <Skeleton className="h-6 w-32" />
-      <Skeleton className="h-48 w-full rounded-xl" />
-    </div>
-  );
-}
 
 export default function RadarPage() {
   const { data: sales = [], isLoading } = useSales();
