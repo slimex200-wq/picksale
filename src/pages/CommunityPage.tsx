@@ -134,7 +134,7 @@ export default function CommunityPage() {
       {/* Floating CTA (mobile) */}
       <Link
         to={user ? "/submit" : "/login"}
-        className="fixed bottom-20 right-4 z-40 md:hidden flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-primary-foreground text-sm font-bold shadow-lg hover:bg-primary/90 transition-colors"
+        className="fixed bottom-[5.5rem] right-4 z-40 md:hidden flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-primary text-primary-foreground text-sm font-bold shadow-lg hover:bg-primary/90 transition-colors"
       >
         <Plus className="w-4 h-4" />
         딜 공유
