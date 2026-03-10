@@ -16,14 +16,14 @@ const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
 /* ── Platform → HSL color string (matches index.css tokens) ── */
 const PLATFORM_BAR_COLORS: Record<Platform, string> = {
-  쿠팡: "hsl(16, 85%, 58%)",
-  올리브영: "hsl(145, 60%, 42%)",
-  무신사: "hsl(0, 0%, 13%)",
-  KREAM: "hsl(220, 12%, 22%)",
-  SSG: "hsl(350, 80%, 55%)",
-  오늘의집: "hsl(195, 85%, 48%)",
-  "29CM": "hsl(0, 0%, 18%)",
-  WCONCEPT: "hsl(0, 0%, 20%)",
+  쿠팡: "hsl(4, 60%, 59%)",
+  올리브영: "hsl(153, 38%, 48%)",
+  무신사: "hsl(0, 0%, 27%)",
+  KREAM: "hsl(15, 73%, 56%)",
+  SSG: "hsl(340, 55%, 52%)",
+  오늘의집: "hsl(185, 63%, 44%)",
+  "29CM": "hsl(31, 24%, 44%)",
+  WCONCEPT: "hsl(264, 28%, 51%)",
   "커뮤니티 핫딜": "hsl(35, 90%, 55%)",
 };
 
