@@ -34,7 +34,7 @@ export default function SaleRankingItem({ sale, rank, onOpenDetail }: Props) {
 
       {/* Logo — bigger for visibility */}
       <div className="w-11 h-11 rounded-xl bg-white/90 shadow-sm border border-border/30 flex items-center justify-center shrink-0 p-2">
-        <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain" loading="lazy" />
+        <PlatformLogo platform={sale.platform} />
       </div>
 
       {/* Info */}

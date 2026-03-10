@@ -57,7 +57,7 @@ export default function SaleTimeline({ sales, onOpenDetail }: Props) {
                   className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-accent/50 cursor-pointer transition-colors"
                 >
                   <div className="w-7 h-7 rounded-lg overflow-hidden shrink-0 bg-accent p-1">
-                    <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain" />
+                    <PlatformLogo platform={sale.platform} />
                   </div>
 
                   <div className="flex-1 min-w-0">

@@ -166,7 +166,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         </h3>
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-0.5">
-            <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain" loading="lazy" />
+            <PlatformLogo platform={sale.platform} />
           </div>
           <span className="text-foreground font-medium" style={{ fontSize: '12px' }}>{sale.platform}</span>
           <span className="text-muted-foreground font-normal" style={{ fontSize: '11px' }}>

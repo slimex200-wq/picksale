@@ -113,7 +113,7 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
           </div>
           <div className="absolute bottom-3 left-4 flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-white/90 shadow-sm flex items-center justify-center p-1">
-              <img src={logoSrc} alt={currentSale.platform} className="w-full h-full object-contain" />
+              <PlatformLogo platform={currentSale.platform} />
             </div>
             <span className="text-white text-xs font-bold tracking-wide drop-shadow-sm">
               {currentSale.platform}

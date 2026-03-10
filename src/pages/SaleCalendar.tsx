@@ -204,11 +204,9 @@ function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => 
       onClick={() => navigate(`/sale/${sale.id}`)}
       className="flex items-center gap-3 p-3 bg-card rounded-xl border border-border cursor-pointer hover:shadow-card-hover transition-shadow"
     >
-      <img
-        src={platformLogos[sale.platform]}
-        alt={sale.platform}
-        className="w-9 h-9 rounded-lg object-contain bg-accent p-1 flex-shrink-0"
-      />
+      <div className="w-9 h-9 rounded-lg bg-accent p-1 flex-shrink-0 flex items-center justify-center">
+        <PlatformLogo platform={sale.platform} className="w-full h-full object-contain" />
+      </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground truncate">{sale.sale_name}</p>
         <div className="flex items-center gap-2 mt-0.5">
