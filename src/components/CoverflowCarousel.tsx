@@ -28,23 +28,11 @@ export default function CoverflowCarousel({ children }: Props) {
   const hintPlayed = useRef(false);
   const userInteracted = useRef(false);
 
-  const triggerHint = useCallback((source: string) => {
-    if (hintPlayed.current || !hintEligible.current) {
-      console.log("[coverflow-hint] trigger skipped", {
-        source,
-        hintPlayed: hintPlayed.current,
-        hintEligible: hintEligible.current,
-      });
-      return;
-    }
-
+  const triggerHint = useCallback(() => {
+    if (hintPlayed.current || !hintEligible.current) return;
     hintPlayed.current = true;
     hintEligible.current = false;
     sessionStorage.setItem(HINT_SESSION_KEY, "1");
-    console.log("[coverflow-hint] hint played", {
-      source,
-      sessionValue: sessionStorage.getItem(HINT_SESSION_KEY),
-    });
     setShowHint(true);
   }, []);
 
