@@ -37,18 +37,18 @@ export default function LoginPrompt() {
   };
 
   const body = (
-    <div className="space-y-4 text-center">
-      <div className="mx-auto w-11 h-11 rounded-full flex items-center justify-center"
-        style={{ background: "hsl(var(--primary) / 0.08)" }}>
-        <LogIn className="w-5 h-5 text-primary" />
+    <div className="space-y-3 text-center">
+      <div className="mx-auto w-10 h-10 rounded-full flex items-center justify-center"
+        style={{ background: "hsl(var(--primary) / 0.07)" }}>
+        <LogIn className="w-[18px] h-[18px] text-primary" />
       </div>
-      <div className="space-y-1.5">
+      <div className="space-y-1">
         <h3 className="text-[15px] font-bold text-foreground">{msg.title}</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-[13px] text-muted-foreground leading-relaxed" style={{ wordBreak: "keep-all" }}>
           {msg.description}
         </p>
       </div>
-      <div className="flex flex-col gap-1.5 pt-1">
+      <div className="flex flex-col gap-1.5">
         <Button onClick={handleLogin} className="w-full rounded-xl h-11 gap-2 font-semibold">
           <LogIn className="w-4 h-4" />
           로그인
@@ -56,9 +56,7 @@ export default function LoginPrompt() {
         <button
           onClick={handleGoogleLogin}
           className="flex items-center justify-center gap-2 w-full h-10 rounded-xl text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors"
-          style={{
-            background: "rgba(0,0,0,0.04)",
-          }}
+          style={{ background: "hsl(var(--muted) / 0.10)" }}
         >
           <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -71,7 +69,7 @@ export default function LoginPrompt() {
         <Button
           variant="ghost"
           onClick={closePrompt}
-          className="w-full rounded-xl h-9 text-muted-foreground font-medium text-sm"
+          className="w-full rounded-xl h-9 text-muted-foreground font-normal text-[13px]"
         >
           나중에
         </Button>
