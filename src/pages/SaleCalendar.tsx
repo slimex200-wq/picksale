@@ -146,8 +146,8 @@ export default function SaleCalendar() {
               return (
                 <div
                   key={`empty-${i}`}
-                  className="border-b border-r border-border/40 bg-muted/10"
-                  style={{ minHeight: 72 }}
+                  className="border-b border-r border-border/40 bg-muted/5"
+                  style={{ minHeight: 78 }}
                 />
               );
             }
@@ -169,14 +169,14 @@ export default function SaleCalendar() {
                     ? "bg-primary/5"
                     : "hover:bg-accent/40"
                 }`}
-                style={{ minHeight: 72 }}
+                style={{ minHeight: 78 }}
               >
                 {/* Day Number */}
-                <div className="px-1.5 pt-1.5 pb-0.5">
+                <div className="px-1.5 pt-2 pb-1">
                   <span
                     className={`text-xs font-medium inline-flex items-center justify-center ${
                       isToday
-                        ? "bg-primary text-primary-foreground w-6 h-6 rounded-full font-bold text-[11px]"
+                        ? "bg-primary/80 text-primary-foreground w-6 h-6 rounded-full font-bold text-[11px]"
                         : dayOfWeek === 0
                         ? "text-destructive/80"
                         : dayOfWeek === 6
@@ -188,21 +188,28 @@ export default function SaleCalendar() {
                   </span>
                 </div>
 
-                {/* Color Bars */}
-                <div className="flex flex-col gap-[2px] px-1 pb-1 flex-1">
+                {/* Color Bars – minimal line style */}
+                <div className="flex flex-col gap-[3px] px-1.5 pb-1.5 flex-1">
                   {visibleGroups.map(({ platform, count }) => (
                     <div
                       key={platform}
-                      className={`${PLATFORM_BAR_BG[platform]} rounded-[3px] truncate`}
-                      style={{ height: 14, lineHeight: "14px" }}
+                      className="bg-card rounded-[3px] truncate"
+                      style={{
+                        height: 15,
+                        lineHeight: "15px",
+                        borderLeft: `2px solid ${PLATFORM_BAR_COLORS[platform]}`,
+                      }}
                     >
-                      <span className="text-white text-[9px] font-medium px-1 truncate block">
+                      <span
+                        className="text-[9px] font-medium px-1 truncate block"
+                        style={{ color: PLATFORM_BAR_COLORS[platform] }}
+                      >
                         {platform}{count > 1 ? ` ${count}` : ""}
                       </span>
                     </div>
                   ))}
                   {overflowCount > 0 && (
-                    <span className="text-[9px] text-muted-foreground font-medium px-1">
+                    <span className="text-[9px] text-muted-foreground/50 font-medium px-1">
                       +{overflowCount}개
                     </span>
                   )}
@@ -218,10 +225,10 @@ export default function SaleCalendar() {
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 border-t border-border bg-muted/20">
-          {Object.entries(PLATFORM_BAR_BG).map(([name, cls]) => (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 border-t border-border bg-muted/10">
+          {Object.entries(PLATFORM_BAR_COLORS).map(([name, color]) => (
             <span key={name} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-              <span className={`w-3 h-2 rounded-[2px] ${cls}`} />
+              <span className="w-0.5 h-3 rounded-full" style={{ backgroundColor: color }} />
               {name}
             </span>
           ))}
