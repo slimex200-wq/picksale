@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { getSaleStatus, saleStatusConfig } from "@/data/salesUtils";
 import type { Sale, Platform } from "@/data/salesUtils";
 import PlatformLogo from "@/components/PlatformLogo";
