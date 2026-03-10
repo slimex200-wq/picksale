@@ -40,9 +40,12 @@ export default memo(function PlatformExplorer({ sales }: Props) {
       style={bp === "mobile" ? { minWidth: "170px" } : undefined}
     >
       {/* 🚨 15년 차의 디테일: 크기 확장(w-10), 패딩 추가(p-1.5), 화이트 배경, 미세한 그림자 */}
-      <div className="w-10 h-10 rounded-xl bg-white border border-border/40 flex items-center justify-center p-1.5 shrink-0 shadow-sm">
+      <div className="w-11 h-11 rounded-xl bg-accent/30 border border-border/60 flex items-center justify-center p-2 shrink-0">
         {/* 아이콘 자체에도 미세한 라운딩(rounded-md)을 줘서 부드럽게 마감 */}
-        <PlatformLogo platform={platform} className="w-full h-full object-contain rounded-md" />
+        <PlatformLogo
+          platform={platform}
+          className="w-full h-full object-contain rounded-lg border border-black/5 shadow-sm"
+        />
       </div>
       <div className="flex-1 min-w-0">
         <span className="text-card-foreground block text-[13px] font-bold">{platform}</span>
