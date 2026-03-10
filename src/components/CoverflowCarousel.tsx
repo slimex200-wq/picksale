@@ -61,9 +61,15 @@ export default function CoverflowCarousel({ children }: Props) {
     const container = containerRef.current;
     if (!container) return;
 
-    // Only attach to visible slide elements — not the container background
     const slides = container.querySelectorAll(".swiper-slide");
-    const handler = () => triggerHint();
+    const handler = (event: Event) => {
+      const slide = event.currentTarget as HTMLElement | null;
+      console.log("[coverflow-hint] mouseenter fired", {
+        slideClass: slide?.className,
+        slideText: slide?.textContent?.slice(0, 60) ?? null,
+      });
+      triggerHint();
+    };
 
     slides.forEach((slide) => slide.addEventListener("mouseenter", handler));
 
