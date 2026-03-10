@@ -21,7 +21,7 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
   const isCardPromo = isCreditCardPromo(sale.sale_name);
-  const logoSrc = platformLogos[sale.platform];
+  
 
   const handleClick = () => {
     if (isActive && onOpenDetail) onOpenDetail(sale);
