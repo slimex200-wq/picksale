@@ -61,9 +61,15 @@ export default function CoverflowCarousel({ children }: Props) {
     const container = containerRef.current;
     if (!container) return;
 
-    // Only attach to visible slide elements — not the container background
     const slides = container.querySelectorAll(".swiper-slide");
-    const handler = () => triggerHint();
+    const handler = (event: Event) => {
+      const slide = event.currentTarget as HTMLElement | null;
+      console.log("[coverflow-hint] mouseenter fired", {
+        slideClass: slide?.className,
+        slideText: slide?.textContent?.slice(0, 60) ?? null,
+      });
+      triggerHint();
+    };
 
     slides.forEach((slide) => slide.addEventListener("mouseenter", handler));
 
@@ -95,8 +101,32 @@ export default function CoverflowCarousel({ children }: Props) {
     return () => observer.disconnect();
   }, [count, isMobile, triggerHint]);
 
-  // Clean up after animation ends — no debug logging needed
+  useEffect(() => {
+    if (!showHint || !nudgeRef.current) return;
 
+    const wrapper = nudgeRef.current;
+    console.log("[coverflow-hint] animation class added", {
+      className: wrapper.className,
+    });
+
+    const sample = (label: string) => {
+      console.log("[coverflow-hint] computed transform sample", {
+        label,
+        computed: window.getComputedStyle(wrapper).transform,
+      });
+    };
+
+    sample("start");
+    const t1 = window.setTimeout(() => sample("180ms"), 180);
+    const t2 = window.setTimeout(() => sample("520ms"), 520);
+    const t3 = window.setTimeout(() => sample("980ms"), 980);
+
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+    };
+  }, [showHint]);
 
   if (count === 0) return null;
 
@@ -113,7 +143,10 @@ export default function CoverflowCarousel({ children }: Props) {
       <div
         ref={nudgeRef}
         className={showHint ? "coverflow-nudge-track" : undefined}
-        onAnimationEnd={() => setShowHint(false)}
+        onAnimationEnd={() => {
+          console.log("[coverflow-hint] animation end fired");
+          setShowHint(false);
+        }}
       >
         <Swiper
           modules={[EffectCoverflow, Pagination]}
@@ -217,13 +250,13 @@ export default function CoverflowCarousel({ children }: Props) {
 
         @keyframes coverflow-nudge {
           0%   { transform: translateX(0); }
-          20%  { transform: translateX(-14px); }
-          50%  { transform: translateX(8px); }
-          75%  { transform: translateX(-3px); }
+          20%  { transform: translateX(-24px); }
+          50%  { transform: translateX(14px); }
+          75%  { transform: translateX(-6px); }
           100% { transform: translateX(0); }
         }
         .coverflow-nudge-track {
-          animation: coverflow-nudge 650ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 1 forwards;
+          animation: coverflow-nudge 1200ms cubic-bezier(0.22, 0.61, 0.36, 1) 1 forwards;
           will-change: transform;
         }
 
