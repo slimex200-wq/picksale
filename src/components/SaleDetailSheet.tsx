@@ -10,9 +10,11 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import { ExternalLink, Calendar, Bell, X } from "lucide-react";
+import { ExternalLink, Calendar, Bell, X, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
+import { useLoginGate } from "@/hooks/useLoginGate";
+import { useAuth } from "@/hooks/useAuth";
 
 function formatDate(d: string) {
   const date = new Date(d);
