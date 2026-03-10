@@ -9,6 +9,8 @@ interface Props {
   className?: string;
   /** Height class for the banner container, e.g. "h-32" */
   heightClass?: string;
+  /** Aspect ratio for the container, e.g. "16/9" or "2/1". Overrides heightClass when set. */
+  aspectRatio?: string;
 }
 
 /** Returns true if the URL looks like a video file */
