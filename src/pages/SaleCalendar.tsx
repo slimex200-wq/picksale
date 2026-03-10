@@ -107,7 +107,7 @@ export default function SaleCalendar() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-3 sm:px-4 pt-4 pb-28 overflow-x-hidden">
+    <div className="mx-auto px-3 sm:px-4 pt-4 pb-28 overflow-x-hidden">
       <PageMeta
         title={`${year}년 ${month + 1}월 세일 캘린더 | PickSale`}
         description={`${year}년 ${month + 1}월 쇼핑몰 세일 일정을 캘린더로 확인하세요.`}
