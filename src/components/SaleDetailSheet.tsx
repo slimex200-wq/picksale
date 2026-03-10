@@ -111,16 +111,18 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
           <div className="flex flex-col gap-2.5 pt-2">
             <Button
               className="w-full rounded-xl gap-2 h-11 font-semibold"
-              onClick={() => window.open(sale.link, "_blank")}
+              onClick={() => requireLogin(() => window.open(sale.link, "_blank"))}
             >
+              {!user && <Lock className="w-3.5 h-3.5" />}
               <ExternalLink className="w-4 h-4" />
               세일 바로가기
             </Button>
             <Button
               variant="outline"
               className="w-full rounded-xl gap-2 h-11 font-semibold border-border/70"
-              onClick={() => toast.success("알림이 설정되었습니다! 🔔")}
+              onClick={() => requireLogin(() => toast.success("알림이 설정되었습니다! 🔔"))}
             >
+              {!user && <Lock className="w-3.5 h-3.5" />}
               <Bell className="w-4 h-4" />
               알림받기
             </Button>
