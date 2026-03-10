@@ -180,12 +180,14 @@ export default function CoverflowCarousel({ children }: Props) {
                 }}
               >
                 <div
-                  className="w-full h-full rounded-xl border border-border bg-card overflow-hidden flex flex-col"
+                  className="w-full h-full bg-white overflow-hidden flex flex-col"
                   onMouseEnter={handleCardMouseEnter}
                   style={{
+                    borderRadius: 12,
+                    border: "1px solid #eaecf0",
                     boxShadow: isCenter
-                      ? "0 12px 40px -8px hsl(var(--primary) / 0.22), 0 4px 12px -2px hsl(var(--foreground) / 0.08)"
-                      : "0 2px 12px -4px hsl(var(--foreground) / 0.1)",
+                      ? "0 1px 6px rgba(0,0,0,0.06), 0 8px 24px -4px rgba(0,0,0,0.1)"
+                      : "0 1px 6px rgba(0,0,0,0.06)",
                     transition: "box-shadow 0.45s ease",
                   }}
                 >

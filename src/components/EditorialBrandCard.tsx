@@ -29,8 +29,8 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
 
   return (
     <div
-      className={`relative w-full h-full bg-card flex flex-col overflow-hidden cursor-pointer group ${isCardPromo ? "opacity-60" : ""}`}
-      style={{ minHeight: 280 }}
+      className={`relative w-full h-full bg-white flex flex-col overflow-hidden cursor-pointer group ${isCardPromo ? "opacity-60" : ""}`}
+      style={{ minHeight: 280, borderRadius: 12 }}
       onClick={handleClick}
     >
       <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} heightClass="h-28" />
