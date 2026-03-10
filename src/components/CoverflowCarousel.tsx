@@ -180,22 +180,6 @@ export default function CoverflowCarousel({ children }: Props) {
         }
       `}</style>
 
-      {/* Apply hint class conditionally */}
-      {showHint && (
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(){
-                var el = document.querySelector('.coverflow-carousel');
-                if(el){
-                  el.classList.add('hint-active');
-                  setTimeout(function(){ el.classList.remove('hint-active'); }, 800);
-                }
-              })();
-            `,
-          }}
-        />
-      )}
     </div>
   );
 }
