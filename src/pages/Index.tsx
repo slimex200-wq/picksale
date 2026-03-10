@@ -171,31 +171,31 @@ export default function Index() {
           <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
         </section>
       ) : bp === "mobile" ? (
-        /* ═══ MOBILE LAYOUT ═══ */
         <MobileLayout
           featuredSales={featuredSales}
           liveSales={liveSales}
           endingTodaySales={endingTodaySales}
           rankingSales={rankingSales}
           activeSales={activeSales}
+          isLoggedIn={!!user}
         />
       ) : bp === "tablet" ? (
-        /* ═══ TABLET LAYOUT ═══ */
         <TabletLayout
           featuredSales={featuredSales}
           liveSales={liveSales}
           endingTodaySales={endingTodaySales}
           rankingSales={rankingSales}
           activeSales={activeSales}
+          isLoggedIn={!!user}
         />
       ) : (
-        /* ═══ DESKTOP LAYOUT ═══ */
         <DesktopLayout
           featuredSales={featuredSales}
           liveSales={liveSales}
           endingTodaySales={endingTodaySales}
           rankingSales={rankingSales}
           activeSales={activeSales}
+          isLoggedIn={!!user}
         />
       )}
     </div>
