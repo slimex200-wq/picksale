@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
 import { useCommunityPosts } from "@/hooks/useCommunityPosts";
+import type { CommunityPost } from "@/hooks/useCommunityPosts";
 import { useAuth } from "@/hooks/useAuth";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import DealCard from "@/components/community/DealCard";
 import PopularDeals from "@/components/community/PopularDeals";
 import { DealFeedSkeleton } from "@/components/community/DealFeedSkeleton";
+import ExpandedCommunityOverlay from "@/components/ExpandedCommunityOverlay";
 import {
   Plus, TrendingUp, Clock, ThumbsUp, Zap, Search,
 } from "lucide-react";
@@ -28,6 +30,7 @@ const sortOptions = [
 export default function CommunityPage() {
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState<"newest" | "upvotes" | "trending">("newest");
+  const [expandedPost, setExpandedPost] = useState<CommunityPost | null>(null);
   const { data: posts = [], isLoading } = useCommunityPosts({ category, sort });
   const { user } = useAuth();
   const bp = useBreakpoint();
@@ -107,7 +110,7 @@ export default function CommunityPage() {
       ) : (
         <div className="space-y-3">
           {posts.map((post) => (
-            <DealCard key={post.id} post={post} />
+            <DealCard key={post.id} post={post} onOpenDetail={setExpandedPost} />
           ))}
         </div>
       )}
@@ -139,6 +142,8 @@ export default function CommunityPage() {
         <Plus className="w-4 h-4" />
         딜 공유
       </Link>
+
+      <ExpandedCommunityOverlay post={expandedPost} onClose={() => setExpandedPost(null)} />
     </div>
   );
 }
