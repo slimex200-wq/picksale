@@ -63,7 +63,7 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
   const statusInfo = saleStatusConfig[status];
   const countdown = countdownText(currentSale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
-  const logoSrc = platformLogos[currentSale.platform];
+  
 
   const handleSaved = (updated: Sale) => {
     setCurrentSale(updated);
