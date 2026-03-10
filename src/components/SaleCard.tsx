@@ -74,10 +74,10 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
   if (compact) {
     return (
       <div
-        className={`w-full bg-card rounded-xl cursor-pointer flex items-center gap-2.5 border overflow-hidden transition-all hover:shadow-sm active:scale-[0.99] ${
-          isCardPromo ? "border-border opacity-60" : "border-border/60"
+        className={`w-full bg-white cursor-pointer flex items-center gap-2.5 overflow-hidden transition-all hover:shadow-sm active:scale-[0.99] ${
+          isCardPromo ? "opacity-60" : ""
         }`}
-        style={{ padding: "10px 12px" }}
+        style={{ padding: "10px 12px", borderRadius: 12, border: "1px solid #eaecf0", boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
         onClick={goToSale}
       >
         <div className="w-10 h-10 rounded-xl bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-1.5">
@@ -121,9 +121,14 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
   /* ─── Standard card layout ─── */
   return (
     <div
-      className={`relative w-full bg-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden border ${
-        isCardPromo ? "border-border opacity-60" : "border-border/60"
+      className={`relative w-full bg-white hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden ${
+        isCardPromo ? "opacity-60" : ""
       }`}
+      style={{
+        borderRadius: 12,
+        border: "1px solid #eaecf0",
+        boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
+      }}
       onClick={handleCardClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setHoverZone(null)}

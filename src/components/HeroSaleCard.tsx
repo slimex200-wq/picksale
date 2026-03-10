@@ -46,7 +46,7 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
 
   return (
     <div
-      className={`relative w-full h-full bg-card flex flex-col overflow-hidden ${isCardPromo ? "opacity-60" : ""}`}
+      className={`relative w-full h-full bg-white flex flex-col overflow-hidden ${isCardPromo ? "opacity-60" : ""}`}
       style={{ cursor: isActive ? "pointer" : undefined }}
       onClick={handleCardClick}
       onMouseMove={handleMouseMove}

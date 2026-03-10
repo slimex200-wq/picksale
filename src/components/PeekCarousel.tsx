@@ -84,18 +84,18 @@ export default function PeekCarousel({ children, cardWidth = 210, gap = 12 }: Pr
              <div
                key={i}
                onClick={!isActive ? (e: React.MouseEvent) => { e.stopPropagation(); scrollTo(i); } : undefined}
-               style={{
-                 minWidth: cardWidth,
-                 width: cardWidth,
-                 scrollSnapAlign: "start",
-                 transform: isActive ? "scale(1)" : "scale(0.94)",
-                 opacity: isActive ? 1 : 0.8,
-                 boxShadow: isActive
-                   ? "0 4px 16px -4px hsl(var(--foreground) / 0.1)"
-                   : "0 1px 4px -1px hsl(var(--foreground) / 0.06)",
-                 transition: "transform 0.28s ease, opacity 0.28s ease, box-shadow 0.28s ease",
-                 borderRadius: 12,
-                 cursor: isActive ? undefined : "pointer",
+                style={{
+                  minWidth: cardWidth,
+                  width: cardWidth,
+                  scrollSnapAlign: "start",
+                  transform: isActive ? "scale(1)" : "scale(0.94)",
+                  opacity: isActive ? 1 : 0.8,
+                  boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
+                  border: "1px solid #eaecf0",
+                  background: "white",
+                  transition: "transform 0.28s ease, opacity 0.28s ease, box-shadow 0.28s ease",
+                  borderRadius: 12,
+                  cursor: isActive ? undefined : "pointer",
                }}
                className="shrink-0"
              >
