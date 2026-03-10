@@ -291,7 +291,7 @@ export default function SaleCalendar() {
         {!isMobile && (
           <div
             className="flex-[4] min-w-0 rounded-2xl border border-border bg-card shadow-sm overflow-hidden"
-            style={{ height: 500 }}
+            style={{ height: calendarHeight }}
           >
             <div className="h-full overflow-y-auto">
               {salesListContent}
