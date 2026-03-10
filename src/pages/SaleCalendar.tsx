@@ -40,7 +40,7 @@ const PLATFORM_BAR_BG_LIGHT: Record<Platform, string> = {
   "커뮤니티 핫딜": "hsla(35, 90%, 55%, 0.15)",
 };
 
-const MAX_PILLS = 2;
+const MAX_PILLS = 3;
 
 function shortDate(dateStr: string) {
   const d = new Date(dateStr);
