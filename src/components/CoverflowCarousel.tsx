@@ -21,17 +21,17 @@ export default function CoverflowCarousel({ children }: Props) {
   const isMobile = useIsMobile();
   const [activeIndex, setActiveIndex] = useState(Math.floor(count / 2));
   const [showHint, setShowHint] = useState(false);
-  const swiperRef = useRef<SwiperType | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const nudgeRef = useRef<HTMLDivElement>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
   const hintEligible = useRef(false);
   const hintPlayed = useRef(false);
   const userInteracted = useRef(false);
-  const pointerInside = useRef(false);
 
-  const triggerHint = useCallback(() => {
+  const triggerHint = useCallback((source: string) => {
     if (hintPlayed.current || !hintEligible.current) {
       console.log("[coverflow-hint] trigger skipped", {
+        source,
         hintPlayed: hintPlayed.current,
         hintEligible: hintEligible.current,
       });
@@ -42,6 +42,7 @@ export default function CoverflowCarousel({ children }: Props) {
     hintEligible.current = false;
     sessionStorage.setItem(HINT_SESSION_KEY, "1");
     console.log("[coverflow-hint] hint played", {
+      source,
       sessionValue: sessionStorage.getItem(HINT_SESSION_KEY),
     });
     setShowHint(true);
@@ -88,49 +89,47 @@ export default function CoverflowCarousel({ children }: Props) {
 
   useEffect(() => {
     if (isMobile || count < 2) return;
-
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sessionValue = sessionStorage.getItem(HINT_SESSION_KEY);
     if (prefersReduced || sessionValue) return;
 
-    const handlePointerMove = (event: PointerEvent) => {
-      const el = containerRef.current;
-      if (!el) return;
+    const container = containerRef.current;
+    const swiperEl = container?.querySelector(".swiper");
+    const activeSlideEl = container?.querySelector(".swiper-slide-active");
 
-      const rect = el.getBoundingClientRect();
-      const isInside =
-        event.clientX >= rect.left &&
-        event.clientX <= rect.right &&
-        event.clientY >= rect.top &&
-        event.clientY <= rect.bottom;
-
-      if (isInside && !pointerInside.current) {
-        pointerInside.current = true;
-        console.log("[coverflow-hint] mouse enter fired", {
-          hintEligible: hintEligible.current,
-          hintPlayed: hintPlayed.current,
-          sessionValue: sessionStorage.getItem(HINT_SESSION_KEY),
-          rect,
-          point: { x: event.clientX, y: event.clientY },
-        });
-
-        if (hintEligible.current && !hintPlayed.current) {
-          triggerHint();
-        }
-      }
-
-      if (!isInside && pointerInside.current) {
-        pointerInside.current = false;
-      }
+    const handleHover = (source: string) => () => {
+      console.log("[coverflow-hint] mouse enter fired", {
+        source,
+        hintEligible: hintEligible.current,
+        hintPlayed: hintPlayed.current,
+        sessionValue: sessionStorage.getItem(HINT_SESSION_KEY),
+      });
+      triggerHint(source);
     };
 
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    return () => window.removeEventListener("pointermove", handlePointerMove);
-  }, [count, isMobile, triggerHint]);
+    const containerHover = handleHover("container");
+    const swiperHover = handleHover("swiper");
+    const activeSlideHover = handleHover("active-slide");
+
+    container?.addEventListener("mouseenter", containerHover);
+    swiperEl?.addEventListener("mouseenter", swiperHover);
+    activeSlideEl?.addEventListener("mouseenter", activeSlideHover);
+
+    console.log("[coverflow-hint] hover listeners attached", {
+      hasContainer: !!container,
+      hasSwiper: !!swiperEl,
+      hasActiveSlide: !!activeSlideEl,
+    });
+
+    return () => {
+      container?.removeEventListener("mouseenter", containerHover);
+      swiperEl?.removeEventListener("mouseenter", swiperHover);
+      activeSlideEl?.removeEventListener("mouseenter", activeSlideHover);
+    };
+  }, [activeIndex, count, isMobile, triggerHint]);
 
   useEffect(() => {
     if (!isMobile || count < 2) return;
-
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sessionValue = sessionStorage.getItem(HINT_SESSION_KEY);
     if (prefersReduced || sessionValue) return;
@@ -149,7 +148,7 @@ export default function CoverflowCarousel({ children }: Props) {
 
         if (entry.isIntersecting && entry.intersectionRatio >= 0.3 && hintEligible.current && !hintPlayed.current) {
           console.log("[coverflow-hint] IntersectionObserver entered threshold");
-          triggerHint();
+          triggerHint("intersection-observer");
           observer.disconnect();
         }
       },
