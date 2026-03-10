@@ -155,7 +155,7 @@ export default function SaleCalendar() {
       <CanonicalLink href={window.location.origin + "/calendar"} />
 
       {/* Desktop: 2-column / Mobile: stacked */}
-      <div className={isMobile ? "" : "flex gap-4 items-stretch"}>
+      <div className={isMobile ? "" : "flex gap-4 items-start"}>
         {/* Calendar Card */}
         <div className={`rounded-2xl border border-border bg-card shadow-sm overflow-hidden ${isMobile ? "" : "flex-[6] min-w-0"}`}>
           {/* Month Header */}
@@ -279,9 +279,10 @@ export default function SaleCalendar() {
         {/* Desktop: Side panel (always visible) */}
         {!isMobile && (
           <div
-            className="flex-[4] min-w-0 rounded-2xl border border-border bg-card shadow-sm overflow-hidden flex flex-col"
+            className="flex-[4] min-w-0 rounded-2xl border border-border bg-card shadow-sm overflow-hidden"
+            style={{ height: 500 }}
           >
-            <div className="flex-1 overflow-y-auto">
+            <div className="h-full overflow-y-auto">
               {salesListContent}
             </div>
           </div>
