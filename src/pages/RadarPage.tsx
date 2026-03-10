@@ -52,7 +52,7 @@ export default function RadarPage() {
           <StatusExploration sales={activeSales} onOpenDetail={setSelectedSale} />
 
           {/* 2. Sale Timeline */}
-          <Suspense fallback={<TimelineSkeleton />}>
+          <Suspense fallback={<TimelineSkeletonFull />}>
             <SaleTimeline sales={sales} onOpenDetail={setSelectedSale} />
           </Suspense>
 
