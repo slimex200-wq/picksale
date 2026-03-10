@@ -121,9 +121,14 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
   /* ─── Standard card layout ─── */
   return (
     <div
-      className={`relative w-full bg-card rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden border ${
-        isCardPromo ? "border-border opacity-60" : "border-border/60"
+      className={`relative w-full bg-white hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden ${
+        isCardPromo ? "opacity-60" : ""
       }`}
+      style={{
+        borderRadius: 12,
+        border: "1px solid #eaecf0",
+        boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
+      }}
       onClick={handleCardClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setHoverZone(null)}
