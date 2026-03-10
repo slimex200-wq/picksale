@@ -188,21 +188,28 @@ export default function SaleCalendar() {
                   </span>
                 </div>
 
-                {/* Color Bars */}
-                <div className="flex flex-col gap-[2px] px-1 pb-1 flex-1">
+                {/* Color Bars – minimal line style */}
+                <div className="flex flex-col gap-[3px] px-1.5 pb-1.5 flex-1">
                   {visibleGroups.map(({ platform, count }) => (
                     <div
                       key={platform}
-                      className={`${PLATFORM_BAR_BG[platform]} rounded-[3px] truncate`}
-                      style={{ height: 14, lineHeight: "14px" }}
+                      className="bg-card rounded-[3px] truncate"
+                      style={{
+                        height: 15,
+                        lineHeight: "15px",
+                        borderLeft: `2px solid ${PLATFORM_BAR_COLORS[platform]}`,
+                      }}
                     >
-                      <span className="text-white text-[9px] font-medium px-1 truncate block">
+                      <span
+                        className="text-[9px] font-medium px-1 truncate block"
+                        style={{ color: PLATFORM_BAR_COLORS[platform] }}
+                      >
                         {platform}{count > 1 ? ` ${count}` : ""}
                       </span>
                     </div>
                   ))}
                   {overflowCount > 0 && (
-                    <span className="text-[9px] text-muted-foreground font-medium px-1">
+                    <span className="text-[9px] text-muted-foreground/50 font-medium px-1">
                       +{overflowCount}개
                     </span>
                   )}
