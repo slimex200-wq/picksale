@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from "react";
 import { sortByRanking, sortForFeatured, getSaleStatus, SaleStatus, Sale } from "@/data/salesUtils";
+import { matchesQuickFilter } from "@/data/quickFilterDefs";
 import { useSales } from "@/hooks/useSales";
 import SaleCard from "@/components/SaleCard";
 import HeroSaleCard from "@/components/HeroSaleCard";
@@ -69,11 +70,7 @@ export default function Index() {
     let result = activeSales;
     if (heroFilter) result = result.filter((s) => getSaleStatus(s) === heroFilter);
     if (quickFilter) {
-      if (quickFilter === "ending_today") {
-        result = result.filter((s) => getSaleStatus(s) === "ending_today");
-      } else {
-        result = result.filter((s) => s.category.some((c) => c.includes(quickFilter)));
-      }
+      result = result.filter((s) => matchesQuickFilter(s, quickFilter));
     }
     if (query.trim()) {
       const q = query.trim().toLowerCase();
@@ -145,7 +142,7 @@ export default function Index() {
             />
             {searchFocused && !query.trim() && <SearchSuggestions onSelect={handleSearchSelect} />}
           </div>
-          <QuickFilters activeFilter={quickFilter} onFilter={handleQuickFilter} />
+          <QuickFilters activeFilter={quickFilter} onFilter={handleQuickFilter} sales={activeSales} />
         </div>
       </div>
 
