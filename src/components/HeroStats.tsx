@@ -23,7 +23,7 @@ export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: 
   }, [sales]);
 
   const stats = [
-    { key: "live" as SaleStatus, label: "진행중", count: liveCount, color: "text-green-600", bg: "bg-green-100/80", activeBorder: "border-green-400", icon: TrendingUp, emoji: "🟢" },
+    { key: "live" as SaleStatus, label: "진행중", count: liveCount, color: "text-green-600", bg: "bg-green-100/80", activeBorder: "border-green-400", icon: TrendingUp, emoji: null },
     { key: "starting_soon" as SaleStatus, label: "예정", count: startingSoonCount, color: "text-yellow-600", bg: "bg-yellow-100/80", activeBorder: "border-yellow-400", icon: Clock, emoji: "⏰" },
     { key: "ending_today" as SaleStatus, label: "오늘 마감", count: endingTodayCount, color: "text-closing-today", bg: "bg-closing-today-bg", activeBorder: "border-closing-today", icon: null, emoji: "" },
   ];
