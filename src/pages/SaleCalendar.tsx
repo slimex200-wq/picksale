@@ -6,12 +6,12 @@ import { useSales } from "@/hooks/useSales";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CalendarSkeleton } from "@/components/skeletons/SaleCardSkeleton";
-import { useNavigate } from "react-router-dom";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
 import { Switch } from "@/components/ui/switch";
 import { countdownText } from "@/utils/countdown";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
+import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
