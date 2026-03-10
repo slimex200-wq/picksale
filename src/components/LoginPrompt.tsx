@@ -80,33 +80,36 @@ export default function LoginPrompt() {
   );
 
   if (isMobile) {
-    return (
-      <Drawer open={isPromptOpen} onOpenChange={(open) => !open && closePrompt()}>
-        <DrawerContent
-          className="px-6 pb-8 pt-4 border-0"
-          style={{
-            background: "rgba(255,255,255,0.72)",
-            WebkitBackdropFilter: "blur(14px) saturate(140%)",
-            backdropFilter: "blur(14px) saturate(140%)",
-            borderRadius: "20px 20px 0 0",
-            border: "1px solid rgba(255,255,255,0.45)",
-            boxShadow: "0 -8px 32px rgba(0,0,0,0.06)",
-          }}
-        >
-          <DrawerHeader className="sr-only">
-            <DrawerTitle>{msg.title}</DrawerTitle>
-            <DrawerDescription>{msg.description}</DrawerDescription>
-          </DrawerHeader>
-          {body}
-        </DrawerContent>
-      </Drawer>
+    return createPortal(
+      <div style={{ position: "relative", zIndex: 2000 }}>
+        <Drawer open={isPromptOpen} onOpenChange={(open) => !open && closePrompt()}>
+          <DrawerContent
+            className="px-6 pb-8 pt-4 border-0"
+            style={{
+              background: "rgba(255,255,255,0.72)",
+              WebkitBackdropFilter: "blur(14px) saturate(140%)",
+              backdropFilter: "blur(14px) saturate(140%)",
+              borderRadius: "20px 20px 0 0",
+              border: "1px solid rgba(255,255,255,0.45)",
+              boxShadow: "0 -8px 32px rgba(0,0,0,0.06)",
+            }}
+          >
+            <DrawerHeader className="sr-only">
+              <DrawerTitle>{msg.title}</DrawerTitle>
+              <DrawerDescription>{msg.description}</DrawerDescription>
+            </DrawerHeader>
+            {body}
+          </DrawerContent>
+        </Drawer>
+      </div>,
+      document.body
     );
   }
 
   if (!isPromptOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+  return createPortal(
+    <div className="fixed inset-0 flex items-center justify-center" style={{ zIndex: 2000 }}>
       <div
         className="absolute inset-0"
         style={{ background: "rgba(0,0,0,0.06)" }}
@@ -140,6 +143,7 @@ export default function LoginPrompt() {
           to { opacity: 1; transform: scale(1) translateY(0); }
         }
       `}</style>
-    </div>
+    </div>,
+    document.body
   );
 }
