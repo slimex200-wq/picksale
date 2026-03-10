@@ -46,30 +46,11 @@ export default function CoverflowCarousel({ children }: Props) {
 
   useEffect(() => {
     if (count < 2) return;
-
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sessionValue = sessionStorage.getItem(HINT_SESSION_KEY);
-
-    console.log("[coverflow-hint] mount", {
-      count,
-      isMobile,
-      prefersReduced,
-      sessionValue,
-    });
-
-    if (prefersReduced) {
-      console.log("[coverflow-hint] reduced motion enabled");
-      return;
-    }
-
-    if (sessionValue) {
-      console.log("[coverflow-hint] hint skipped due to sessionStorage", { sessionValue });
-      return;
-    }
-
+    if (prefersReduced || sessionValue) return;
     hintEligible.current = true;
-    console.log("[coverflow-hint] hint eligible", { eligible: true });
-  }, [count, isMobile]);
+  }, [count]);
 
   useEffect(() => {
     if (isMobile || count < 2) return;
