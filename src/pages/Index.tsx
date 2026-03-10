@@ -1,7 +1,6 @@
-import { useState, useMemo, useRef, useCallback, memo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { sortByRanking, sortForFeatured, getSaleStatus, SaleStatus, Sale } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
-import { useAuth } from "@/hooks/useAuth";
 import SaleCard from "@/components/SaleCard";
 import HeroSaleCard from "@/components/HeroSaleCard";
 import CoverflowCarousel from "@/components/CoverflowCarousel";
@@ -9,7 +8,6 @@ import EditorialBrandCard from "@/components/EditorialBrandCard";
 import PeekCarousel from "@/components/PeekCarousel";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import SaleRankingItem from "@/components/SaleRankingItem";
-import PreviewLoginGate from "@/components/PreviewLoginGate";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
 import QuickFilters from "@/components/QuickFilters";
@@ -59,7 +57,6 @@ export default function Index() {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const { data: sales = [], isLoading } = useSales();
-  const { user } = useAuth();
   const bp = useBreakpoint();
 
   const activeSales = useMemo(
@@ -177,7 +174,6 @@ export default function Index() {
           endingTodaySales={endingTodaySales}
           rankingSales={rankingSales}
           activeSales={activeSales}
-          isLoggedIn={!!user}
         />
       ) : bp === "tablet" ? (
         <TabletLayout
@@ -186,7 +182,6 @@ export default function Index() {
           endingTodaySales={endingTodaySales}
           rankingSales={rankingSales}
           activeSales={activeSales}
-          isLoggedIn={!!user}
         />
       ) : (
         <DesktopLayout
@@ -195,7 +190,6 @@ export default function Index() {
           endingTodaySales={endingTodaySales}
           rankingSales={rankingSales}
           activeSales={activeSales}
-          isLoggedIn={!!user}
         />
       )}
     </div>
@@ -210,16 +204,14 @@ interface LayoutProps {
   endingTodaySales: Sale[];
   rankingSales: Sale[];
   activeSales: Sale[];
-  isLoggedIn: boolean;
 }
 
 /* ─── MOBILE ─── */
-function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
+function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
-  const firstSection = (
-    <>
-      {/* Featured — Cover Flow 3D carousel */}
+  return (
+    <div className="space-y-6">
       {featuredSales.length > 0 && (
         <section className="space-y-2 -mx-3">
           <div className="px-3">
@@ -233,7 +225,6 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </section>
       )}
 
-      {/* Ending Today — compact list (first 3 cards) */}
       {endingTodaySales.length > 0 && (
         <section className="space-y-2">
           <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
@@ -244,12 +235,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           </div>
         </section>
       )}
-    </>
-  );
 
-  const restContent = (
-    <>
-      {/* Live — compact list */}
       {liveSales.length > 0 && (
         <section className="space-y-2">
           <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} moreLink="/radar" />
@@ -261,7 +247,6 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </section>
       )}
 
-      {/* Ranking — top 3 */}
       {rankingSales.length > 0 && (
         <section className="space-y-2">
           <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
@@ -275,18 +260,6 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={2} />
-    </>
-  );
-
-  return (
-    <div className="space-y-6">
-      {firstSection}
-
-      {!isLoggedIn ? (
-        <PreviewLoginGate>{restContent}</PreviewLoginGate>
-      ) : (
-        restContent
-      )}
 
       {activeSales.length === 0 && (
         <div className="flex flex-col items-center py-10 text-muted-foreground">
@@ -301,11 +274,11 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 }
 
 /* ─── TABLET ─── */
-function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
+function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
-  const firstSection = (
-    <>
+  return (
+    <div className="space-y-6">
       {featuredSales.length > 0 && (
         <section className="space-y-3">
           <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
@@ -316,11 +289,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           </div>
         </section>
       )}
-    </>
-  );
 
-  const restContent = (
-    <>
       <div className="grid grid-cols-2 gap-4">
         {endingTodaySales.length > 0 && (
           <section className="space-y-2">
@@ -357,18 +326,6 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={3} />
-    </>
-  );
-
-  return (
-    <div className="space-y-6">
-      {firstSection}
-
-      {!isLoggedIn ? (
-        <PreviewLoginGate>{restContent}</PreviewLoginGate>
-      ) : (
-        restContent
-      )}
 
       {activeSales.length === 0 && (
         <div className="flex flex-col items-center py-10 text-muted-foreground">
@@ -383,79 +340,63 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 }
 
 /* ─── DESKTOP ─── */
-function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
+function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
-
-  const firstSection = (
-    <>
-      {rankingSales.length > 0 && (
-        <section className="space-y-3">
-          <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
-          <div className="grid grid-cols-2 gap-1.5">
-            {rankingSales.slice(0, 6).map((sale, i) => (
-              <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {featuredSales.length > 0 && (
-        <section style={{ marginBottom: 32 }}>
-          <div className="mb-3">
-            <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
-          </div>
-          <CoverflowCarousel>
-            {featuredSales.map((sale, i) => (
-              <HeroSaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
-            ))}
-          </CoverflowCarousel>
-        </section>
-      )}
-    </>
-  );
-
-  const restContent = (
-    <>
-      {(endingTodaySales.length > 0 || liveSales.length > 0) && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 gap-5">
-          {endingTodaySales.length > 0 && (
-            <section className="space-y-3">
-              <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
-              <PeekCarousel cardWidth={240} gap={16}>
-                {endingTodaySales.map((sale) => (
-                  <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
-                ))}
-              </PeekCarousel>
-            </section>
-          )}
-          {liveSales.length > 0 && (
-            <section className="space-y-3">
-              <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-              <PeekCarousel cardWidth={240} gap={16}>
-                {liveSales.slice(0, 6).map((sale) => (
-                  <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
-                ))}
-              </PeekCarousel>
-            </section>
-          )}
-        </div>
-      )}
-
-      <PlatformExplorer sales={activeSales} />
-    </>
-  );
 
   return (
     <>
       <div className="grid grid-cols-[1fr_280px] gap-6 min-w-0">
         <main className="space-y-8 min-w-0 overflow-hidden">
-          {firstSection}
-
-          {!isLoggedIn ? (
-            <PreviewLoginGate>{restContent}</PreviewLoginGate>
-          ) : (
-            restContent
+          {rankingSales.length > 0 && (
+            <section className="space-y-3">
+              <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
+              <div className="grid grid-cols-2 gap-1.5">
+                {rankingSales.slice(0, 6).map((sale, i) => (
+                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
+                ))}
+              </div>
+            </section>
           )}
+
+          {featuredSales.length > 0 && (
+            <section style={{ marginBottom: 32 }}>
+              <div className="mb-3">
+                <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
+              </div>
+              <CoverflowCarousel>
+                {featuredSales.map((sale, i) => (
+                  <HeroSaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
+                ))}
+              </CoverflowCarousel>
+            </section>
+          )}
+
+          {(endingTodaySales.length > 0 || liveSales.length > 0) && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 gap-5">
+              {endingTodaySales.length > 0 && (
+                <section className="space-y-3">
+                  <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
+                  <PeekCarousel cardWidth={240} gap={16}>
+                    {endingTodaySales.map((sale) => (
+                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
+                    ))}
+                  </PeekCarousel>
+                </section>
+              )}
+              {liveSales.length > 0 && (
+                <section className="space-y-3">
+                  <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
+                  <PeekCarousel cardWidth={240} gap={16}>
+                    {liveSales.slice(0, 6).map((sale) => (
+                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
+                    ))}
+                  </PeekCarousel>
+                </section>
+              )}
+            </div>
+          )}
+
+          <PlatformExplorer sales={activeSales} />
 
           {activeSales.length === 0 && (
             <div className="flex flex-col items-center py-10 text-muted-foreground">

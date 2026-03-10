@@ -96,8 +96,9 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
         {isActive && (
           <button
             className="w-full rounded-lg text-xs font-semibold h-7 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            onClick={(e) => { e.stopPropagation(); handleClick(); }}
+            onClick={(e) => { e.stopPropagation(); requireLogin(() => handleClick()); }}
           >
+            {!user && <Lock className="w-3 h-3" />}
             세일 보러가기
             <ArrowRight className="w-3 h-3" />
           </button>

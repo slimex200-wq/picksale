@@ -211,9 +211,10 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             className="mt-auto w-full rounded-lg text-xs font-semibold h-8 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             onClick={(e) => {
               e.stopPropagation();
-              goToSale();
+              requireLogin(() => goToSale());
             }}
           >
+            {!user && <Lock className="w-3 h-3" />}
             세일 보러가기
             <ArrowRight className="w-3 h-3" />
           </button>
