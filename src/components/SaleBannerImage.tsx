@@ -22,7 +22,6 @@ function isVideoUrl(url: string): boolean {
  */
 export default function SaleBannerImage({ imageUrl, platform, alt, className = "", heightClass = "h-28" }: Props) {
   const [broken, setBroken] = useState(false);
-  const logoSrc = platformLogos[platform];
 
   const hasValidImage = imageUrl && imageUrl.trim() !== "" && !isVideoUrl(imageUrl) && !broken;
 
