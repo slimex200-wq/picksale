@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
 import { useCommunityPosts } from "@/hooks/useCommunityPosts";
+import type { CommunityPost } from "@/hooks/useCommunityPosts";
 import { useAuth } from "@/hooks/useAuth";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import DealCard from "@/components/community/DealCard";
 import PopularDeals from "@/components/community/PopularDeals";
 import { DealFeedSkeleton } from "@/components/community/DealFeedSkeleton";
+import ExpandedCommunityOverlay from "@/components/ExpandedCommunityOverlay";
 import {
   Plus, TrendingUp, Clock, ThumbsUp, Zap, Search,
 } from "lucide-react";
