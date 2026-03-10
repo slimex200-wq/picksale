@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useSales } from "@/hooks/useSales";
 import { slugToPlatform, platformEmojis, platformColors, getSaleStatus, calculateRankingScore, Platform } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import SaleCard from "@/components/SaleCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
@@ -131,7 +131,9 @@ export default function PlatformSales() {
 
         <div className={`${colorClass} rounded-xl p-4 text-primary-foreground`}>
           <div className="flex items-center gap-3">
-            <img src={platformLogos[platform]} alt={platform} className="h-10 w-10 object-contain rounded-lg" />
+            <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-white/20">
+              <PlatformLogo platform={platform} className="w-full h-full object-contain" />
+            </div>
             <div>
               <h1 className="text-lg font-bold">{platform} 세일</h1>
               <p className="text-xs opacity-90">

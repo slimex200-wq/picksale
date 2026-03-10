@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { formatCategory } from "@/utils/categoryFormat";
 import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -54,7 +54,7 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
     >
       <div className="flex items-center gap-2 px-3 pt-3 pb-1.5">
         <div className="w-6 h-6 rounded-md bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-0.5">
-          <img src={platformLogos[sale.platform]} alt={sale.platform} className="w-full h-full object-contain" loading="lazy" />
+          <PlatformLogo platform={sale.platform} />
         </div>
         <span className="text-foreground font-semibold tracking-tight" style={{ fontSize: "12px" }}>{sale.platform}</span>
         {status === "ending_today" ? (

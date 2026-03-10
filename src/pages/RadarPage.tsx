@@ -2,7 +2,7 @@ import { lazy, Suspense, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSales } from "@/hooks/useSales";
 import { Sale, getSaleStatus, platforms, platformSlugs } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import StatusExploration from "@/components/StatusExploration";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -74,7 +74,7 @@ export default function RadarPage() {
                   className="bg-card border border-border rounded-xl px-3 py-3 flex items-center gap-2.5 hover:shadow-md transition-shadow"
                 >
                   <div className="w-9 h-9 rounded-lg bg-accent/60 border border-border/50 flex items-center justify-center p-1 shrink-0">
-                    <img src={platformLogos[p]} alt={p} className="w-full h-full object-contain rounded" loading="lazy" />
+                    <PlatformLogo platform={p} className="w-full h-full object-contain rounded" />
                   </div>
                   <span className="text-xs font-bold text-card-foreground flex-1">{p}</span>
                   <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />

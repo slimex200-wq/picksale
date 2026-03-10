@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, ExternalLink, ArrowLeft, Layers } from "lucide-react";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import type { Platform } from "@/data/salesUtils";
 import JsonLd from "@/components/JsonLd";
 import CanonicalLink from "@/components/CanonicalLink";
@@ -62,7 +62,7 @@ export default function EventDetail() {
   }
 
   const platform = event.platform as Platform;
-  const logo = platformLogos[platform];
+  
   const isActive = event.event_status === "active";
   const daysLeft = Math.ceil((new Date(event.end_date).getTime() - Date.now()) / 86400000);
 
@@ -107,9 +107,9 @@ export default function EventDetail() {
       {/* Event header */}
       <div className="bg-card border border-border rounded-2xl p-5 space-y-4">
         <div className="flex items-start gap-3">
-          {logo && (
-            <img src={logo} alt={event.platform} className="w-12 h-12 rounded-xl object-cover" />
-          )}
+          <div className="w-12 h-12 rounded-xl overflow-hidden flex items-center justify-center bg-accent">
+            <PlatformLogo platform={platform} className="w-full h-full object-contain" />
+          </div>
           <div className="flex-1">
             <h1 className="text-lg font-bold text-card-foreground">{event.canonical_title}</h1>
             <p className="text-sm text-muted-foreground">{event.platform}</p>

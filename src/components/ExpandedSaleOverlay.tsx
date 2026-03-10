@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useState } from "react";
 import { formatCategory } from "@/utils/categoryFormat";
 import { Sale, getSaleStatus, saleStatusConfig, platformColors } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Calendar, Bell, X, Pencil, Lock } from "lucide-react";
@@ -63,7 +63,7 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
   const statusInfo = saleStatusConfig[status];
   const countdown = countdownText(currentSale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
-  const logoSrc = platformLogos[currentSale.platform];
+  
 
   const handleSaved = (updated: Sale) => {
     setCurrentSale(updated);
@@ -113,7 +113,7 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
           </div>
           <div className="absolute bottom-3 left-4 flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-white/90 shadow-sm flex items-center justify-center p-1">
-              <img src={logoSrc} alt={currentSale.platform} className="w-full h-full object-contain" />
+              <PlatformLogo platform={currentSale.platform} />
             </div>
             <span className="text-white text-xs font-bold tracking-wide drop-shadow-sm">
               {currentSale.platform}

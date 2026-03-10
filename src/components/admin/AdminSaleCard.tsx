@@ -14,7 +14,7 @@ import {
   getUpsertState, upsertStateConfig,
   isRecentlyUpdated,
 } from "@/data/adminStateModel";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { toast } from "sonner";
 
 interface AdminSaleCardProps {
@@ -63,7 +63,7 @@ export default memo(function AdminSaleCard({ sale, duplicatePublished, duplicate
 
   const hasValidImage = sale.image_url && sale.image_url.trim() !== "" && !imgBroken
     && !/\.(mp4|webm|mov|avi)(\?|$)/i.test(sale.image_url);
-  const logoSrc = platformLogos[sale.platform as Platform];
+  const logoSrc = true; // fallback handled by PlatformLogo
 
   const copyEventKey = () => {
     if (sale.event_key) {
@@ -188,11 +188,11 @@ export default memo(function AdminSaleCard({ sale, duplicatePublished, duplicate
               loading="lazy"
               onError={() => setImgBroken(true)}
             />
-          ) : logoSrc ? (
+          ) : (
             <div className="w-16 h-16 rounded-md bg-accent/40 flex items-center justify-center">
-              <img src={logoSrc} alt={sale.platform} className="max-w-[40px] max-h-[28px] object-contain" loading="lazy" />
+              <PlatformLogo platform={sale.platform as Platform} className="max-w-[40px] max-h-[28px] object-contain" />
             </div>
-          ) : null}
+          )}
           {sale.link && (
             <a href={sale.link} target="_blank" rel="noopener noreferrer"
               className="p-1.5 rounded-md hover:bg-muted transition-colors">

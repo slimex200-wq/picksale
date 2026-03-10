@@ -1,6 +1,6 @@
 import { Sale, getSaleStatus, saleStatusConfig, platformColors, platformEmojis } from "@/data/salesUtils";
 import { formatCategory } from "@/utils/categoryFormat";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,7 +36,7 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
   const statusInfo = saleStatusConfig[status];
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
-  const logoSrc = platformLogos[sale.platform];
+  
   const colorClass = platformColors[sale.platform];
 
   return (
@@ -55,7 +55,7 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
           </button>
           <div className="flex flex-col items-center pt-2">
             <div className="w-12 h-12 rounded-xl bg-white/90 shadow-sm flex items-center justify-center p-1.5">
-              <img src={logoSrc} alt={sale.platform} className="w-full h-full object-contain" />
+              <PlatformLogo platform={sale.platform} />
             </div>
             <p className="text-primary-foreground/80 text-xs font-bold tracking-wide mt-2 uppercase">
               {sale.platform}

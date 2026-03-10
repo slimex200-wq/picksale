@@ -1,6 +1,6 @@
 import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
 import { formatCategory } from "@/utils/categoryFormat";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
@@ -21,7 +21,7 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
   const isCardPromo = isCreditCardPromo(sale.sale_name);
-  const logoSrc = platformLogos[sale.platform];
+  
 
   const handleClick = () => {
     if (isActive && onOpenDetail) onOpenDetail(sale);
@@ -37,7 +37,7 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
       <div className="relative z-10 flex items-center justify-between px-3 pt-3 pb-1">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded-md bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-0.5">
-            <img src={logoSrc} alt={sale.platform} className="w-full h-full object-contain" loading="lazy" />
+            <PlatformLogo platform={sale.platform} />
           </div>
           <span className="text-foreground/70 font-semibold tracking-tight" style={{ fontSize: 11 }}>{sale.platform}</span>
         </div>

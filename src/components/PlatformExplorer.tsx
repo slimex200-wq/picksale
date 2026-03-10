@@ -1,7 +1,7 @@
 import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Sale, getSaleStatus, platforms, platformSlugs, Platform } from "@/data/salesUtils";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import { ChevronRight } from "lucide-react";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 
@@ -34,7 +34,7 @@ export default memo(function PlatformExplorer({ sales }: Props) {
       style={bp === "mobile" ? { minWidth: "170px" } : undefined}
     >
       <div className="w-8 h-8 rounded-lg bg-accent/60 border border-border/50 flex items-center justify-center p-1 shrink-0">
-        <img src={platformLogos[platform]} alt={platform} className="w-full h-full object-contain rounded" loading="lazy" />
+        <PlatformLogo platform={platform} className="w-full h-full object-contain rounded" />
       </div>
       <div className="flex-1 min-w-0">
         <span className="text-card-foreground block text-[13px] font-bold">{platform}</span>
