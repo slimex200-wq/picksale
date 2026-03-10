@@ -16,27 +16,27 @@ const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
 /* ── Platform → HSL color string (matches index.css tokens) ── */
 const PLATFORM_BAR_COLORS: Record<Platform, string> = {
-  쿠팡: "hsl(16, 85%, 58%)",
-  올리브영: "hsl(145, 60%, 42%)",
-  무신사: "hsl(0, 0%, 13%)",
-  KREAM: "hsl(220, 12%, 22%)",
-  SSG: "hsl(350, 80%, 55%)",
-  오늘의집: "hsl(195, 85%, 48%)",
-  "29CM": "hsl(0, 0%, 18%)",
-  WCONCEPT: "hsl(0, 0%, 20%)",
+  쿠팡: "hsl(4, 60%, 59%)",
+  올리브영: "hsl(153, 38%, 48%)",
+  무신사: "hsl(0, 0%, 27%)",
+  KREAM: "hsl(15, 73%, 56%)",
+  SSG: "hsl(340, 55%, 52%)",
+  오늘의집: "hsl(185, 63%, 44%)",
+  "29CM": "hsl(31, 24%, 44%)",
+  WCONCEPT: "hsl(264, 28%, 51%)",
   "커뮤니티 핫딜": "hsl(35, 90%, 55%)",
 };
 
 /* Light background (20% opacity) version for pill bg */
 const PLATFORM_BAR_BG_LIGHT: Record<Platform, string> = {
-  쿠팡: "hsla(16, 85%, 58%, 0.15)",
-  올리브영: "hsla(145, 60%, 42%, 0.15)",
-  무신사: "hsla(0, 0%, 13%, 0.12)",
-  KREAM: "hsla(220, 12%, 22%, 0.12)",
-  SSG: "hsla(350, 80%, 55%, 0.15)",
-  오늘의집: "hsla(195, 85%, 48%, 0.15)",
-  "29CM": "hsla(0, 0%, 18%, 0.12)",
-  WCONCEPT: "hsla(0, 0%, 20%, 0.12)",
+  쿠팡: "hsla(4, 60%, 59%, 0.15)",
+  올리브영: "hsla(153, 38%, 48%, 0.15)",
+  무신사: "hsla(0, 0%, 27%, 0.12)",
+  KREAM: "hsla(15, 73%, 56%, 0.15)",
+  SSG: "hsla(340, 55%, 52%, 0.15)",
+  오늘의집: "hsla(185, 63%, 44%, 0.15)",
+  "29CM": "hsla(31, 24%, 44%, 0.12)",
+  WCONCEPT: "hsla(264, 28%, 51%, 0.15)",
   "커뮤니티 핫딜": "hsla(35, 90%, 55%, 0.15)",
 };
 
