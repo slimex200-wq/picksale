@@ -293,7 +293,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 }
 
 /* ─── TABLET ─── */
-function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
+function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
   return (
@@ -308,6 +308,11 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
             ))}
           </div>
         </section>
+      )}
+
+      {/* Preview Login Gate for non-logged-in users */}
+      {!isLoggedIn && activeSales.length > 3 && (
+        <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
       )}
 
       {/* Ending + Live side by side */}
