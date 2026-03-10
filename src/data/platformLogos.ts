@@ -14,5 +14,5 @@ export const platformLogos: Record<Platform, string> = {
   오늘의집: getAppIcon("https://ohou.se"),
   "29CM": getAppIcon("https://www.29cm.co.kr"),
   WCONCEPT: getAppIcon("https://www.wconcept.co.kr"),
-  "커뮤니티 핫딜": "https://cdn-icons-png.flaticon.com/128/3502/3502447.png", // 기본 핫딜 아이콘
+  "커뮤니티 핫딜": new URL("@/assets/community_icon.svg", import.meta.url).href,
 };

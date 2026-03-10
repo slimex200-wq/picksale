@@ -30,7 +30,9 @@ export default function TrendingCommunity({ maxPosts = 5 }: Props) {
     <section className="space-y-3">
       <div className="flex items-center justify-between px-1">
         <h2 className="text-foreground flex items-center gap-2" style={{ fontSize: '20px', fontWeight: '700' }}>
-          <Flame className="w-4.5 h-4.5 text-primary" />
+          <div className="w-7 h-7 bg-orange-50 rounded-lg p-1 flex items-center justify-center">
+            <img src={communityIcon} alt="" className="w-full h-full text-orange-500" style={{ filter: "invert(62%) sepia(85%) saturate(2000%) hue-rotate(360deg) brightness(100%) contrast(100%)" }} />
+          </div>
           커뮤니티 트렌딩
         </h2>
         <Link to="/community" className="text-xs text-primary font-medium flex items-center gap-0.5 hover:underline">

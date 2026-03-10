@@ -36,8 +36,8 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
       <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} heightClass="h-28" />
       <div className="relative z-10 flex items-center justify-between px-3 pt-3 pb-1">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-md bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-0.5">
-            <PlatformLogo platform={sale.platform} />
+          <div className="w-5 h-5 flex items-center justify-center shrink-0">
+            <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-black/5" />
           </div>
           <span className="text-foreground/70 font-semibold tracking-tight" style={{ fontSize: 11 }}>{sale.platform}</span>
         </div>

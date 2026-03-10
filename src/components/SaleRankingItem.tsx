@@ -32,9 +32,9 @@ export default function SaleRankingItem({ sale, rank, onOpenDetail }: Props) {
         {medal || <span className={rank <= 5 ? "text-foreground" : "text-muted-foreground"}>{rank}</span>}
       </span>
 
-      {/* Logo — bigger for visibility */}
-      <div className="w-11 h-11 rounded-xl bg-white/90 shadow-sm border border-border/30 flex items-center justify-center shrink-0 p-2">
-        <PlatformLogo platform={sale.platform} />
+      {/* Logo */}
+      <div className="w-10 h-10 flex items-center justify-center shrink-0">
+        <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-black/5" />
       </div>
 
       {/* Info */}
