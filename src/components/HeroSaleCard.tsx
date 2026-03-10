@@ -3,10 +3,12 @@ import { formatCategory } from "@/utils/categoryFormat";
 import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data/salesUtils";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
+import { useLoginGate } from "@/hooks/useLoginGate";
+import { useAuth } from "@/hooks/useAuth";
 
 interface HeroSaleCardProps {
   sale: Sale;
