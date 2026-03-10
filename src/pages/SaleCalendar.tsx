@@ -165,59 +165,58 @@ export default function SaleCalendar() {
                 key={day}
                 onClick={() => setSelectedDay(day === selectedDay ? null : day)}
                 className={`flex flex-col text-left border-b border-r border-border/40 transition-colors relative ${
-                  isSelected
-                    ? "bg-primary/5"
-                    : "hover:bg-accent/40"
+                  isToday
+                    ? "bg-sky-50"
+                    : isSelected
+                    ? "bg-slate-50"
+                    : "hover:bg-slate-50/60"
                 }`}
                 style={{ minHeight: 78 }}
               >
                 {/* Day Number */}
-                <div className="px-1.5 pt-2 pb-1">
+                <div className="px-1.5 pt-1.5 pb-0.5">
                   <span
-                    className={`text-xs font-medium inline-flex items-center justify-center ${
+                    className={`text-[11px] font-medium inline-flex items-center justify-center ${
                       isToday
-                        ? "bg-primary/80 text-primary-foreground w-6 h-6 rounded-full font-bold text-[11px]"
+                        ? "bg-primary/70 text-primary-foreground w-5.5 h-5.5 rounded-full font-bold"
                         : dayOfWeek === 0
-                        ? "text-destructive/80"
+                        ? "text-red-400"
                         : dayOfWeek === 6
-                        ? "text-blue-500/80"
-                        : "text-foreground/80"
+                        ? "text-blue-400"
+                        : "text-slate-700"
                     }`}
                   >
                     {day}
                   </span>
                 </div>
 
-                {/* Color Bars – minimal line style */}
-                <div className="flex flex-col gap-[3px] px-1.5 pb-1.5 flex-1">
+                {/* Line-style bars */}
+                <div className="flex flex-col gap-[2px] px-1 pb-1 flex-1">
                   {visibleGroups.map(({ platform, count }) => (
                     <div
                       key={platform}
-                      className="bg-card rounded-[3px] truncate"
+                      className="rounded-sm truncate bg-transparent"
                       style={{
-                        height: 15,
-                        lineHeight: "15px",
+                        height: 14,
+                        lineHeight: "14px",
                         borderLeft: `2px solid ${PLATFORM_BAR_COLORS[platform]}`,
                       }}
                     >
-                      <span
-                        className="text-[9px] font-medium px-1 truncate block"
-                        style={{ color: PLATFORM_BAR_COLORS[platform] }}
-                      >
+                      <span className="text-[9px] font-medium px-1 truncate block text-slate-800">
                         {platform}{count > 1 ? ` ${count}` : ""}
                       </span>
                     </div>
                   ))}
                   {overflowCount > 0 && (
-                    <span className="text-[9px] text-muted-foreground/50 font-medium px-1">
-                      +{overflowCount}개
+                    <span className="text-[9px] text-slate-400 font-normal px-1 leading-[14px]">
+                      +{overflowCount}개 더보기
                     </span>
                   )}
                 </div>
 
                 {/* Selected indicator */}
                 {isSelected && (
-                  <div className="absolute bottom-0 left-1 right-1 h-0.5 bg-primary rounded-full" />
+                  <div className="absolute bottom-0 left-1 right-1 h-0.5 bg-primary/60 rounded-full" />
                 )}
               </button>
             );
