@@ -62,7 +62,7 @@ export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: 
                   <span className="text-xs">{stat.emoji}</span>
                 )}
                 <span className="whitespace-nowrap text-[11px]">{stat.label}</span>
-                <span className={`font-extrabold tabular-nums text-[13px] ${isActive ? stat.color : "text-foreground"}`}>
+                <span className={`font-extrabold tabular-nums text-[13px] font-display ${isActive ? stat.color : "text-foreground"}`}>
                   {stat.count}
                 </span>
               </button>
