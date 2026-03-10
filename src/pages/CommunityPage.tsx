@@ -142,6 +142,8 @@ export default function CommunityPage() {
         <Plus className="w-4 h-4" />
         딜 공유
       </Link>
+
+      <ExpandedCommunityOverlay post={expandedPost} onClose={() => setExpandedPost(null)} />
     </div>
   );
 }
