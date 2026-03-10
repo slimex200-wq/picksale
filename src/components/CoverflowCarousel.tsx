@@ -21,66 +21,170 @@ export default function CoverflowCarousel({ children }: Props) {
   const isMobile = useIsMobile();
   const [activeIndex, setActiveIndex] = useState(Math.floor(count / 2));
   const [showHint, setShowHint] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const nudgeRef = useRef<HTMLDivElement>(null);
   const swiperRef = useRef<SwiperType | null>(null);
   const hintEligible = useRef(false);
   const hintPlayed = useRef(false);
   const userInteracted = useRef(false);
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Check eligibility on mount
+  const triggerHint = useCallback((source: string) => {
+    if (hintPlayed.current || !hintEligible.current) {
+      console.log("[coverflow-hint] trigger skipped", {
+        source,
+        hintPlayed: hintPlayed.current,
+        hintEligible: hintEligible.current,
+      });
+      return;
+    }
+
+    hintPlayed.current = true;
+    hintEligible.current = false;
+    sessionStorage.setItem(HINT_SESSION_KEY, "1");
+    console.log("[coverflow-hint] hint played", {
+      source,
+      sessionValue: sessionStorage.getItem(HINT_SESSION_KEY),
+    });
+    setShowHint(true);
+  }, []);
+
+  const dismissHint = useCallback((reason: string) => {
+    userInteracted.current = true;
+    hintEligible.current = false;
+    hintPlayed.current = true;
+    sessionStorage.setItem(HINT_SESSION_KEY, "1");
+    console.log("[coverflow-hint] hint dismissed", {
+      reason,
+      sessionValue: sessionStorage.getItem(HINT_SESSION_KEY),
+    });
+    setShowHint(false);
+  }, []);
+
   useEffect(() => {
     if (count < 2) return;
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-    if (sessionStorage.getItem(HINT_SESSION_KEY)) return;
-    hintEligible.current = true;
-  }, [count]);
 
-  // Mobile: IntersectionObserver trigger
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const sessionValue = sessionStorage.getItem(HINT_SESSION_KEY);
+
+    console.log("[coverflow-hint] mount", {
+      count,
+      isMobile,
+      prefersReduced,
+      sessionValue,
+    });
+
+    if (prefersReduced) {
+      console.log("[coverflow-hint] reduced motion enabled");
+      return;
+    }
+
+    if (sessionValue) {
+      console.log("[coverflow-hint] hint skipped due to sessionStorage", { sessionValue });
+      return;
+    }
+
+    hintEligible.current = true;
+    console.log("[coverflow-hint] hint eligible", { eligible: true });
+  }, [count, isMobile]);
+
+  useEffect(() => {
+    if (isMobile || count < 2) return;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const sessionValue = sessionStorage.getItem(HINT_SESSION_KEY);
+    if (prefersReduced || sessionValue) return;
+
+    const container = containerRef.current;
+    const swiperEl = container?.querySelector(".swiper");
+    const activeSlideEl = container?.querySelector(".swiper-slide-active");
+
+    const handleHover = (source: string) => () => {
+      console.log("[coverflow-hint] mouse enter fired", {
+        source,
+        hintEligible: hintEligible.current,
+        hintPlayed: hintPlayed.current,
+        sessionValue: sessionStorage.getItem(HINT_SESSION_KEY),
+      });
+      triggerHint(source);
+    };
+
+    const containerHover = handleHover("container");
+    const swiperHover = handleHover("swiper");
+    const activeSlideHover = handleHover("active-slide");
+
+    container?.addEventListener("mouseenter", containerHover);
+    swiperEl?.addEventListener("mouseenter", swiperHover);
+    activeSlideEl?.addEventListener("mouseenter", activeSlideHover);
+
+    console.log("[coverflow-hint] hover listeners attached", {
+      hasContainer: !!container,
+      hasSwiper: !!swiperEl,
+      hasActiveSlide: !!activeSlideEl,
+    });
+
+    return () => {
+      container?.removeEventListener("mouseenter", containerHover);
+      swiperEl?.removeEventListener("mouseenter", swiperHover);
+      activeSlideEl?.removeEventListener("mouseenter", activeSlideHover);
+    };
+  }, [activeIndex, count, isMobile, triggerHint]);
+
   useEffect(() => {
     if (!isMobile || count < 2) return;
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-    if (sessionStorage.getItem(HINT_SESSION_KEY)) return;
+    const sessionValue = sessionStorage.getItem(HINT_SESSION_KEY);
+    if (prefersReduced || sessionValue) return;
 
     const el = containerRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && hintEligible.current && !hintPlayed.current) {
-          triggerHint();
+        console.log("[coverflow-hint] intersection observed", {
+          isIntersecting: entry.isIntersecting,
+          ratio: entry.intersectionRatio,
+          eligible: hintEligible.current,
+          played: hintPlayed.current,
+        });
+
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.3 && hintEligible.current && !hintPlayed.current) {
+          console.log("[coverflow-hint] IntersectionObserver entered threshold");
+          triggerHint("intersection-observer");
           observer.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: [0, 0.3, 0.5] }
     );
+
     observer.observe(el);
     return () => observer.disconnect();
-  }, [isMobile, count]);
+  }, [count, isMobile, triggerHint]);
 
-  const triggerHint = useCallback(() => {
-    if (hintPlayed.current || !hintEligible.current) return;
-    hintPlayed.current = true;
-    hintEligible.current = false;
-    sessionStorage.setItem(HINT_SESSION_KEY, "1");
-    setShowHint(true);
-  }, []);
+  useEffect(() => {
+    if (!showHint || !nudgeRef.current) return;
 
-  const dismissHint = useCallback(() => {
-    userInteracted.current = true;
-    hintEligible.current = false;
-    hintPlayed.current = true;
-    sessionStorage.setItem(HINT_SESSION_KEY, "1");
-    setShowHint(false);
-  }, []);
+    const wrapper = nudgeRef.current;
+    console.log("[coverflow-hint] animation class added", {
+      className: wrapper.className,
+    });
 
-  // Desktop: trigger on first hover
-  const handleMouseEnter = useCallback(() => {
-    if (!isMobile && hintEligible.current && !hintPlayed.current) {
-      triggerHint();
-    }
-  }, [isMobile, triggerHint]);
+    const sampleTransform = (label: string) => {
+      console.log("[coverflow-hint] computed transform sample", {
+        label,
+        computed: window.getComputedStyle(wrapper).transform,
+      });
+    };
+
+    sampleTransform("start");
+    const t1 = window.setTimeout(() => sampleTransform("120ms"), 120);
+    const t2 = window.setTimeout(() => sampleTransform("320ms"), 320);
+    const t3 = window.setTimeout(() => sampleTransform("680ms"), 680);
+
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+    };
+  }, [showHint]);
 
   if (count === 0) return null;
 
@@ -89,13 +193,18 @@ export default function CoverflowCarousel({ children }: Props) {
       ref={containerRef}
       className="relative coverflow-carousel"
       style={{ padding: "12px 0 8px" }}
-      onMouseEnter={handleMouseEnter}
-      onPointerDown={dismissHint}
+      onPointerDown={() => dismissHint("pointerdown")}
+      onWheel={() => dismissHint("wheel")}
+      onKeyDown={() => dismissHint("keyboard")}
+      tabIndex={0}
     >
-      {/* Nudge wrapper — wraps the entire Swiper so translateX works without conflicting with Swiper's internal transforms */}
       <div
+        ref={nudgeRef}
         className={showHint ? "coverflow-nudge-track" : undefined}
-        onAnimationEnd={() => setShowHint(false)}
+        onAnimationEnd={() => {
+          console.log("[coverflow-hint] animation end fired");
+          setShowHint(false);
+        }}
       >
         <Swiper
           modules={[EffectCoverflow, Pagination]}
@@ -118,20 +227,27 @@ export default function CoverflowCarousel({ children }: Props) {
             bulletClass: "coverflow-dot",
             bulletActiveClass: "coverflow-dot-active",
           }}
-          onSwiper={(swiper: SwiperType) => { swiperRef.current = swiper; }}
+          onSwiper={(swiper: SwiperType) => {
+            swiperRef.current = swiper;
+            console.log("[coverflow-hint] swiper mounted", {
+              activeIndex: swiper.activeIndex,
+              initialSlide: Math.floor(count / 2),
+            });
+          }}
           onSlideChange={(swiper: SwiperType) => {
+            console.log("[coverflow-hint] slide change", {
+              activeIndex: swiper.activeIndex,
+              userInteracted: userInteracted.current,
+            });
             setActiveIndex(swiper.activeIndex);
-            // Only dismiss if user actually interacted (not initial mount)
             if (userInteracted.current) {
-              dismissHint();
+              dismissHint("slide-change-after-user-interaction");
             }
           }}
-          onTouchStart={() => {
-            userInteracted.current = true;
-            dismissHint();
-          }}
+          onTouchStart={() => dismissHint("touchstart")}
           onTouchMove={() => {
             userInteracted.current = true;
+            console.log("[coverflow-hint] touch move detected");
           }}
           style={{ overflow: "visible", paddingBottom: 8 }}
         >
@@ -169,7 +285,6 @@ export default function CoverflowCarousel({ children }: Props) {
         </Swiper>
       </div>
 
-      {/* Custom dot indicators */}
       <div className="coverflow-dots flex justify-center gap-1.5 mt-3 pb-2" />
 
       <style>{`
@@ -200,19 +315,18 @@ export default function CoverflowCarousel({ children }: Props) {
           background: hsl(var(--primary)) !important;
         }
 
-        /* One-time nudge — applied to outer wrapper, not swiper-wrapper */
         @keyframes coverflow-nudge {
           0%   { transform: translateX(0); }
-          25%  { transform: translateX(-12px); }
-          55%  { transform: translateX(8px); }
-          80%  { transform: translateX(-3px); }
+          25%  { transform: translateX(-20px); }
+          55%  { transform: translateX(14px); }
+          80%  { transform: translateX(-5px); }
           100% { transform: translateX(0); }
         }
         .coverflow-nudge-track {
-          animation: coverflow-nudge 800ms ease-in-out 1 forwards;
+          animation: coverflow-nudge 1000ms ease-in-out 1 forwards;
+          will-change: transform;
         }
 
-        /* Edge fade hints */
         .coverflow-carousel::before,
         .coverflow-carousel::after {
           content: '';
