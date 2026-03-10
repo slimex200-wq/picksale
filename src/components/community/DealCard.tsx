@@ -132,111 +132,113 @@ export default function DealCard({ post, onOpenDetail }: { post: CommunityPost; 
     }
   };
 
+  const cardContent = (
+    <div className="px-5 sm:px-6 py-4 space-y-2.5">
+      {/* Category + Platform badges */}
+      <div className="flex items-center gap-1.5 flex-wrap">
+        {post.category.map((c) => {
+          const cfg = categoryStyle[c];
+          return cfg ? (
+            <span key={c} className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${cfg.className}`}>
+              {cfg.label}
+            </span>
+          ) : null;
+        })}
+        {post.platform && (
+          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+            {post.platform}
+          </span>
+        )}
+
+        {/* Admin menu */}
+        {isAdmin && (
+          <div className="ml-auto" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-1 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
+                  <MoreHorizontal className="w-4 h-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-32">
+                <DropdownMenuItem onClick={openEdit}>
+                  <Pencil className="w-3.5 h-3.5 mr-2" />수정
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleHide}>
+                  <EyeOff className="w-3.5 h-3.5 mr-2" />숨김
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleDelete} className="text-destructive focus:text-destructive">
+                  <Trash2 className="w-3.5 h-3.5 mr-2" />삭제
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
+      </div>
+
+      {/* Title */}
+      <h3 className="text-[15px] font-bold text-card-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+        {post.title}
+      </h3>
+
+      {/* Content preview */}
+      {post.content && (
+        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+          {post.content}
+        </p>
+      )}
+
+      {/* Footer: meta + actions */}
+      <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
+        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+          {post.author && <span className="font-medium text-foreground/80">{post.author}</span>}
+          <span className="flex items-center gap-0.5">
+            <Clock className="w-3 h-3" />
+            {timeAgo(post.created_at)}
+          </span>
+          {post.external_link && (
+            <span className="flex items-center gap-0.5 text-primary">
+              <ExternalLink className="w-3 h-3" />
+              링크
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2.5">
+          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+            <MessageSquare className="w-3.5 h-3.5" />
+            {post.comments_count}
+          </span>
+          <button
+            onClick={handleUpvote}
+            disabled={upvoting}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors ${
+              post.upvotes > 0
+                ? "bg-primary/10 text-primary hover:bg-primary/20"
+                : "bg-transparent border border-border text-muted-foreground hover:bg-accent"
+            }`}
+          >
+            <ThumbsUp className="w-3.5 h-3.5" />
+            {post.upvotes > 0 ? post.upvotes : "첫 추천"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const wrapperClass = "group block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-border/80 transition-all";
+
   return (
     <>
       {onOpenDetail ? (
-        <div
-          onClick={() => onOpenDetail(post)}
-          className="group block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-border/80 transition-all cursor-pointer"
-        >
-      ) : (
-        <Link
-          to={`/community/${post.id}`}
-          className="group block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-border/80 transition-all"
-        >
-      )}
-        <div className="px-5 sm:px-6 py-4 space-y-2.5">
-          {/* Category + Platform badges */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {post.category.map((c) => {
-              const cfg = categoryStyle[c];
-              return cfg ? (
-                <span key={c} className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${cfg.className}`}>
-                  {cfg.label}
-                </span>
-              ) : null;
-            })}
-            {post.platform && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-                {post.platform}
-              </span>
-            )}
-
-            {/* Admin menu */}
-            {isAdmin && (
-              <div className="ml-auto" onClick={(e) => e.preventDefault()}>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="p-1 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-32">
-                    <DropdownMenuItem onClick={openEdit}>
-                      <Pencil className="w-3.5 h-3.5 mr-2" />수정
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleHide}>
-                      <EyeOff className="w-3.5 h-3.5 mr-2" />숨김
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleDelete} className="text-destructive focus:text-destructive">
-                      <Trash2 className="w-3.5 h-3.5 mr-2" />삭제
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            )}
-          </div>
-
-          {/* Title */}
-          <h3 className="text-[15px] font-bold text-card-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-            {post.title}
-          </h3>
-
-          {/* Content preview */}
-          {post.content && (
-            <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-              {post.content}
-            </p>
-          )}
-
-          {/* Footer: meta + actions */}
-          <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
-            <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-              {post.author && <span className="font-medium text-foreground/80">{post.author}</span>}
-              <span className="flex items-center gap-0.5">
-                <Clock className="w-3 h-3" />
-                {timeAgo(post.created_at)}
-              </span>
-              {post.external_link && (
-                <span className="flex items-center gap-0.5 text-primary">
-                  <ExternalLink className="w-3 h-3" />
-                  링크
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                <MessageSquare className="w-3.5 h-3.5" />
-                {post.comments_count}
-              </span>
-              <button
-                onClick={handleUpvote}
-                disabled={upvoting}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors ${
-                  post.upvotes > 0
-                    ? "bg-primary/10 text-primary hover:bg-primary/20"
-                    : "bg-transparent border border-border text-muted-foreground hover:bg-accent"
-                }`}
-              >
-                <ThumbsUp className="w-3.5 h-3.5" />
-                {post.upvotes > 0 ? post.upvotes : "첫 추천"}
-              </button>
-            </div>
-          </div>
+        <div onClick={() => onOpenDetail(post)} className={`${wrapperClass} cursor-pointer`}>
+          {cardContent}
         </div>
-      </Link>
+      ) : (
+        <Link to={`/community/${post.id}`} className={wrapperClass}>
+          {cardContent}
+        </Link>
+      )}
 
       {/* Admin Edit Dialog */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
