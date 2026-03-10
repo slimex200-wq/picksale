@@ -53,7 +53,7 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
         )}
       </div>
       <div className="relative z-10 px-3 pt-0.5">
-        <span className={`${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground/60 font-normal"}`} style={{ fontSize: 11 }}>
+        <span className={`font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground/60 font-normal"}`} style={{ fontSize: 11 }}>
           {countdown}
         </span>
       </div>

@@ -84,7 +84,7 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
         <span className="text-muted-foreground font-normal" style={{ fontSize: "11px" }}>
           {formatDate(sale.start_date)} – {formatDate(sale.end_date)}
         </span>
-        <span className={`${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`} style={{ fontSize: "11px" }}>
+        <span className={`font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`} style={{ fontSize: "11px" }}>
           {countdown}
         </span>
       </div>

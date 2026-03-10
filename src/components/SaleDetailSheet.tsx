@@ -77,7 +77,7 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
                   {statusInfo.emoji} {statusInfo.label}
                 </Badge>
               )}
-              <span className={`text-xs ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+              <span className={`text-xs font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
                 {countdown}
               </span>
             </div>
