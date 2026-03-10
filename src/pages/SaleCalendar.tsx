@@ -311,6 +311,8 @@ export default function SaleCalendar() {
           </div>
         </div>
       )}
+
+      <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
     </div>
   );
 }
