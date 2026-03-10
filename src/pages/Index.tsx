@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from "react";
 import { sortByRanking, sortForFeatured, getSaleStatus, SaleStatus, Sale } from "@/data/salesUtils";
+import { matchesQuickFilter } from "@/data/quickFilterDefs";
 import { useSales } from "@/hooks/useSales";
 import SaleCard from "@/components/SaleCard";
 import HeroSaleCard from "@/components/HeroSaleCard";
