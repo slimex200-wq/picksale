@@ -156,11 +156,6 @@ export default {
 				'Playfair Display',
 				'serif'
 			],
-				'Noto Sans KR',
-				'ui-serif',
-				'Georgia',
-				'serif'
-			],
 			mono: [
 				'ui-monospace',
 				'SFMono-Regular',
