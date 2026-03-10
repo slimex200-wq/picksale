@@ -20,12 +20,13 @@ export default function PlatformLogo({ platform, className = "w-full h-full obje
 
   if (broken || !src) {
     return (
-      <span
-        className="flex items-center justify-center text-muted-foreground font-bold select-none"
-        style={{ fontSize: 11, ...style }}
-      >
-        {platform.charAt(0)}
-      </span>
+      <img
+        src={EMPTY_SVG}
+        alt=""
+        className={`bg-transparent ${className}`}
+        style={style}
+        draggable={false}
+      />
     );
   }
 
