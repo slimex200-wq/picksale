@@ -11,30 +11,38 @@ interface Props {
 
 export default memo(function PlatformExplorer({ sales }: Props) {
   const bp = useBreakpoint();
-  const platformStats = useMemo(() =>
-    platforms
-      .filter((p) => p !== "커뮤니티 핫딜")
-      .map((p) => {
-        let live = 0, ending = 0;
-        for (const s of sales) {
-          if (s.platform !== p) continue;
-          const st = getSaleStatus(s);
-          if (st === "ending_today") { ending++; live++; }
-          else if (st === "live") { live++; }
-        }
-        return { platform: p, live, ending };
-      }),
-    [sales]
+  const platformStats = useMemo(
+    () =>
+      platforms
+        .filter((p) => p !== "커뮤니티 핫딜")
+        .map((p) => {
+          let live = 0,
+            ending = 0;
+          for (const s of sales) {
+            if (s.platform !== p) continue;
+            const st = getSaleStatus(s);
+            if (st === "ending_today") {
+              ending++;
+              live++;
+            } else if (st === "live") {
+              live++;
+            }
+          }
+          return { platform: p, live, ending };
+        }),
+    [sales],
   );
 
   const PlatformCard = ({ platform, live, ending }: { platform: Platform; live: number; ending: number }) => (
     <Link
       to={`/platform/${platformSlugs[platform]}`}
-      className="bg-card border border-border rounded-xl px-3 py-2.5 flex items-center gap-2.5 hover:shadow-md transition-shadow group shrink-0"
+      className="bg-card border border-border rounded-xl px-3 py-3 flex items-center gap-3 hover:shadow-md transition-all group shrink-0"
       style={bp === "mobile" ? { minWidth: "170px" } : undefined}
     >
-      <div className="w-8 h-8 rounded-lg bg-accent/60 border border-border/50 flex items-center justify-center p-1 shrink-0">
-        <PlatformLogo platform={platform} className="w-full h-full object-contain rounded" />
+      {/* 🚨 15년 차의 디테일: 크기 확장(w-10), 패딩 추가(p-1.5), 화이트 배경, 미세한 그림자 */}
+      <div className="w-10 h-10 rounded-xl bg-white border border-border/40 flex items-center justify-center p-1.5 shrink-0 shadow-sm">
+        {/* 아이콘 자체에도 미세한 라운딩(rounded-md)을 줘서 부드럽게 마감 */}
+        <PlatformLogo platform={platform} className="w-full h-full object-contain rounded-md" />
       </div>
       <div className="flex-1 min-w-0">
         <span className="text-card-foreground block text-[13px] font-bold">{platform}</span>
@@ -44,7 +52,7 @@ export default memo(function PlatformExplorer({ sales }: Props) {
           {live === 0 && ending === 0 && <span className="text-muted-foreground text-[10px]">세일 없음</span>}
         </div>
       </div>
-      <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+      <ChevronRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-foreground transition-colors" />
     </Link>
   );
 
