@@ -83,16 +83,8 @@ export default function CoverflowCarousel({ children }: Props) {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        console.log("[coverflow-hint] intersection observed", {
-          isIntersecting: entry.isIntersecting,
-          ratio: entry.intersectionRatio,
-          eligible: hintEligible.current,
-          played: hintPlayed.current,
-        });
-
         if (entry.isIntersecting && entry.intersectionRatio >= 0.3 && hintEligible.current && !hintPlayed.current) {
-          console.log("[coverflow-hint] IntersectionObserver entered threshold");
-          triggerHint("intersection-observer");
+          triggerHint();
           observer.disconnect();
         }
       },
