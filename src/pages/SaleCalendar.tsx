@@ -169,10 +169,10 @@ export default function SaleCalendar() {
                     ? "bg-primary/5"
                     : "hover:bg-accent/40"
                 }`}
-                style={{ minHeight: 72 }}
+                style={{ minHeight: 78 }}
               >
                 {/* Day Number */}
-                <div className="px-1.5 pt-1.5 pb-0.5">
+                <div className="px-1.5 pt-2 pb-1">
                   <span
                     className={`text-xs font-medium inline-flex items-center justify-center ${
                       isToday
