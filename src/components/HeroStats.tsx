@@ -58,6 +58,8 @@ export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: 
               >
                 {stat.key === "ending_today" ? (
                   <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+                ) : stat.key === "live" ? (
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse-green" style={{ boxShadow: "0 0 6px #22c55e" }} />
                 ) : (
                   <span className="text-xs">{stat.emoji}</span>
                 )}
