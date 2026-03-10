@@ -4,12 +4,14 @@ import { Sale, getSaleStatus, saleStatusConfig, platformColors } from "@/data/sa
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Calendar, Bell, X, Pencil } from "lucide-react";
+import { ExternalLink, Calendar, Bell, X, Pencil, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
 import SaleInlineEditor from "@/components/SaleInlineEditor";
 import { useAdmin } from "@/hooks/useAdmin";
+import { useLoginGate } from "@/hooks/useLoginGate";
+import { useAuth } from "@/hooks/useAuth";
 
 function formatDate(d: string) {
   const date = new Date(d);
