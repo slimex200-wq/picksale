@@ -10,6 +10,7 @@ import { CalendarSkeleton } from "@/components/skeletons/SaleCardSkeleton";
 import { useNavigate } from "react-router-dom";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
+import { Switch } from "@/components/ui/switch";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -26,40 +27,23 @@ const PLATFORM_BAR_COLORS: Record<Platform, string> = {
   "커뮤니티 핫딜": "hsl(35, 90%, 55%)",
 };
 
-const PLATFORM_BAR_BG: Record<Platform, string> = {
-  쿠팡: "bg-sale-coupang",
-  올리브영: "bg-sale-oliveyoung",
-  무신사: "bg-sale-musinsa",
-  KREAM: "bg-sale-kream",
-  SSG: "bg-sale-ssg",
-  오늘의집: "bg-sale-ohouse",
-  "29CM": "bg-sale-29cm",
-  WCONCEPT: "bg-sale-wconcept",
-  "커뮤니티 핫딜": "bg-sale-community",
-};
-
-const MAX_BARS = 3;
+const MAX_PILLS = 2;
 
 function shortDate(dateStr: string) {
   const d = new Date(dateStr);
   return `${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
 }
 
-/** Group sales by platform, sorted by count desc */
-function groupByPlatform(sales: Sale[]): { platform: Platform; count: number }[] {
-  const map = new Map<Platform, number>();
-  for (const s of sales) {
-    map.set(s.platform, (map.get(s.platform) || 0) + 1);
-  }
-  return [...map.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .map(([platform, count]) => ({ platform, count }));
+/** Truncate text to maxLen chars */
+function truncName(name: string, maxLen = 10): string {
+  return name.length > maxLen ? name.slice(0, maxLen) + "…" : name;
 }
 
 export default function SaleCalendar() {
   const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(new Date().getDate());
+  const [showCommunity, setShowCommunity] = useState(false);
   const { data: sales = [], isLoading } = useSales();
 
   const year = currentMonth.getFullYear();
@@ -69,6 +53,11 @@ export default function SaleCalendar() {
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
+
+  const filteredSales = useMemo(() => {
+    if (showCommunity) return sales;
+    return sales.filter((s) => s.platform !== "커뮤니티 핫딜");
+  }, [sales, showCommunity]);
 
   const cells = useMemo(() => {
     const arr: (number | null)[] = [];
@@ -82,10 +71,10 @@ export default function SaleCalendar() {
     const result: Record<number, Sale[]> = {};
     for (let d = 1; d <= daysInMonth; d++) {
       const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-      result[d] = sales.filter((s) => s.start_date <= dateStr && s.end_date >= dateStr);
+      result[d] = filteredSales.filter((s) => s.start_date <= dateStr && s.end_date >= dateStr);
     }
     return result;
-  }, [sales, year, month, daysInMonth]);
+  }, [filteredSales, year, month, daysInMonth]);
 
   const selectedSales = selectedDay ? (salesByDay[selectedDay] ?? []) : [];
 
@@ -113,7 +102,7 @@ export default function SaleCalendar() {
       {/* Calendar Card */}
       <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
         {/* Month Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
           <Button variant="ghost" size="icon" onClick={prev} className="h-8 w-8 rounded-full">
             <ChevronLeft className="w-5 h-5" />
           </Button>
@@ -130,8 +119,8 @@ export default function SaleCalendar() {
           {DAYS.map((d, i) => (
             <div
               key={d}
-              className={`text-center text-[11px] font-semibold py-2 ${
-                i === 0 ? "text-destructive/70" : i === 6 ? "text-blue-500/70" : "text-muted-foreground"
+              className={`text-center text-[11px] font-medium py-1.5 ${
+                i === 0 ? "text-destructive/70" : i === 6 ? "text-primary/70" : "text-muted-foreground"
               }`}
             >
               {d}
@@ -146,8 +135,8 @@ export default function SaleCalendar() {
               return (
                 <div
                   key={`empty-${i}`}
-                  className="border-b border-r border-border/40 bg-muted/5"
-                  style={{ minHeight: 78 }}
+                  className="border-b border-r border-border/30"
+                  style={{ minHeight: 62 }}
                 />
               );
             }
@@ -156,81 +145,92 @@ export default function SaleCalendar() {
             const isToday = isCurrentMonth && day === new Date().getDate();
             const isSelected = day === selectedDay;
             const dayOfWeek = (firstDay + day - 1) % 7;
-            const groups = groupByPlatform(daySales);
-            const visibleGroups = groups.slice(0, MAX_BARS);
-            const overflowCount = groups.length - MAX_BARS;
+            const visibleSales = daySales.slice(0, MAX_PILLS);
+            const overflowCount = daySales.length - MAX_PILLS;
 
             return (
               <button
                 key={day}
                 onClick={() => setSelectedDay(day === selectedDay ? null : day)}
-                className={`flex flex-col text-left border-b border-r border-border/40 transition-colors relative ${
+                className={`flex flex-col text-left border-b border-r border-border/30 transition-colors relative ${
                   isToday
-                    ? "bg-sky-50"
+                    ? "bg-primary/[0.04]"
                     : isSelected
-                    ? "bg-slate-50"
-                    : "hover:bg-slate-50/60"
+                    ? "bg-accent/50"
+                    : "hover:bg-accent/30"
                 }`}
-                style={{ minHeight: 78 }}
+                style={{ minHeight: 62 }}
               >
                 {/* Day Number */}
-                <div className="px-1.5 pt-1.5 pb-0.5">
+                <div className="px-1 pt-1 pb-0.5 flex justify-start">
                   <span
-                    className={`text-[11px] font-medium inline-flex items-center justify-center ${
+                    className={`text-[11px] inline-flex items-center justify-center leading-none ${
                       isToday
-                        ? "bg-primary/70 text-primary-foreground w-5.5 h-5.5 rounded-full font-bold"
+                        ? "bg-primary text-primary-foreground w-[22px] h-[22px] rounded-full font-bold"
                         : dayOfWeek === 0
-                        ? "text-red-400"
+                        ? "text-destructive/70 font-medium"
                         : dayOfWeek === 6
-                        ? "text-blue-400"
-                        : "text-slate-700"
+                        ? "text-primary/70 font-medium"
+                        : "text-foreground font-medium"
                     }`}
                   >
                     {day}
                   </span>
                 </div>
 
-                {/* Line-style bars */}
-                <div className="flex flex-col gap-[2px] px-1 pb-1 flex-1">
-                  {visibleGroups.map(({ platform, count }) => (
+                {/* Pill-style bars */}
+                <div className="flex flex-col gap-[1px] px-0.5 pb-1 flex-1">
+                  {visibleSales.map((sale) => (
                     <div
-                      key={platform}
-                      className="rounded-sm truncate bg-transparent"
+                      key={sale.id}
+                      className="rounded-[3px] truncate px-1"
                       style={{
                         height: 14,
                         lineHeight: "14px",
-                        borderLeft: `2px solid ${PLATFORM_BAR_COLORS[platform]}`,
+                        backgroundColor: PLATFORM_BAR_COLORS[sale.platform],
                       }}
                     >
-                      <span className="text-[9px] font-medium px-1 truncate block text-slate-800">
-                        {platform}{count > 1 ? ` ${count}` : ""}
+                      <span className="text-[8px] sm:text-[9px] font-medium truncate block text-white/90">
+                        {truncName(sale.sale_name)}
                       </span>
                     </div>
                   ))}
                   {overflowCount > 0 && (
-                    <span className="text-[9px] text-slate-400 font-normal px-1 leading-[14px]">
-                      +{overflowCount}개 더보기
+                    <span className="text-[8px] sm:text-[9px] text-muted-foreground font-normal px-1 leading-[13px]">
+                      +{overflowCount}개
                     </span>
                   )}
                 </div>
 
                 {/* Selected indicator */}
                 {isSelected && (
-                  <div className="absolute bottom-0 left-1 right-1 h-0.5 bg-primary/60 rounded-full" />
+                  <div className="absolute bottom-0 left-0.5 right-0.5 h-0.5 bg-primary rounded-full" />
                 )}
               </button>
             );
           })}
         </div>
 
-        {/* Legend */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 border-t border-border bg-muted/10">
-          {Object.entries(PLATFORM_BAR_COLORS).map(([name, color]) => (
-            <span key={name} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-              <span className="w-0.5 h-3 rounded-full" style={{ backgroundColor: color }} />
-              {name}
-            </span>
-          ))}
+        {/* Legend + Community Toggle */}
+        <div className="flex flex-wrap items-center justify-between gap-y-2 px-4 py-2.5 border-t border-border bg-accent/20">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            {Object.entries(PLATFORM_BAR_COLORS)
+              .filter(([name]) => name !== "커뮤니티 핫딜")
+              .map(([name, color]) => (
+                <span key={name} className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <span className="w-2 h-2 rounded-[2px]" style={{ backgroundColor: color }} />
+                  {name}
+                </span>
+              ))}
+          </div>
+          <label className="flex items-center gap-1.5 cursor-pointer shrink-0">
+            <span className="text-[10px] text-muted-foreground">커뮤니티 핫딜</span>
+            <Switch
+              checked={showCommunity}
+              onCheckedChange={setShowCommunity}
+              className="h-4 w-7 data-[state=checked]:bg-sale-community"
+            />
+          </label>
         </div>
       </div>
 
@@ -275,7 +275,7 @@ function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => 
         style={{ backgroundColor: PLATFORM_BAR_COLORS[sale.platform] }}
       />
       <div className="w-9 h-9 flex items-center justify-center shrink-0">
-        <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-black/5" />
+        <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-border/30" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground truncate">{sale.sale_name}</p>
