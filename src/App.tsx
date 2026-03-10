@@ -51,8 +51,10 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
+        <LoginGateProvider>
         <Toaster />
         <Sonner />
+        <LoginPrompt />
         <BrowserRouter>
           <Routes>
             {/* Home — accessible without login */}
