@@ -214,7 +214,7 @@ interface LayoutProps {
 }
 
 /* ─── MOBILE ─── */
-function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
+function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
   return (
@@ -243,6 +243,11 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
             ))}
           </div>
         </section>
+      )}
+
+      {/* Preview Login Gate for non-logged-in users */}
+      {!isLoggedIn && activeSales.length > 3 && (
+        <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
       )}
 
       {/* Live — compact list */}
