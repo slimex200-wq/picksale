@@ -62,7 +62,7 @@ export default function EventDetail() {
   }
 
   const platform = event.platform as Platform;
-  const logo = platformLogos[platform];
+  
   const isActive = event.event_status === "active";
   const daysLeft = Math.ceil((new Date(event.end_date).getTime() - Date.now()) / 86400000);
 
