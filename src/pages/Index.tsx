@@ -367,7 +367,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 }
 
 /* ─── DESKTOP ─── */
-function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
+function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
   return (
@@ -398,6 +398,11 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                 ))}
               </CoverflowCarousel>
             </section>
+          )}
+
+          {/* Preview Login Gate for non-logged-in users */}
+          {!isLoggedIn && activeSales.length > 3 && (
+            <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
           )}
 
           {/* Ending Today + Live — peek carousels */}
