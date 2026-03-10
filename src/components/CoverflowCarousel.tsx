@@ -101,7 +101,7 @@ export default function CoverflowCarousel({ children }: Props) {
         <Swiper
           modules={[EffectCoverflow, Pagination]}
           effect="coverflow"
-          grabCursor
+          grabCursor={false}
           centeredSlides
           slidesPerView="auto"
           initialSlide={Math.floor(count / 2)}
