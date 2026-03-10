@@ -250,13 +250,13 @@ export default function CoverflowCarousel({ children }: Props) {
 
         @keyframes coverflow-nudge {
           0%   { transform: translateX(0); }
-          20%  { transform: translateX(-14px); }
-          50%  { transform: translateX(8px); }
-          75%  { transform: translateX(-3px); }
+          20%  { transform: translateX(-24px); }
+          50%  { transform: translateX(14px); }
+          75%  { transform: translateX(-6px); }
           100% { transform: translateX(0); }
         }
         .coverflow-nudge-track {
-          animation: coverflow-nudge 650ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 1 forwards;
+          animation: coverflow-nudge 1200ms cubic-bezier(0.22, 0.61, 0.36, 1) 1 forwards;
           will-change: transform;
         }
 
