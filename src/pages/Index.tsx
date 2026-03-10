@@ -210,6 +210,7 @@ interface LayoutProps {
   endingTodaySales: Sale[];
   rankingSales: Sale[];
   activeSales: Sale[];
+  isLoggedIn: boolean;
 }
 
 /* ─── MOBILE ─── */
