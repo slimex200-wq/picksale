@@ -113,10 +113,7 @@ export default function CoverflowCarousel({ children }: Props) {
       <div
         ref={nudgeRef}
         className={showHint ? "coverflow-nudge-track" : undefined}
-        onAnimationEnd={() => {
-          console.log("[coverflow-hint] animation end fired");
-          setShowHint(false);
-        }}
+        onAnimationEnd={() => setShowHint(false)}
       >
         <Swiper
           modules={[EffectCoverflow, Pagination]}
