@@ -29,14 +29,14 @@ const PLATFORM_BAR_COLORS: Record<Platform, string> = {
 
 /* Light background (20% opacity) version for pill bg */
 const PLATFORM_BAR_BG_LIGHT: Record<Platform, string> = {
-  쿠팡: "hsla(16, 85%, 58%, 0.15)",
-  올리브영: "hsla(145, 60%, 42%, 0.15)",
-  무신사: "hsla(0, 0%, 13%, 0.12)",
-  KREAM: "hsla(220, 12%, 22%, 0.12)",
-  SSG: "hsla(350, 80%, 55%, 0.15)",
-  오늘의집: "hsla(195, 85%, 48%, 0.15)",
-  "29CM": "hsla(0, 0%, 18%, 0.12)",
-  WCONCEPT: "hsla(0, 0%, 20%, 0.12)",
+  쿠팡: "hsla(4, 60%, 59%, 0.15)",
+  올리브영: "hsla(153, 38%, 48%, 0.15)",
+  무신사: "hsla(0, 0%, 27%, 0.12)",
+  KREAM: "hsla(15, 73%, 56%, 0.15)",
+  SSG: "hsla(340, 55%, 52%, 0.15)",
+  오늘의집: "hsla(185, 63%, 44%, 0.15)",
+  "29CM": "hsla(31, 24%, 44%, 0.12)",
+  WCONCEPT: "hsla(264, 28%, 51%, 0.15)",
   "커뮤니티 핫딜": "hsla(35, 90%, 55%, 0.15)",
 };
 
