@@ -180,7 +180,7 @@ export default function SaleCalendar() {
                 {/* Day Number */}
                 <div className="px-1 pt-1 pb-0.5 flex justify-start">
                   <span
-                    className={`text-[11px] inline-flex items-center justify-center leading-none ${
+                    className={`text-[13px] inline-flex items-center justify-center leading-none ${
                       isToday
                         ? "bg-primary text-primary-foreground w-[22px] h-[22px] rounded-full font-bold"
                         : dayOfWeek === 0
