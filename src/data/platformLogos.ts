@@ -13,6 +13,6 @@ export const platformLogos: Record<Platform, string> = {
   SSG: getAppIcon("ssg.com"),
   오늘의집: getAppIcon("ohou.se"),
   "29CM": getAppIcon("29cm.co.kr"),
-  WCONCEPT: getAppIcon("wconcept.co.kr"),
+  WCONCEPT: "https://wconcept.co.kr/favicon.ico",
   "커뮤니티 핫딜": communityIcon,
 };
