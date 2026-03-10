@@ -41,7 +41,7 @@ export function timeAgo(dateStr: string) {
   return `${days}일 전`;
 }
 
-export default function DealCard({ post }: { post: CommunityPost }) {
+export default function DealCard({ post, onOpenDetail }: { post: CommunityPost; onOpenDetail?: (post: CommunityPost) => void }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { user } = useAuth();
