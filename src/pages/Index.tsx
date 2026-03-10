@@ -59,6 +59,7 @@ export default function Index() {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const { data: sales = [], isLoading } = useSales();
+  const { user } = useAuth();
   const bp = useBreakpoint();
 
   const activeSales = useMemo(
