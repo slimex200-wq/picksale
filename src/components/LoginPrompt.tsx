@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useLoginGate, promptMessages } from "@/hooks/useLoginGate";
 import { useIsMobile } from "@/hooks/use-mobile";
