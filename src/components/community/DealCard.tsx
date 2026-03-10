@@ -134,10 +134,17 @@ export default function DealCard({ post, onOpenDetail }: { post: CommunityPost; 
 
   return (
     <>
-      <Link
-        to={`/community/${post.id}`}
-        className="group block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-border/80 transition-all"
-      >
+      {onOpenDetail ? (
+        <div
+          onClick={() => onOpenDetail(post)}
+          className="group block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-border/80 transition-all cursor-pointer"
+        >
+      ) : (
+        <Link
+          to={`/community/${post.id}`}
+          className="group block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md hover:border-border/80 transition-all"
+        >
+      )}
         <div className="px-5 sm:px-6 py-4 space-y-2.5">
           {/* Category + Platform badges */}
           <div className="flex items-center gap-1.5 flex-wrap">
