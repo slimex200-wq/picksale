@@ -149,7 +149,7 @@ export default function SaleCalendar() {
         ) : (
           <div className="space-y-2">
             {selectedSales.map((s) => (
-              <SaleItem key={s.id} sale={s} navigate={navigate} />
+              <SaleItem key={s.id} sale={s} onOpenDetail={setExpandedSale} />
             ))}
           </div>
         )}
