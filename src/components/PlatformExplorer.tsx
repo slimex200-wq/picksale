@@ -40,7 +40,7 @@ export default memo(function PlatformExplorer({ sales }: Props) {
         <span className="text-card-foreground block text-[13px] font-bold">{platform}</span>
         <div className="flex items-center gap-1.5 mt-0.5">
           {live > 0 && <span className="text-green-600 text-[10px] font-semibold">진행중 {live}</span>}
-          {ending > 0 && <span className="text-destructive text-[10px] font-semibold">오늘종료 {ending}</span>}
+          {ending > 0 && <span className="text-destructive text-[10px] font-semibold">오늘 마감 {ending}</span>}
           {live === 0 && ending === 0 && <span className="text-muted-foreground text-[10px]">세일 없음</span>}
         </div>
       </div>
