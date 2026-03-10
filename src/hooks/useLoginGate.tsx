@@ -9,8 +9,8 @@ const promptMessages: Record<LoginPromptContext, { title: string; description: s
     description: "마음에 드는 세일을 저장하고 나중에 다시 확인해보세요.",
   },
   alert: {
-    title: "알림은 로그인 후 이용 가능해요",
-    description: "원하는 세일을 놓치지 않도록 알림을 받아보세요.",
+    title: "알림 설정은 로그인 후 이용 가능해요",
+    description: "로그인하면 이 세일의 알림을 바로 받을 수 있어요.",
   },
   generic: {
     title: "로그인하면 더 편하게 쓸 수 있어요",
