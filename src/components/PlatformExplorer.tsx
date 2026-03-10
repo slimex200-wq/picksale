@@ -39,7 +39,7 @@ export default memo(function PlatformExplorer({ sales }: Props) {
       className="bg-card border border-border rounded-xl px-3 py-3 flex items-center gap-3 hover:shadow-md transition-all group shrink-0"
       style={bp === "mobile" ? { minWidth: "170px" } : undefined}
     >
-      {/* 🚨 15년 차의 디테일: 크기 확장(w-10), 패딩 추가(p-1.5), 화이트 배경, 미세한 그림자 */}
+      
       <div className="w-11 h-11 flex items-center justify-center shrink-0">
         <PlatformLogo
           platform={platform}
