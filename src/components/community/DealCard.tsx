@@ -220,7 +220,7 @@ export default function DealCard({ post }: { post: CommunityPost }) {
                 className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors ${
                   post.upvotes > 0
                     ? "bg-primary/10 text-primary hover:bg-primary/20"
-                    : "bg-muted text-muted-foreground hover:bg-accent"
+                    : "bg-transparent border border-border text-muted-foreground hover:bg-accent"
                 }`}
               >
                 <ThumbsUp className="w-3.5 h-3.5" />

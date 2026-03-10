@@ -115,7 +115,7 @@ export default function CommunityPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-20 sm:pb-24">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-28 sm:pb-24">
       <PageMeta
         title="딜 발견 - 커뮤니티 | PickSale"
         description="유저들이 발견한 핫딜, 세일 정보, 쇼핑 팁을 확인하세요."
