@@ -155,7 +155,7 @@ export default function SaleCalendar() {
       <CanonicalLink href={window.location.origin + "/calendar"} />
 
       {/* Desktop: 2-column / Mobile: stacked */}
-      <div className={isMobile ? "" : "flex gap-4 items-start"}>
+      <div className={isMobile ? "" : "flex gap-4 items-stretch"}>
         {/* Calendar Card */}
         <div className={`rounded-2xl border border-border bg-card shadow-sm overflow-hidden ${isMobile ? "" : "flex-[6] min-w-0"}`}>
           {/* Month Header */}
