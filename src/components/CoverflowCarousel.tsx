@@ -141,10 +141,6 @@ export default function CoverflowCarousel({ children }: Props) {
           }}
           onSwiper={(swiper: SwiperType) => {
             swiperRef.current = swiper;
-            console.log("[coverflow-hint] swiper mounted", {
-              activeIndex: swiper.activeIndex,
-              initialSlide: Math.floor(count / 2),
-            });
           }}
           onSlideChange={(swiper: SwiperType) => {
             console.log("[coverflow-hint] slide change", {
