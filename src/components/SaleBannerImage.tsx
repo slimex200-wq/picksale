@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { platformLogos } from "@/data/platformLogos";
+import PlatformLogo from "@/components/PlatformLogo";
 import type { Platform } from "@/data/salesUtils";
 
 interface Props {
