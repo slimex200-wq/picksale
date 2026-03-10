@@ -2,9 +2,11 @@ import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data
 import { formatCategory } from "@/utils/categoryFormat";
 import { platformLogos } from "@/data/platformLogos";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
+import { useLoginGate } from "@/hooks/useLoginGate";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Props {
   sale: Sale;
