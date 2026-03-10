@@ -1,25 +1,40 @@
 /**
- * Unified countdown text format:
+ * Unified countdown text format (date-only precision):
  * - 마감됨 → "마감"
- * - 24시간 미만 → "14시간 남음"
+ * - 오늘 마감 → "오늘 마감"
  * - 1일 이상 → "D-1", "D-6", "D-22"
+ *
+ * Note: DB stores end_date as `date` (no time component).
+ * We never show hour/minute countdowns because the source data
+ * does not provide exact end times.
  */
 export function countdownText(endDate: string): string {
-  // Use end of day in KST (+09:00) for accurate countdown
-  const endMs = new Date(endDate + "T23:59:59+09:00").getTime();
-  const diffMs = endMs - Date.now();
-  if (diffMs <= 0) return "마감";
-  const hours = Math.floor(diffMs / 3600000);
-  if (hours < 24) return `${hours}시간 남음`;
-  const days = Math.ceil(diffMs / 86400000);
+  const todayStr = getTodayKST();
+
+  if (endDate < todayStr) return "마감";
+  if (endDate === todayStr) return "오늘 마감";
+
+  const diffMs =
+    new Date(endDate + "T00:00:00+09:00").getTime() -
+    new Date(todayStr + "T00:00:00+09:00").getTime();
+  const days = Math.round(diffMs / 86400000);
   return `D-${days}`;
 }
 
 export function isUrgentCountdown(countdown: string): boolean {
-  return countdown.includes("시간") || countdown === "D-1" || countdown === "마감";
+  return countdown === "오늘 마감" || countdown === "D-1" || countdown === "마감";
 }
 
 export function formatDate(d: string): string {
   const date = new Date(d);
   return `${date.getMonth() + 1}.${date.getDate()}`;
+}
+
+/** Get today's date string in KST */
+function getTodayKST(): string {
+  const now = new Date();
+  const year = now.toLocaleString("en-CA", { timeZone: "Asia/Seoul", year: "numeric" });
+  const month = now.toLocaleString("en-CA", { timeZone: "Asia/Seoul", month: "2-digit" });
+  const day = now.toLocaleString("en-CA", { timeZone: "Asia/Seoul", day: "2-digit" });
+  return `${year}-${month}-${day}`;
 }
