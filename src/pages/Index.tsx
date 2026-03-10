@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useCallback, memo } from "react";
 import { sortByRanking, sortForFeatured, getSaleStatus, SaleStatus, Sale } from "@/data/salesUtils";
 import { useSales } from "@/hooks/useSales";
+import { useAuth } from "@/hooks/useAuth";
 import SaleCard from "@/components/SaleCard";
 import HeroSaleCard from "@/components/HeroSaleCard";
 import CoverflowCarousel from "@/components/CoverflowCarousel";
@@ -8,6 +9,7 @@ import EditorialBrandCard from "@/components/EditorialBrandCard";
 import PeekCarousel from "@/components/PeekCarousel";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import SaleRankingItem from "@/components/SaleRankingItem";
+import PreviewLoginGate from "@/components/PreviewLoginGate";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
 import QuickFilters from "@/components/QuickFilters";
@@ -57,6 +59,7 @@ export default function Index() {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const { data: sales = [], isLoading } = useSales();
+  const { user } = useAuth();
   const bp = useBreakpoint();
 
   const activeSales = useMemo(
@@ -168,31 +171,31 @@ export default function Index() {
           <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
         </section>
       ) : bp === "mobile" ? (
-        /* ═══ MOBILE LAYOUT ═══ */
         <MobileLayout
           featuredSales={featuredSales}
           liveSales={liveSales}
           endingTodaySales={endingTodaySales}
           rankingSales={rankingSales}
           activeSales={activeSales}
+          isLoggedIn={!!user}
         />
       ) : bp === "tablet" ? (
-        /* ═══ TABLET LAYOUT ═══ */
         <TabletLayout
           featuredSales={featuredSales}
           liveSales={liveSales}
           endingTodaySales={endingTodaySales}
           rankingSales={rankingSales}
           activeSales={activeSales}
+          isLoggedIn={!!user}
         />
       ) : (
-        /* ═══ DESKTOP LAYOUT ═══ */
         <DesktopLayout
           featuredSales={featuredSales}
           liveSales={liveSales}
           endingTodaySales={endingTodaySales}
           rankingSales={rankingSales}
           activeSales={activeSales}
+          isLoggedIn={!!user}
         />
       )}
     </div>
@@ -207,10 +210,11 @@ interface LayoutProps {
   endingTodaySales: Sale[];
   rankingSales: Sale[];
   activeSales: Sale[];
+  isLoggedIn: boolean;
 }
 
 /* ─── MOBILE ─── */
-function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
+function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
   return (
@@ -239,6 +243,11 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
             ))}
           </div>
         </section>
+      )}
+
+      {/* Preview Login Gate for non-logged-in users */}
+      {!isLoggedIn && activeSales.length > 3 && (
+        <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
       )}
 
       {/* Live — compact list */}
@@ -284,7 +293,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 }
 
 /* ─── TABLET ─── */
-function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
+function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
   return (
@@ -299,6 +308,11 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
             ))}
           </div>
         </section>
+      )}
+
+      {/* Preview Login Gate for non-logged-in users */}
+      {!isLoggedIn && activeSales.length > 3 && (
+        <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
       )}
 
       {/* Ending + Live side by side */}
@@ -353,7 +367,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
 }
 
 /* ─── DESKTOP ─── */
-function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
+function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales, isLoggedIn }: LayoutProps) {
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
 
   return (
@@ -384,6 +398,11 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                 ))}
               </CoverflowCarousel>
             </section>
+          )}
+
+          {/* Preview Login Gate for non-logged-in users */}
+          {!isLoggedIn && activeSales.length > 3 && (
+            <PreviewLoginGate previewSales={activeSales.slice(3, 9)} />
           )}
 
           {/* Ending Today + Live — peek carousels */}

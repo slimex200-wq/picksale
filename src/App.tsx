@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider, keepPreviousData } from "@tanstack/re
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Header from "@/components/Header";
-import LandingPage from "./pages/LandingPage";
+
 import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
 import PlatformSales from "./pages/PlatformSales";
@@ -53,12 +53,11 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Landing — no header */}
-            <Route path="/" element={<LandingPage />} />
-            {/* Login — no header */}
-            <Route path="/login" element={<><Header /><LoginPage /></>} />
-            {/* All other pages — with header */}
+            {/* Home — accessible without login */}
+            <Route path="/" element={<><Header /><Index /></>} />
             <Route path="/home" element={<><Header /><Index /></>} />
+            {/* Login */}
+            <Route path="/login" element={<><Header /><LoginPage /></>} />
             <Route path="/sale/:id" element={<><Header /><SaleDetail /></>} />
             <Route path="/platform/:slug" element={<><Header /><PlatformSales /></>} />
             <Route path="/calendar" element={<><Header /><SaleCalendar /></>} />
