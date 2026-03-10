@@ -1,13 +1,18 @@
+// src/data/platformLogos.ts
 import type { Platform } from "@/data/salesUtils";
 
+// 15년 차의 치트키: 구글 Favicon/App Icon 추출 API (절대 안 깨짐, 다운로드 필요 없음)
+const getAppIcon = (url: string) =>
+  `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url}&size=128`;
+
 export const platformLogos: Record<Platform, string> = {
-  "올리브영": "http://googleusercontent.com/image_collection/image_retrieval/5462912162355469001",
-  "오늘의집": "http://googleusercontent.com/image_collection/image_retrieval/16191815030936727803",
-  "무신사": "http://googleusercontent.com/image_collection/image_retrieval/11565126072018786529",
-  "29CM": "http://googleusercontent.com/image_collection/image_retrieval/15249332332376992784",
-  "SSG": "http://googleusercontent.com/image_collection/image_retrieval/4547316302391939847",
-  "쿠팡": "http://googleusercontent.com/image_collection/image_retrieval/9470422378367789656",
-  "KREAM": "https://kream-phinf.pstatic.net/MjAyMDEwMjNfMTIy/MDAxNjAzNDI0NTY5MjQ0.rA9XgQ0L0A9bC5s1Xz9k6q6o0g0o0e0d0o0a0.JPEG/kream_logo.png",
-  "WCONCEPT": "https://static.wconcept.co.kr/pc/images/common/logo_wconcept.png",
-  "커뮤니티 핫딜": "https://cdn-icons-png.flaticon.com/512/3502/3502447.png",
+  쿠팡: getAppIcon("https://www.coupang.com"),
+  올리브영: getAppIcon("https://www.oliveyoung.co.kr"),
+  무신사: getAppIcon("https://www.musinsa.com"),
+  KREAM: getAppIcon("https://kream.co.kr"),
+  SSG: getAppIcon("https://www.ssg.com"),
+  오늘의집: getAppIcon("https://ohou.se"),
+  "29CM": getAppIcon("https://www.29cm.co.kr"),
+  WCONCEPT: getAppIcon("https://www.wconcept.co.kr"),
+  "커뮤니티 핫딜": "https://cdn-icons-png.flaticon.com/128/3502/3502447.png", // 기본 핫딜 아이콘
 };
