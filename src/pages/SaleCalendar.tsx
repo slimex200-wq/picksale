@@ -176,7 +176,7 @@ export default function SaleCalendar() {
                   <span
                     className={`text-xs font-medium inline-flex items-center justify-center ${
                       isToday
-                        ? "bg-primary text-primary-foreground w-6 h-6 rounded-full font-bold text-[11px]"
+                        ? "bg-primary/80 text-primary-foreground w-6 h-6 rounded-full font-bold text-[11px]"
                         : dayOfWeek === 0
                         ? "text-destructive/80"
                         : dayOfWeek === 6
