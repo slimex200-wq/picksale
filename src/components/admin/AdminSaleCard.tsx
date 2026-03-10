@@ -63,7 +63,7 @@ export default memo(function AdminSaleCard({ sale, duplicatePublished, duplicate
 
   const hasValidImage = sale.image_url && sale.image_url.trim() !== "" && !imgBroken
     && !/\.(mp4|webm|mov|avi)(\?|$)/i.test(sale.image_url);
-  const logoSrc = platformLogos[sale.platform as Platform];
+  const logoSrc = true; // fallback handled by PlatformLogo
 
   const copyEventKey = () => {
     if (sale.event_key) {
