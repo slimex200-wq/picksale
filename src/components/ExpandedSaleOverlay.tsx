@@ -28,6 +28,8 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
   const [editing, setEditing] = useState(false);
   const [currentSale, setCurrentSale] = useState<Sale | null>(sale);
   const { isAdmin } = useAdmin();
+  const { user } = useAuth();
+  const { requireLogin } = useLoginGate();
 
   // Sync when sale prop changes
   useEffect(() => {
