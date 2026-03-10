@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider, keepPreviousData } from "@tanstack/re
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Header from "@/components/Header";
-import LandingPage from "./pages/LandingPage";
+
 import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
 import PlatformSales from "./pages/PlatformSales";
