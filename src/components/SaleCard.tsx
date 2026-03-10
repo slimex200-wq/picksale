@@ -80,8 +80,8 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         style={{ padding: "10px 12px", borderRadius: 12, border: "1px solid #eaecf0", boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
         onClick={goToSale}
       >
-        <div className="w-10 h-10 rounded-xl bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-1.5">
-          <PlatformLogo platform={sale.platform} />
+        <div className="w-10 h-10 flex items-center justify-center shrink-0">
+          <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-black/5" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
@@ -170,8 +170,8 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
           {sale.sale_name}
         </h3>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-0.5">
-            <PlatformLogo platform={sale.platform} />
+          <div className="w-5 h-5 flex items-center justify-center shrink-0">
+            <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-black/5" />
           </div>
           <span className="text-foreground font-medium" style={{ fontSize: '12px' }}>{sale.platform}</span>
           <span className="text-muted-foreground font-normal" style={{ fontSize: '11px' }}>

@@ -53,8 +53,8 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
       onMouseLeave={() => setHoverZone(null)}
     >
       <div className="flex items-center gap-2 px-3 pt-3 pb-1.5">
-        <div className="w-6 h-6 rounded-md bg-white/90 shadow-sm flex items-center justify-center shrink-0 p-0.5">
-          <PlatformLogo platform={sale.platform} />
+        <div className="w-6 h-6 flex items-center justify-center shrink-0">
+          <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-black/5" />
         </div>
         <span className="text-foreground font-semibold tracking-tight" style={{ fontSize: "12px" }}>{sale.platform}</span>
         {status === "ending_today" ? (

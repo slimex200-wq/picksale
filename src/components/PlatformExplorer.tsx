@@ -39,12 +39,11 @@ export default memo(function PlatformExplorer({ sales }: Props) {
       className="bg-card border border-border rounded-xl px-3 py-3 flex items-center gap-3 hover:shadow-md transition-all group shrink-0"
       style={bp === "mobile" ? { minWidth: "170px" } : undefined}
     >
-      {/* 🚨 15년 차의 디테일: 크기 확장(w-10), 패딩 추가(p-1.5), 화이트 배경, 미세한 그림자 */}
-      <div className="w-11 h-11 rounded-xl bg-accent/30 border border-border/60 flex items-center justify-center p-2 shrink-0">
-        {/* 아이콘 자체에도 미세한 라운딩(rounded-md)을 줘서 부드럽게 마감 */}
+      
+      <div className="w-11 h-11 flex items-center justify-center shrink-0">
         <PlatformLogo
           platform={platform}
-          className="w-full h-full object-contain rounded-lg border border-black/5 shadow-sm"
+          className="w-full h-full object-contain rounded-[22%] border border-black/5"
         />
       </div>
       <div className="flex-1 min-w-0">
