@@ -225,10 +225,10 @@ export default function SaleCalendar() {
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 border-t border-border bg-muted/20">
-          {Object.entries(PLATFORM_BAR_BG).map(([name, cls]) => (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 border-t border-border bg-muted/10">
+          {Object.entries(PLATFORM_BAR_COLORS).map(([name, color]) => (
             <span key={name} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-              <span className={`w-3 h-2 rounded-[2px] ${cls}`} />
+              <span className="w-0.5 h-3 rounded-full" style={{ backgroundColor: color }} />
               {name}
             </span>
           ))}
