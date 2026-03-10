@@ -269,18 +269,21 @@ function DesktopPills({ groups }: { groups: { platform: Platform; count: number 
   const overflow = groups.length - MAX_PILLS_DESKTOP;
 
   return (
-    <div className="flex flex-col gap-[3px] px-1 pb-1 flex-1">
+    <div className="flex flex-col gap-[2px] px-1 pb-1 flex-1">
       {visible.map(({ platform }) => (
         <span
           key={platform}
-          className="block truncate"
+          className="truncate"
           style={{
+            display: "inline-block",
+            width: "fit-content",
             backgroundColor: PLATFORM_BG[platform],
             color: PLATFORM_COLORS[platform],
             borderRadius: 4,
             fontSize: 9,
             fontWeight: 600,
-            padding: "2px 5px",
+            padding: "2px 6px",
+            marginBottom: 2,
             lineHeight: "12px",
           }}
         >
