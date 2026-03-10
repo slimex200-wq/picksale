@@ -168,6 +168,21 @@ export default function CoverflowCarousel({ children }: Props) {
       className="relative coverflow-carousel"
       style={{ padding: "12px 0 8px" }}
       onMouseEnter={handleMouseEnter}
+      onMouseOver={() => {
+        console.log("[coverflow-hint] mouse over fired", {
+          hintEligible: hintEligible.current,
+          hintPlayed: hintPlayed.current,
+        });
+      }}
+      onPointerEnter={() => {
+        console.log("[coverflow-hint] pointer enter fired", {
+          hintEligible: hintEligible.current,
+          hintPlayed: hintPlayed.current,
+        });
+      }}
+      onMouseMove={() => {
+        console.log("[coverflow-hint] mouse move fired");
+      }}
       onPointerDown={() => dismissHint("pointerdown")}
       onWheel={() => dismissHint("wheel")}
       onKeyDown={() => dismissHint("keyboard")}
