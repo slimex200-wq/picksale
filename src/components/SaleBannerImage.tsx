@@ -43,15 +43,8 @@ export default function SaleBannerImage({ imageUrl, platform, alt, className = "
   // Fallback: centered platform logo
   return (
     <div className={`w-full ${heightClass} overflow-hidden bg-accent/40 flex items-center justify-center ${className}`}>
-      <div className="bg-white/90 rounded-xl p-3 shadow-sm">
-        <img
-          src={logoSrc}
-          alt={platform}
-          className="object-contain"
-          style={{ maxHeight: 48, maxWidth: 80 }}
-          loading="lazy"
-          draggable={false}
-        />
+      <div className="bg-white/90 rounded-xl p-3 shadow-sm flex items-center justify-center" style={{ minWidth: 80, minHeight: 48 }}>
+        <PlatformLogo platform={platform} className="object-contain" style={{ maxHeight: 48, maxWidth: 80 }} />
       </div>
     </div>
   );
