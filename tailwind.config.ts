@@ -134,8 +134,8 @@ export default {
 					opacity: '1'
 				},
 				'50%': {
-					transform: 'scale(1.4)',
-					opacity: '0.6'
+					transform: 'scale(1.15)',
+					opacity: '0.85'
 				}
 			}
 		},
