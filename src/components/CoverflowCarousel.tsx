@@ -53,20 +53,38 @@ export default function CoverflowCarousel({ children }: Props) {
   }, [count]);
 
   useEffect(() => {
+    console.log("[coverflow-hint] desktop hover effect running", {
+      isMobile,
+      count,
+      sessionValue: sessionStorage.getItem(HINT_SESSION_KEY),
+      hintEligible: hintEligible.current,
+      hintPlayed: hintPlayed.current,
+    });
+
     if (isMobile || count < 2) return;
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const sessionValue = sessionStorage.getItem(HINT_SESSION_KEY);
-    if (prefersReduced || sessionValue) return;
+    if (prefersReduced || sessionValue) {
+      console.log("[coverflow-hint] skipped", { prefersReduced, sessionValue });
+      return;
+    }
 
     const container = containerRef.current;
-    if (!container) return;
+    if (!container) {
+      console.log("[coverflow-hint] no container ref");
+      return;
+    }
 
     const slides = container.querySelectorAll(".swiper-slide");
+    console.log("[coverflow-hint] slides found:", slides.length);
+
     const handler = (event: Event) => {
       const slide = event.currentTarget as HTMLElement | null;
       console.log("[coverflow-hint] mouseenter fired", {
         slideClass: slide?.className,
         slideText: slide?.textContent?.slice(0, 60) ?? null,
+        hintEligible: hintEligible.current,
+        hintPlayed: hintPlayed.current,
       });
       triggerHint();
     };
