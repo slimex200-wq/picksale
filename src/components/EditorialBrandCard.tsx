@@ -33,7 +33,7 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
       style={{ minHeight: 280, borderRadius: 12 }}
       onClick={handleClick}
     >
-      <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} heightClass="h-28" />
+      <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} aspectRatio="2/1" />
       <div className="relative z-10 flex items-center justify-between px-3 pt-3 pb-1">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 flex items-center justify-center shrink-0">
