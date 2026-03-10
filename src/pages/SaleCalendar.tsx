@@ -109,6 +109,43 @@ export default function SaleCalendar() {
     return <CalendarSkeleton />;
   }
 
+  /* ── Sales list panel (shared between desktop sidebar & mobile bottom) ── */
+  const salesListContent = (
+    <>
+      <div className="sticky top-0 z-10 bg-card px-3 py-2 border-b border-border">
+        <h3 className="text-sm font-bold text-foreground">
+          {selectedDay ? (
+            <>
+              {month + 1}월 {selectedDay}일 세일{" "}
+              {selectedSales.length > 0 && (
+                <span className="text-primary ml-1">{selectedSales.length}건</span>
+              )}
+            </>
+          ) : (
+            "날짜를 선택하세요"
+          )}
+        </h3>
+      </div>
+      <div className="p-3">
+        {!selectedDay ? (
+          <div className="text-center py-8 text-muted-foreground text-sm">
+            캘린더에서 날짜를 선택하면 세일 목록이 표시됩니다.
+          </div>
+        ) : selectedSales.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground text-sm">
+            이 날짜에 진행 중인 세일이 없습니다.
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {selectedSales.map((s) => (
+              <SaleItem key={s.id} sale={s} navigate={navigate} />
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  );
+
   return (
     <div className="mx-auto px-3 sm:px-4 pt-4 pb-28 overflow-x-hidden">
       <PageMeta
@@ -117,146 +154,150 @@ export default function SaleCalendar() {
       />
       <CanonicalLink href={window.location.origin + "/calendar"} />
 
-      {/* Calendar Card */}
-      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
-        {/* Month Header */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
-          <Button variant="ghost" size="icon" onClick={prev} className="h-8 w-8 rounded-full">
-            <ChevronLeft className="w-5 h-5" />
-          </Button>
-          <h2 className="text-base font-bold text-foreground tracking-tight">
-            {year}년 {month + 1}월
-          </h2>
-          <Button variant="ghost" size="icon" onClick={next} className="h-8 w-8 rounded-full">
-            <ChevronRight className="w-5 h-5" />
-          </Button>
-        </div>
-
-        {/* Day-of-week Header */}
-        <div className="grid grid-cols-7 border-b border-border">
-          {DAYS.map((d, i) => (
-            <div
-              key={d}
-              className={`text-center text-[11px] font-medium py-1.5 ${
-                i === 0 ? "text-destructive/70" : i === 6 ? "text-primary/70" : "text-muted-foreground"
-              }`}
-            >
-              {d}
-            </div>
-          ))}
-        </div>
-
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-7">
-          {cells.map((day, i) => {
-            if (day === null) {
-              return (
-                <div
-                  key={`empty-${i}`}
-                  className="border-b border-r border-border/30"
-                  style={{ minHeight: isMobile ? 52 : 93 }}
-                />
-              );
-            }
-
-            const daySales = salesByDay[day] ?? [];
-            const isToday = isCurrentMonth && day === new Date().getDate();
-            const isSelected = day === selectedDay;
-            const dayOfWeek = (firstDay + day - 1) % 7;
-            const groups = groupByPlatform(daySales);
-
-            return (
-              <button
-                key={day}
-                onClick={() => setSelectedDay(day === selectedDay ? null : day)}
-                className={`flex flex-col text-left border-b border-r border-border/30 transition-colors relative ${
-                  isSelected
-                    ? ""
-                    : isToday
-                    ? "bg-primary/[0.04]"
-                    : "hover:bg-accent/30"
-                }`}
-                style={{
-                  minHeight: isMobile ? 52 : 93,
-                  backgroundColor: isSelected ? "#eff6ff" : undefined,
-                }}
-              >
-                {/* Day Number */}
-                <div className="px-1 pt-1 pb-0.5 flex justify-start">
-                  <span
-                    className={`text-[13px] inline-flex items-center justify-center leading-none ${
-                      isToday
-                        ? "bg-primary text-primary-foreground w-[24px] h-[24px] rounded-full font-bold"
-                        : dayOfWeek === 0
-                        ? "text-destructive/70 font-medium"
-                        : dayOfWeek === 6
-                        ? "text-primary/70 font-medium"
-                        : "text-foreground font-medium"
-                    }`}
-                  >
-                    {day}
-                  </span>
-                </div>
-
-                {/* Desktop: Platform Pills / Mobile: Color Dots */}
-                {isMobile ? (
-                  <MobileDots groups={groups} />
-                ) : (
-                  <DesktopPills groups={groups} />
-                )}
-
-                {/* Selected indicator */}
-                {isSelected && (
-                  <div className="absolute bottom-0 left-0.5 right-0.5 h-0.5 bg-primary rounded-full" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Legend + Community Toggle */}
-        <div className="flex flex-wrap items-center justify-between gap-y-2 px-4 py-2.5 border-t border-border bg-accent/20">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            {Object.entries(PLATFORM_COLORS)
-              .filter(([name]) => name !== "커뮤니티 핫딜")
-              .map(([name, color]) => (
-                <span key={name} className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                  <span className="w-2 h-2 rounded-[2px]" style={{ backgroundColor: color }} />
-                  {name}
-                </span>
-              ))}
+      {/* Desktop: 2-column / Mobile: stacked */}
+      <div className={isMobile ? "" : "flex gap-4 items-start"}>
+        {/* Calendar Card */}
+        <div className={`rounded-2xl border border-border bg-card shadow-sm overflow-hidden ${isMobile ? "" : "flex-[6] min-w-0"}`}>
+          {/* Month Header */}
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
+            <Button variant="ghost" size="icon" onClick={prev} className="h-8 w-8 rounded-full">
+              <ChevronLeft className="w-5 h-5" />
+            </Button>
+            <h2 className="text-base font-bold text-foreground tracking-tight">
+              {year}년 {month + 1}월
+            </h2>
+            <Button variant="ghost" size="icon" onClick={next} className="h-8 w-8 rounded-full">
+              <ChevronRight className="w-5 h-5" />
+            </Button>
           </div>
-          <label className="flex items-center gap-1.5 cursor-pointer shrink-0">
-            <span className="text-[10px] text-muted-foreground">커뮤니티 핫딜</span>
-            <Switch
-              checked={showCommunity}
-              onCheckedChange={setShowCommunity}
-              className="h-4 w-7 data-[state=checked]:bg-sale-community"
-            />
-          </label>
+
+          {/* Day-of-week Header */}
+          <div className="grid grid-cols-7 border-b border-border">
+            {DAYS.map((d, i) => (
+              <div
+                key={d}
+                className={`text-center text-[11px] font-medium py-1.5 ${
+                  i === 0 ? "text-destructive/70" : i === 6 ? "text-primary/70" : "text-muted-foreground"
+                }`}
+              >
+                {d}
+              </div>
+            ))}
+          </div>
+
+          {/* Calendar Grid */}
+          <div className="grid grid-cols-7">
+            {cells.map((day, i) => {
+              if (day === null) {
+                return (
+                  <div
+                    key={`empty-${i}`}
+                    className="border-b border-r border-border/30"
+                    style={{ minHeight: isMobile ? 52 : 93 }}
+                  />
+                );
+              }
+
+              const daySales = salesByDay[day] ?? [];
+              const isToday = isCurrentMonth && day === new Date().getDate();
+              const isSelected = day === selectedDay;
+              const dayOfWeek = (firstDay + day - 1) % 7;
+              const groups = groupByPlatform(daySales);
+
+              return (
+                <button
+                  key={day}
+                  onClick={() => setSelectedDay(day === selectedDay ? null : day)}
+                  className={`flex flex-col text-left border-b border-r border-border/30 transition-colors relative ${
+                    isSelected
+                      ? ""
+                      : isToday
+                      ? "bg-primary/[0.04]"
+                      : "hover:bg-accent/30"
+                  }`}
+                  style={{
+                    minHeight: isMobile ? 52 : 93,
+                    backgroundColor: isSelected ? "#eff6ff" : undefined,
+                  }}
+                >
+                  {/* Day Number */}
+                  <div className="px-1 pt-1 pb-0.5 flex justify-start">
+                    <span
+                      className={`text-[13px] inline-flex items-center justify-center leading-none ${
+                        isToday
+                          ? "bg-primary text-primary-foreground w-[24px] h-[24px] rounded-full font-bold"
+                          : dayOfWeek === 0
+                          ? "text-destructive/70 font-medium"
+                          : dayOfWeek === 6
+                          ? "text-primary/70 font-medium"
+                          : "text-foreground font-medium"
+                      }`}
+                    >
+                      {day}
+                    </span>
+                  </div>
+
+                  {/* Desktop: Platform Pills / Mobile: Color Dots */}
+                  {isMobile ? (
+                    <MobileDots groups={groups} />
+                  ) : (
+                    <DesktopPills groups={groups} />
+                  )}
+
+                  {/* Selected indicator */}
+                  {isSelected && (
+                    <div className="absolute bottom-0 left-0.5 right-0.5 h-0.5 bg-primary rounded-full" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Legend + Community Toggle */}
+          <div className="flex flex-wrap items-center justify-between gap-y-2 px-4 py-2.5 border-t border-border bg-accent/20">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              {Object.entries(PLATFORM_COLORS)
+                .filter(([name]) => name !== "커뮤니티 핫딜")
+                .map(([name, color]) => (
+                  <span key={name} className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <span className="w-2 h-2 rounded-[2px]" style={{ backgroundColor: color }} />
+                    {name}
+                  </span>
+                ))}
+            </div>
+            <label className="flex items-center gap-1.5 cursor-pointer shrink-0">
+              <span className="text-[10px] text-muted-foreground">커뮤니티 핫딜</span>
+              <Switch
+                checked={showCommunity}
+                onCheckedChange={setShowCommunity}
+                className="h-4 w-7 data-[state=checked]:bg-sale-community"
+              />
+            </label>
+          </div>
         </div>
+
+        {/* Desktop: Side panel (always visible) */}
+        {!isMobile && (
+          <div
+            className="flex-[4] min-w-0 rounded-2xl border border-border bg-card shadow-sm overflow-hidden"
+            style={{ height: 500 }}
+          >
+            <div className="h-full overflow-y-auto">
+              {salesListContent}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Selected Day Sales List */}
-      {selectedDay && (
-        <div className="mt-5 animate-fade-in">
-          <h3 className="text-sm font-bold text-foreground mb-3 px-1">
-            {month + 1}월 {selectedDay}일 세일{" "}
-            {selectedSales.length > 0 && (
-              <span className="text-primary ml-1">{selectedSales.length}건</span>
-            )}
-          </h3>
-          {selectedSales.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground text-sm">
-              이 날짜에 진행 중인 세일이 없습니다.
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {selectedSales.map((s) => (
-                <SaleItem key={s.id} sale={s} navigate={navigate} />
-              ))}
-            </div>
-          )}
+      {/* Mobile: Bottom list */}
+      {isMobile && selectedDay && (
+        <div
+          className="mt-4 rounded-2xl border border-border bg-card shadow-sm overflow-hidden animate-fade-in"
+          style={{ height: 300 }}
+        >
+          <div className="h-full overflow-y-auto">
+            {salesListContent}
+          </div>
         </div>
       )}
     </div>
