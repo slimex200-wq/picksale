@@ -36,7 +36,7 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
   const statusInfo = saleStatusConfig[status];
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
-  const logoSrc = platformLogos[sale.platform];
+  
   const colorClass = platformColors[sale.platform];
 
   return (
