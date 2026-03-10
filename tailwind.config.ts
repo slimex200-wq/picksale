@@ -150,10 +150,12 @@ export default {
 			],
 			display: [
 				'Playfair Display',
-				'Georgia',
 				'serif'
 			],
 			serif: [
+				'Playfair Display',
+				'serif'
+			],
 				'Noto Sans KR',
 				'ui-serif',
 				'Georgia',
