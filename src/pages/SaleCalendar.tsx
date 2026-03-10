@@ -6,12 +6,12 @@ import { useSales } from "@/hooks/useSales";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CalendarSkeleton } from "@/components/skeletons/SaleCardSkeleton";
-import { useNavigate } from "react-router-dom";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
 import { Switch } from "@/components/ui/switch";
 import { countdownText } from "@/utils/countdown";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
+import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -56,7 +56,7 @@ function groupByPlatform(sales: Sale[]): { platform: Platform; count: number }[]
 }
 
 export default function SaleCalendar() {
-  const navigate = useNavigate();
+  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
   const bp = useBreakpoint();
   const isMobile = bp === "mobile";
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -149,7 +149,7 @@ export default function SaleCalendar() {
         ) : (
           <div className="space-y-2">
             {selectedSales.map((s) => (
-              <SaleItem key={s.id} sale={s} navigate={navigate} />
+              <SaleItem key={s.id} sale={s} onOpenDetail={setExpandedSale} />
             ))}
           </div>
         )}
@@ -311,6 +311,8 @@ export default function SaleCalendar() {
           </div>
         </div>
       )}
+
+      <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
     </div>
   );
 }
@@ -379,7 +381,7 @@ function MobileDots({ groups }: { groups: { platform: Platform; count: number }[
 }
 
 /* ── Sale list item with D-day ── */
-function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => void }) {
+function SaleItem({ sale, onOpenDetail }: { sale: Sale; onOpenDetail: (s: Sale) => void }) {
   const status = getSaleStatus(sale);
   const statusConf = saleStatusConfig[status];
   const isEndingToday = status === "ending_today";
@@ -387,7 +389,7 @@ function SaleItem({ sale, navigate }: { sale: Sale; navigate: (path: string) => 
 
   return (
     <div
-      onClick={() => navigate(`/sale/${sale.id}`)}
+      onClick={() => onOpenDetail(sale)}
       className="flex items-center gap-3 p-3 bg-card rounded-xl border border-border cursor-pointer hover:shadow-card-hover transition-shadow"
     >
       {/* Platform color dot */}
