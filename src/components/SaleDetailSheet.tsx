@@ -111,9 +111,8 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
           <div className="flex flex-col gap-2.5 pt-2">
             <Button
               className="w-full rounded-xl gap-2 h-11 font-semibold"
-              onClick={() => requireLogin(() => window.open(sale.link, "_blank"))}
+              onClick={() => window.open(sale.link, "_blank")}
             >
-              {!user && <Lock className="w-3.5 h-3.5" />}
               <ExternalLink className="w-4 h-4" />
               세일 바로가기
             </Button>
