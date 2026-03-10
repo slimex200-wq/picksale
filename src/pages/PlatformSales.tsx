@@ -1,12 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useSales } from "@/hooks/useSales";
-import { slugToPlatform, platformEmojis, platformColors, getSaleStatus, calculateRankingScore, Platform } from "@/data/salesUtils";
+import { slugToPlatform, platformEmojis, platformColors, getSaleStatus, calculateRankingScore, Platform, getTodayKST } from "@/data/salesUtils";
 import PlatformLogo from "@/components/PlatformLogo";
 import SaleCard from "@/components/SaleCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import JsonLd from "@/components/JsonLd";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
@@ -29,19 +28,21 @@ const sortOptions: { key: SortOption; label: string }[] = [
   { key: "starting_soon", label: "시작임박순" },
 ];
 
+/** Uses KST-based today for consistent status with PlatformExplorer */
 function getDetailedStatus(sale: { start_date: string; end_date: string }): StatusFilter {
-  const today = new Date().toISOString().split("T")[0];
-  const endDiff = Math.ceil((new Date(sale.end_date).getTime() - Date.now()) / 86400000);
+  const today = getTodayKST();
+  const daysBetween = (a: string, b: string) =>
+    Math.round((new Date(a + "T00:00:00+09:00").getTime() - new Date(b + "T00:00:00+09:00").getTime()) / 86400000);
+
   const isActive = sale.start_date <= today && sale.end_date >= today;
+  const endDaysLeft = daysBetween(sale.end_date, today);
+  const startDaysLeft = daysBetween(sale.start_date, today);
 
   if (sale.end_date === today) return "ending_today";
-  if (isActive && endDiff >= 0 && endDiff <= 2) return "ending_soon";
+  if (isActive && endDaysLeft >= 0 && endDaysLeft <= 2) return "ending_soon";
   if (isActive) return "live";
-  if (sale.start_date > today) {
-    const startDiff = Math.ceil((new Date(sale.start_date).getTime() - Date.now()) / 86400000);
-    if (startDiff <= 3) return "starting_soon";
-  }
-  return "all"; // ended or far future
+  if (startDaysLeft > 0 && startDaysLeft <= 3) return "starting_soon";
+  return "all";
 }
 
 export default function PlatformSales() {
@@ -54,16 +55,20 @@ export default function PlatformSales() {
 
   const filtered = useMemo(() => {
     if (!platform) return [];
+    const today = getTodayKST();
 
+    // Filter: same platform, major tier, not ended (using KST)
     let result = allSales.filter(
-      (s) => s.platform === platform && s.sale_tier === "major"
+      (s) => s.platform === platform && s.sale_tier === "major" && s.end_date >= today
     );
 
-    // Exclude ended sales unless filter is "all"
-    const today = new Date().toISOString().split("T")[0];
-    result = result.filter((s) => s.end_date >= today);
-
-    if (statusFilter !== "all") {
+    if (statusFilter === "live") {
+      // "진행중" includes ending_today + ending_soon + live (all currently active)
+      result = result.filter((s) => {
+        const st = getDetailedStatus(s);
+        return st === "live" || st === "ending_today" || st === "ending_soon";
+      });
+    } else if (statusFilter !== "all") {
       result = result.filter((s) => getDetailedStatus(s) === statusFilter);
     }
 
@@ -86,6 +91,28 @@ export default function PlatformSales() {
     return result;
   }, [allSales, platform, statusFilter, sortBy]);
 
+  // Debug logging
+  useEffect(() => {
+    if (!platform) return;
+    const today = getTodayKST();
+    const allForPlatform = allSales.filter((s) => s.platform === platform);
+    const majorPublished = allForPlatform.filter((s) => s.sale_tier === "major");
+    const notEnded = majorPublished.filter((s) => s.end_date >= today);
+
+    console.group(`[PlatformSales Debug] ${platform}`);
+    console.log("selected platform:", platform);
+    console.log("selected tab:", statusFilter);
+    console.log("today (KST):", today);
+    console.log("all sales for platform:", allForPlatform.length);
+    console.log("major+published:", majorPublished.length);
+    console.log("not ended (end_date >= today):", notEnded.length);
+    console.log("filtered result:", filtered.length);
+    notEnded.forEach((s) => {
+      console.log(`  - ${s.sale_name} | start: ${s.start_date} | end: ${s.end_date} | status: ${getDetailedStatus(s)} | tier: ${s.sale_tier}`);
+    });
+    console.groupEnd();
+  }, [platform, allSales, statusFilter, filtered]);
+
   if (!platform) {
     return (
       <div className="max-w-lg mx-auto px-4 pt-8 text-center">
@@ -97,10 +124,8 @@ export default function PlatformSales() {
 
   const emoji = platformEmojis[platform];
   const colorClass = platformColors[platform];
-  const liveCount = filtered.filter((s) => {
-    const today = new Date().toISOString().split("T")[0];
-    return s.start_date <= today && s.end_date >= today;
-  }).length;
+  const today = getTodayKST();
+  const liveCount = filtered.filter((s) => s.start_date <= today && s.end_date >= today).length;
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
@@ -116,12 +141,10 @@ export default function PlatformSales() {
         name: `${platform} 세일 모음 | PickSale`,
         description: `${platform}의 현재 진행 중이거나 곧 시작하는 주요 세일 이벤트를 모아봅니다.`,
         url: `${window.location.origin}${location.pathname}`,
-        about: {
-          "@type": "Organization",
-          name: platform,
-        },
+        about: { "@type": "Organization", name: platform },
         numberOfItems: filtered.length,
       }} />
+
       {/* Header */}
       <div className="space-y-3">
         <Link to="/" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
