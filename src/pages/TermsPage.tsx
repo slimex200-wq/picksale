@@ -1,10 +1,11 @@
 import PageMeta from "@/components/PageMeta";
+import DocumentPageLayout from "@/components/DocumentPageLayout";
 
 export default function TermsPage() {
   return (
-    <>
+    <DocumentPageLayout>
       <PageMeta title="이용약관 — PickSale" description="PickSale 이용약관" />
-      <main className="max-w-2xl mx-auto px-4 py-10 space-y-6">
+      <div className="space-y-6">
         <h1 className="text-2xl font-bold text-foreground">이용약관</h1>
         <div className="space-y-6 text-sm text-muted-foreground leading-relaxed">
           <section className="space-y-2">
@@ -31,7 +32,7 @@ export default function TermsPage() {
             <p>PickSale은 서비스의 일부 또는 전체를 사전 공지 없이 변경하거나 중단할 수 있습니다.</p>
           </section>
         </div>
-      </main>
-    </>
+      </div>
+    </DocumentPageLayout>
   );
 }

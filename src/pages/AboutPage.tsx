@@ -1,10 +1,11 @@
 import PageMeta from "@/components/PageMeta";
+import DocumentPageLayout from "@/components/DocumentPageLayout";
 
 export default function AboutPage() {
   return (
-    <>
+    <DocumentPageLayout>
       <PageMeta title="About — PickSale" description="PickSale은 여러 온라인 쇼핑몰의 세일 및 이벤트 정보를 한 곳에서 확인할 수 있도록 정리해주는 큐레이션 서비스입니다." />
-      <main className="max-w-2xl mx-auto px-4 py-10 space-y-6">
+      <div className="space-y-6">
         <h1 className="text-2xl font-bold text-foreground">About PickSale</h1>
         <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
           <p>
@@ -26,7 +27,7 @@ export default function AboutPage() {
             </a>
           </div>
         </div>
-      </main>
-    </>
+      </div>
+    </DocumentPageLayout>
   );
 }
