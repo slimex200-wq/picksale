@@ -35,6 +35,9 @@ import AdminSignalSimulator from "./pages/AdminSignalSimulator";
 import AdminHidden from "./pages/AdminHidden";
 import AdminRejected from "./pages/AdminRejected";
 import AdminAll from "./pages/AdminAll";
+import AboutPage from "./pages/AboutPage";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
