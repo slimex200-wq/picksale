@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-card/50 py-6">
+    <footer className="border-t border-border bg-card/50 py-6 pb-24 md:pb-6" style={{ paddingBottom: 'max(6rem, calc(4rem + env(safe-area-inset-bottom)))' }}>
       <div className="max-w-6xl mx-auto px-4 text-center space-y-2">
         <nav className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
           <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
