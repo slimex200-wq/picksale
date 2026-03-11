@@ -8,6 +8,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { LoginGateProvider } from "@/hooks/useLoginGate";
 import LoginPrompt from "@/components/LoginPrompt";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
@@ -34,6 +35,9 @@ import AdminSignalSimulator from "./pages/AdminSignalSimulator";
 import AdminHidden from "./pages/AdminHidden";
 import AdminRejected from "./pages/AdminRejected";
 import AdminAll from "./pages/AdminAll";
+import AboutPage from "./pages/AboutPage";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -58,18 +62,18 @@ const App = () => (
         <LoginPrompt />
           <Routes>
             {/* Home — accessible without login */}
-            <Route path="/" element={<><Header /><Index /></>} />
-            <Route path="/home" element={<><Header /><Index /></>} />
+            <Route path="/" element={<><Header /><Index /><Footer /></>} />
+            <Route path="/home" element={<><Header /><Index /><Footer /></>} />
             {/* Login */}
             <Route path="/login" element={<><Header /><LoginPage /></>} />
-            <Route path="/sale/:id" element={<><Header /><SaleDetail /></>} />
-            <Route path="/platform/:slug" element={<><Header /><PlatformSales /></>} />
-            <Route path="/calendar" element={<><Header /><SaleCalendar /></>} />
-            <Route path="/event/:eventId" element={<><Header /><EventDetail /></>} />
-            <Route path="/radar" element={<><Header /><RadarPage /></>} />
-            <Route path="/community" element={<><Header /><CommunityPage /></>} />
-            <Route path="/community/:id" element={<><Header /><CommunityDetail /></>} />
-            <Route path="/submit" element={<><Header /><SubmitSale /></>} />
+            <Route path="/sale/:id" element={<><Header /><SaleDetail /><Footer /></>} />
+            <Route path="/platform/:slug" element={<><Header /><PlatformSales /><Footer /></>} />
+            <Route path="/calendar" element={<><Header /><SaleCalendar /><Footer /></>} />
+            <Route path="/event/:eventId" element={<><Header /><EventDetail /><Footer /></>} />
+            <Route path="/radar" element={<><Header /><RadarPage /><Footer /></>} />
+            <Route path="/community" element={<><Header /><CommunityPage /><Footer /></>} />
+            <Route path="/community/:id" element={<><Header /><CommunityDetail /><Footer /></>} />
+            <Route path="/submit" element={<><Header /><SubmitSale /><Footer /></>} />
             <Route path="/admin" element={<><Header /><AdminGuard /></>}>
               <Route index element={<AdminOverview />} />
               <Route path="all" element={<AdminAll />} />
@@ -86,6 +90,9 @@ const App = () => (
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="signal-simulator" element={<AdminSignalSimulator />} />
             </Route>
+            <Route path="/about" element={<><Header /><AboutPage /><Footer /></>} />
+            <Route path="/terms" element={<><Header /><TermsPage /><Footer /></>} />
+            <Route path="/privacy" element={<><Header /><PrivacyPage /><Footer /></>} />
             <Route path="*" element={<><Header /><NotFound /></>} />
           </Routes>
         </LoginGateProvider>
