@@ -62,18 +62,18 @@ const App = () => (
         <LoginPrompt />
           <Routes>
             {/* Home — accessible without login */}
-            <Route path="/" element={<><Header /><Index /></>} />
-            <Route path="/home" element={<><Header /><Index /></>} />
+            <Route path="/" element={<><Header /><Index /><Footer /></>} />
+            <Route path="/home" element={<><Header /><Index /><Footer /></>} />
             {/* Login */}
             <Route path="/login" element={<><Header /><LoginPage /></>} />
-            <Route path="/sale/:id" element={<><Header /><SaleDetail /></>} />
-            <Route path="/platform/:slug" element={<><Header /><PlatformSales /></>} />
-            <Route path="/calendar" element={<><Header /><SaleCalendar /></>} />
-            <Route path="/event/:eventId" element={<><Header /><EventDetail /></>} />
-            <Route path="/radar" element={<><Header /><RadarPage /></>} />
-            <Route path="/community" element={<><Header /><CommunityPage /></>} />
-            <Route path="/community/:id" element={<><Header /><CommunityDetail /></>} />
-            <Route path="/submit" element={<><Header /><SubmitSale /></>} />
+            <Route path="/sale/:id" element={<><Header /><SaleDetail /><Footer /></>} />
+            <Route path="/platform/:slug" element={<><Header /><PlatformSales /><Footer /></>} />
+            <Route path="/calendar" element={<><Header /><SaleCalendar /><Footer /></>} />
+            <Route path="/event/:eventId" element={<><Header /><EventDetail /><Footer /></>} />
+            <Route path="/radar" element={<><Header /><RadarPage /><Footer /></>} />
+            <Route path="/community" element={<><Header /><CommunityPage /><Footer /></>} />
+            <Route path="/community/:id" element={<><Header /><CommunityDetail /><Footer /></>} />
+            <Route path="/submit" element={<><Header /><SubmitSale /><Footer /></>} />
             <Route path="/admin" element={<><Header /><AdminGuard /></>}>
               <Route index element={<AdminOverview />} />
               <Route path="all" element={<AdminAll />} />
