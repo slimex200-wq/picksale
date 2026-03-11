@@ -1,10 +1,11 @@
 import PageMeta from "@/components/PageMeta";
+import DocumentPageLayout from "@/components/DocumentPageLayout";
 
 export default function PrivacyPage() {
   return (
-    <>
+    <DocumentPageLayout>
       <PageMeta title="개인정보처리방침 — PickSale" description="PickSale 개인정보처리방침" />
-      <main className="max-w-2xl mx-auto px-4 py-10 space-y-6">
+      <div className="space-y-6">
         <h1 className="text-2xl font-bold text-foreground">개인정보처리방침</h1>
         <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
           <p>PickSale은 현재 사용자로부터 별도의 개인정보를 직접 수집하지 않습니다.</p>
@@ -24,7 +25,7 @@ export default function PrivacyPage() {
             </a>
           </div>
         </div>
-      </main>
-    </>
+      </div>
+    </DocumentPageLayout>
   );
 }
