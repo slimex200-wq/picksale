@@ -8,6 +8,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { LoginGateProvider } from "@/hooks/useLoginGate";
 import LoginPrompt from "@/components/LoginPrompt";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 import Index from "./pages/Index";
 import SaleDetail from "./pages/SaleDetail";
