@@ -90,6 +90,9 @@ const App = () => (
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="signal-simulator" element={<AdminSignalSimulator />} />
             </Route>
+            <Route path="/about" element={<><Header /><AboutPage /><Footer /></>} />
+            <Route path="/terms" element={<><Header /><TermsPage /><Footer /></>} />
+            <Route path="/privacy" element={<><Header /><PrivacyPage /><Footer /></>} />
             <Route path="*" element={<><Header /><NotFound /></>} />
           </Routes>
         </LoginGateProvider>
