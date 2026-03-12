@@ -258,7 +258,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </section>
       )}
 
-      <NewRadarTestSection />
+      <EventRadarSection />
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={2} />
 
