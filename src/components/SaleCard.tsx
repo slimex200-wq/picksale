@@ -148,21 +148,20 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
         <div className="flex items-center justify-between">
           {status === "ending_today" ? (
-            <span className="inline-flex items-center gap-1.5 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: "11px", fontWeight: 700, padding: "2px 8px" }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
-              오늘 마감
-            </span>
+            <ClosingTodayBadge endDate={sale.end_date} size="md" />
           ) : (
             <Badge variant="outline" className={`${statusInfo.className} border-0`} style={{ fontSize: '11px', fontWeight: '600', padding: '2px 8px' }}>
               {statusInfo.emoji} {statusInfo.label}
             </Badge>
           )}
-          <span
-            className={`whitespace-nowrap font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
-            style={{ fontSize: '11px' }}
-          >
-            {countdown}
-          </span>
+          {status !== "ending_today" && (
+            <span
+              className={`whitespace-nowrap font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
+              style={{ fontSize: '11px' }}
+            >
+              {countdown}
+            </span>
+          )}
         </div>
         <h3
           className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
