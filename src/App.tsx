@@ -39,6 +39,7 @@ import AboutPage from "./pages/AboutPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import NotFound from "./pages/NotFound";
+import BookmarksPage from "./pages/BookmarksPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
