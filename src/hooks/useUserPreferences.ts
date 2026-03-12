@@ -43,15 +43,15 @@ export function useUserPreferences() {
       if (!user) throw new Error("Not authenticated");
 
       if (preferences) {
-        const { error } = await supabase
-          .from("user_preferences" as any)
-          .update({ favorite_platforms: platforms } as any)
+        const { error } = await (supabase as any)
+          .from("user_preferences")
+          .update({ favorite_platforms: platforms })
           .eq("user_id", user.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase
-          .from("user_preferences" as any)
-          .insert({ user_id: user.id, favorite_platforms: platforms } as any);
+        const { error } = await (supabase as any)
+          .from("user_preferences")
+          .insert({ user_id: user.id, favorite_platforms: platforms });
         if (error) throw error;
       }
     },
