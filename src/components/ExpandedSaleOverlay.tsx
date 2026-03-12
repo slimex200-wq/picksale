@@ -175,13 +175,16 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
               )}
 
               <div className="flex flex-col gap-2.5 pt-2">
-                <Button
-                  className="w-full rounded-xl gap-2 h-11 font-semibold"
-                  onClick={() => window.open(currentSale.link, "_blank")}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  세일 바로가기
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    className="flex-1 rounded-xl gap-2 h-11 font-semibold"
+                    onClick={() => window.open(currentSale.link, "_blank")}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    세일 바로가기
+                  </Button>
+                  <BookmarkButton saleId={currentSale.id} size={20} className="h-11 w-11 rounded-xl border border-border/70" />
+                </div>
                 <Button
                   variant="outline"
                   className="w-full rounded-xl gap-2 h-11 font-semibold border-border/70"

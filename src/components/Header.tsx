@@ -68,12 +68,16 @@ export default function Header() {
             >
               <Search className="w-[18px] h-[18px]" />
             </Link>
+            {user && (
+              <Link
+                to="/bookmarks"
+                className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                title="저장한 세일"
+              >
+                <Bookmark className="w-[18px] h-[18px]" />
+              </Link>
+            )}
             <button
-              className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-              title="알림"
-            >
-              <Bell className="w-[18px] h-[18px]" />
-            </button>
 
             {user ? (
               <div className="flex items-center gap-1.5 ml-1">
