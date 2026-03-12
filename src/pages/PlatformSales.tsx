@@ -152,19 +152,18 @@ export default function PlatformSales() {
   return (
     <div className="max-w-6xl mx-auto px-4 pt-4 pb-24 space-y-4">
       <PageMeta
-        title={`${platform} 세일 모음 | PickSale`}
-        description={`${platform}의 현재 진행 중이거나 곧 시작하는 주요 세일 이벤트를 모아봅니다.`}
+        title={`${platform} 세일 모음 - 진행중인 ${platform} 할인 이벤트 | PickSale`}
+        description={`${platform}에서 진행중인 세일과 할인 이벤트를 한눈에 확인하세요. 오늘 마감, 진행중, 곧 시작하는 세일 정보를 PickSale에서 모아봅니다.`}
         ogUrl={`${window.location.origin}/platform/${slug}`}
       />
       <CanonicalLink href={`${window.location.origin}/platform/${slug}`} />
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "CollectionPage",
-        name: `${platform} 세일 모음 | PickSale`,
-        description: `${platform}의 현재 진행 중이거나 곧 시작하는 주요 세일 이벤트를 모아봅니다.`,
-        url: `${window.location.origin}${location.pathname}`,
-        about: { "@type": "Organization", name: platform },
-        numberOfItems: filtered.length,
+        name: `${platform} 세일 모음`,
+        description: `${platform} 진행중인 세일 정보`,
+        url: `${window.location.origin}/platform/${slug}`,
+        isPartOf: { "@type": "WebSite", name: "PickSale" },
       }} />
 
       {/* Header */}
