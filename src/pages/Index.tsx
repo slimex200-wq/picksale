@@ -259,6 +259,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
       )}
 
       <EventOccurrenceSection />
+      <NewRadarTestSection />
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={2} />
 
