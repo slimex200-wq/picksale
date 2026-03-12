@@ -4,7 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 export interface EventOccurrence {
   occurrence_id: string | null;
   organization_name: string | null;
+  organization_id: string | null;
   event_name: string | null;
+  event_series_id: string | null;
   occurrence_title: string | null;
   status: string | null;
   starts_on: string | null;
@@ -36,7 +38,7 @@ export function useEventOccurrences() {
     queryFn: async (): Promise<EventOccurrence[]> => {
       const { data, error } = await supabase
         .from("event_occurrence_cards")
-        .select("occurrence_id,organization_name,event_name,occurrence_title,status,starts_on,ends_on,max_discount_pct,official_url,category_tags,organization_slug,event_slug,summary");
+        .select("occurrence_id,organization_name,organization_id,event_name,event_series_id,occurrence_title,status,starts_on,ends_on,max_discount_pct,official_url,category_tags,organization_slug,event_slug,summary");
 
       if (error) throw error;
       return (data ?? []) as EventOccurrence[];
