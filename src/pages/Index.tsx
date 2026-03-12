@@ -62,7 +62,7 @@ export default function Index() {
   const bp = useBreakpoint();
 
   const activeSales = useMemo(
-    () => sales.filter((s) => getSaleStatus(s) !== "ended" && s.sale_name?.trim()),
+    () => sales.filter((s) => getSaleStatus(s) !== "ended"),
     [sales]
   );
 
