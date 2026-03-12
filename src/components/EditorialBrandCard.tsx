@@ -53,11 +53,13 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, hideEn
           </Badge>
         ) : null}
       </div>
-      <div className="relative z-10 px-3 pt-0.5">
-        <span className={`font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground/60 font-normal"}`} style={{ fontSize: 11 }}>
-          {countdown}
-        </span>
-      </div>
+      {!(hideEndingBadge && status === "ending_today") && (
+        <div className="relative z-10 px-3 pt-0.5">
+          <span className={`font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground/60 font-normal"}`} style={{ fontSize: 11 }}>
+            {countdown}
+          </span>
+        </div>
+      )}
       <div className="flex-1" />
       <div className="relative z-10 px-3 pb-3 space-y-2">
         <h3
