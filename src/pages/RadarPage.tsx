@@ -1,16 +1,15 @@
 import { lazy, Suspense, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { useSales } from "@/hooks/useSales";
-import { Sale, getSaleStatus, platforms, platformSlugs } from "@/data/salesUtils";
-import PlatformLogo from "@/components/PlatformLogo";
+import { Sale, getSaleStatus } from "@/data/salesUtils";
 import StatusExploration from "@/components/StatusExploration";
+import PlatformExplorer from "@/components/PlatformExplorer";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import {
   StatusExplorationSkeleton,
   TimelineSkeletonFull,
   PlatformGridSkeleton,
 } from "@/components/skeletons/SaleCardSkeleton";
-import { ChevronRight, Radar } from "lucide-react";
+import { Radar } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
 
@@ -57,27 +56,7 @@ export default function RadarPage() {
           </Suspense>
 
           {/* 3. Platform Exploration */}
-          <section className="space-y-4">
-            <h2 className="text-lg font-extrabold text-foreground px-1 flex items-center gap-2">
-              <span>🏬</span>
-              플랫폼별 세일
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-              {platforms.map((p) => (
-                <Link
-                  key={p}
-                  to={`/platform/${platformSlugs[p]}`}
-                  className="bg-card border border-border rounded-xl px-3 py-3 flex items-center gap-2.5 hover:shadow-md transition-shadow"
-                >
-                  <div className="w-9 h-9 rounded-lg bg-accent/60 border border-border/50 flex items-center justify-center p-1 shrink-0">
-                    <PlatformLogo platform={p} className="w-full h-full object-contain rounded" />
-                  </div>
-                  <span className="text-xs font-bold text-card-foreground flex-1">{p}</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
-                </Link>
-              ))}
-            </div>
-          </section>
+          <PlatformExplorer sales={sales} />
         </>
       )}
 
