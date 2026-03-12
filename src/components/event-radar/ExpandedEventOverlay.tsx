@@ -2,11 +2,11 @@ import { useEffect, useCallback } from "react";
 import { type EventOccurrence } from "@/hooks/useEventOccurrences";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Calendar, X, Radar } from "lucide-react";
+import { ExternalLink, Calendar, X, Radar, History, Layers } from "lucide-react";
 
 function formatDate(d: string) {
-  const [, m, day] = d.split("-");
-  return `${parseInt(m)}월 ${parseInt(day)}일`;
+  const [y, m, day] = d.split("-");
+  return `${y}년 ${parseInt(m)}월 ${parseInt(day)}일`;
 }
 
 function formatDateRange(start?: string | null, end?: string | null) {
@@ -51,6 +51,8 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
   const dateRange = formatDateRange(event.starts_on, event.ends_on);
   const discount = event.max_discount_pct ? `최대 ${event.max_discount_pct}%` : null;
   const tags = event.category_tags ?? [];
+  const title = event.occurrence_title || event.event_name || "이벤트";
+  const showEventName = event.event_name && event.occurrence_title && event.event_name !== event.occurrence_title;
 
   return (
     <div
@@ -90,12 +92,18 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
           </div>
 
           <h2 className="text-lg font-bold text-card-foreground leading-snug tracking-tight">
-            {event.occurrence_title || event.event_name || "이벤트"}
+            {title}
           </h2>
+          {showEventName && (
+            <p className="text-xs text-muted-foreground mt-1">
+              {event.event_name}
+            </p>
+          )}
         </div>
 
         {/* Content */}
         <div className="p-5 space-y-4 overflow-y-auto flex-1">
+          {/* Status + Discount */}
           <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="outline" className={`${status.className} border text-xs font-semibold px-2 py-0.5`}>
               {status.emoji} {status.label}
@@ -107,6 +115,7 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
             )}
           </div>
 
+          {/* Date */}
           {dateRange && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
               <Calendar className="w-4 h-4 shrink-0" />
@@ -114,6 +123,7 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
             </div>
           )}
 
+          {/* Category tags */}
           {tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {tags.map((tag) => (
@@ -124,14 +134,16 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
             </div>
           )}
 
+          {/* Summary */}
           {event.summary && (
             <p className="text-sm text-muted-foreground leading-relaxed">
               {event.summary}
             </p>
           )}
 
+          {/* CTA */}
           {event.official_url && (
-            <div className="pt-2">
+            <div className="pt-1">
               <Button
                 className="w-full rounded-xl gap-2 h-11 font-semibold"
                 onClick={() => window.open(event.official_url!, "_blank")}
@@ -141,6 +153,36 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
               </Button>
             </div>
           )}
+
+          {/* ─── Future expansion placeholders ─── */}
+          <div className="border-t border-border/40 pt-4 space-y-2.5">
+            <button
+              disabled
+              className="w-full flex items-center gap-2.5 rounded-xl border border-dashed border-border/60 px-3.5 py-3 text-left opacity-50 cursor-not-allowed"
+            >
+              <History className="w-4 h-4 text-muted-foreground shrink-0" />
+              <div>
+                <span className="text-xs font-semibold text-foreground">작년 기록 보기</span>
+                <p className="text-[10px] text-muted-foreground mt-0.5">이전 연도 할인율과 일정을 비교할 수 있어요</p>
+              </div>
+              <Badge variant="outline" className="ml-auto text-[9px] px-1.5 py-0 h-4 border-border/50 text-muted-foreground/50 shrink-0">
+                곧 추가
+              </Badge>
+            </button>
+            <button
+              disabled
+              className="w-full flex items-center gap-2.5 rounded-xl border border-dashed border-border/60 px-3.5 py-3 text-left opacity-50 cursor-not-allowed"
+            >
+              <Layers className="w-4 h-4 text-muted-foreground shrink-0" />
+              <div>
+                <span className="text-xs font-semibold text-foreground">같은 브랜드 다른 이벤트</span>
+                <p className="text-[10px] text-muted-foreground mt-0.5">{event.organization_name ?? "이 브랜드"}의 다른 세일 이벤트를 모아볼 수 있어요</p>
+              </div>
+              <Badge variant="outline" className="ml-auto text-[9px] px-1.5 py-0 h-4 border-border/50 text-muted-foreground/50 shrink-0">
+                곧 추가
+              </Badge>
+            </button>
+          </div>
         </div>
       </div>
 
