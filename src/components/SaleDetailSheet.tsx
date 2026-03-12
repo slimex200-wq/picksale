@@ -14,6 +14,7 @@ import { ExternalLink, Calendar, Bell, X, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
+import LiveCountdownText from "@/components/LiveCountdownText";
 import { useLoginGate } from "@/hooks/useLoginGate";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -69,16 +70,19 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
           <SheetHeader className="p-0 text-left space-y-2">
             <div className="flex items-center gap-2">
               {status === "ending_today" ? (
-                <ClosingTodayBadge endDate={sale.end_date} size="md" />
+                <>
+                  <ClosingTodayBadge />
+                  <LiveCountdownText endDate={sale.end_date} className="text-xs" />
+                </>
               ) : (
-                <Badge variant="outline" className={`${statusInfo.className} border-0 text-xs font-semibold`}>
-                  {statusInfo.emoji} {statusInfo.label}
-                </Badge>
-              )}
-              {status !== "ending_today" && (
-                <span className={`text-xs font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
-                  {countdown}
-                </span>
+                <>
+                  <Badge variant="outline" className={`${statusInfo.className} border-0 text-xs font-semibold`}>
+                    {statusInfo.emoji} {statusInfo.label}
+                  </Badge>
+                  <span className={`text-xs font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                    {countdown}
+                  </span>
+                </>
               )}
             </div>
             <SheetTitle className="text-lg font-bold text-card-foreground leading-snug tracking-tight">

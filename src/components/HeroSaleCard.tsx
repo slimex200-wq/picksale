@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
+import LiveCountdownText from "@/components/LiveCountdownText";
 
 interface HeroSaleCardProps {
   sale: Sale;
@@ -59,7 +60,10 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
         </div>
         <span className="text-foreground font-semibold tracking-tight" style={{ fontSize: "12px" }}>{sale.platform}</span>
         {status === "ending_today" ? (
-          <ClosingTodayBadge endDate={sale.end_date} size="sm" />
+          <div className="flex items-center gap-1.5 ml-auto">
+            <ClosingTodayBadge />
+            <LiveCountdownText endDate={sale.end_date} className="text-[10px]" />
+          </div>
         ) : (
           <Badge variant="outline" className={`${statusInfo.className} border-0 ml-auto`} style={{ fontSize: "10px", fontWeight: "600", padding: "1px 6px" }}>
             {statusInfo.emoji} {statusInfo.label}
