@@ -52,6 +52,17 @@ function SectionHeader({ emoji, title, count, moreLink, moreLabel }: { emoji: st
   );
 }
 
+/** Group ending-today sales by platform */
+function groupByPlatform(sales: Sale[]): { platform: string; sales: Sale[] }[] {
+  const map = new Map<string, Sale[]>();
+  for (const sale of sales) {
+    const existing = map.get(sale.platform) || [];
+    existing.push(sale);
+    map.set(sale.platform, existing);
+  }
+  return Array.from(map.entries()).map(([platform, sales]) => ({ platform, sales }));
+}
+
 export default function Index() {
   const [query, setQuery] = useState("");
   const [heroFilter, setHeroFilter] = useState<SaleStatus | null>(null);
