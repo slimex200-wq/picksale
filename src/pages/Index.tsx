@@ -362,7 +362,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
           )}
 
           {featuredSales.length > 0 && (
-            <section style={{ marginBottom: 32 }}>
+            <section style={{ marginBottom: 32 }} className="overflow-hidden">
               <div className="mb-3">
                 <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
               </div>

@@ -135,14 +135,13 @@
     font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     letter-spacing: -0.01em;
     line-height: 1.5;
-    overflow-y: scroll;
     scrollbar-gutter: stable;
   }
 }
 
 @layer base {
-  html, body {
-    overflow-x: hidden;
+  html {
+    overflow-x: clip;
   }
 }
 
