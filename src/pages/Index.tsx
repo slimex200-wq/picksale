@@ -2,6 +2,8 @@ import { useState, useMemo, useRef } from "react";
 import { sortByRanking, sortForFeatured, getSaleStatus, SaleStatus, Sale } from "@/data/salesUtils";
 import { matchesQuickFilter } from "@/data/quickFilterDefs";
 import { useSales } from "@/hooks/useSales";
+import { useUserPreferences } from "@/hooks/useUserPreferences";
+import { useAuth } from "@/hooks/useAuth";
 import SaleCard from "@/components/SaleCard";
 import HeroSaleCard from "@/components/HeroSaleCard";
 import CoverflowCarousel from "@/components/CoverflowCarousel";
@@ -27,7 +29,8 @@ import {
   HeroStatsSkeleton,
 } from "@/components/skeletons/SaleCardSkeleton";
 import { Input } from "@/components/ui/input";
-import { Search, Trophy, ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Search, Trophy, ChevronRight, Star, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import CanonicalLink from "@/components/CanonicalLink";
@@ -60,8 +63,11 @@ export default function Index() {
   const [quickFilter, setQuickFilter] = useState<string | null>(null);
   const [searchFocused, setSearchFocused] = useState(false);
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
+  const [showAll, setShowAll] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const { data: sales = [], isLoading } = useSales();
+  const { user } = useAuth();
+  const { favoritePlatforms, hasFavorites } = useUserPreferences();
   const bp = useBreakpoint();
 
   const activeSales = useMemo(
@@ -69,8 +75,14 @@ export default function Index() {
     [sales]
   );
 
+  // Apply favorite platforms filter
+  const platformFiltered = useMemo(() => {
+    if (!hasFavorites || showAll) return activeSales;
+    return activeSales.filter((s) => favoritePlatforms.includes(s.platform as any));
+  }, [activeSales, favoritePlatforms, hasFavorites, showAll]);
+
   const filtered = useMemo(() => {
-    let result = activeSales;
+    let result = platformFiltered;
     if (heroFilter) result = result.filter((s) => getSaleStatus(s) === heroFilter);
     if (quickFilter) {
       result = result.filter((s) => matchesQuickFilter(s, quickFilter));
@@ -85,24 +97,24 @@ export default function Index() {
       );
     }
     return sortByRanking(result);
-  }, [query, activeSales, heroFilter, quickFilter]);
+  }, [query, platformFiltered, heroFilter, quickFilter]);
 
   const hasActiveFilter = !!heroFilter || !!quickFilter || !!query.trim();
 
   const featuredSales = useMemo(
-    () => sortForFeatured(activeSales.filter((s) => {
+    () => sortForFeatured(platformFiltered.filter((s) => {
       const st = getSaleStatus(s);
       return st === "live" || st === "ending_today";
     })).slice(0, 6),
-    [activeSales]
+    [platformFiltered]
   );
   const endingTodaySales = useMemo(
-    () => sortByRanking(activeSales.filter((s) => getSaleStatus(s) === "ending_today")),
-    [activeSales]
+    () => sortByRanking(platformFiltered.filter((s) => getSaleStatus(s) === "ending_today")),
+    [platformFiltered]
   );
   const liveSales = useMemo(
-    () => sortByRanking(activeSales.filter((s) => getSaleStatus(s) === "live")),
-    [activeSales]
+    () => sortByRanking(platformFiltered.filter((s) => getSaleStatus(s) === "live")),
+    [platformFiltered]
   );
 
   const handleSearchSelect = (keyword: string) => {
@@ -118,7 +130,7 @@ export default function Index() {
     setHeroFilter(null);
   };
 
-  const rankingSales = useMemo(() => sortByRanking(activeSales).slice(0, 10), [activeSales]);
+  const rankingSales = useMemo(() => sortByRanking(platformFiltered).slice(0, 10), [platformFiltered]);
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-28 sm:pb-24">
@@ -145,7 +157,25 @@ export default function Index() {
         {isLoading && !sales.length ? (
           <HeroStatsSkeleton />
         ) : (
-          <HeroStats sales={activeSales} activeFilter={heroFilter} onFilterChange={handleHeroFilter} />
+          <HeroStats sales={platformFiltered} activeFilter={heroFilter} onFilterChange={handleHeroFilter} favoritePlatforms={favoritePlatforms} />
+        )}
+
+        {/* Favorite platform toggle */}
+        {user && hasFavorites && (
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
+              showAll
+                ? "border-border text-muted-foreground hover:bg-accent"
+                : "border-primary/30 bg-primary/5 text-primary"
+            }`}
+          >
+            {showAll ? (
+              <><Star className="w-3.5 h-3.5" /> 관심 플랫폼만</>
+            ) : (
+              <><Eye className="w-3.5 h-3.5" /> 전체 보기</>
+            )}
+          </button>
         )}
       </div>
 

@@ -1,7 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarDays, Radar, Settings, Home, User, LogOut, Search, Bell, MessageSquare, Bookmark } from "lucide-react";
+import { useState } from "react";
+import { CalendarDays, Radar, Settings, Home, User, LogOut, Search, Bell, MessageSquare, Bookmark, Star } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
+import FavoritePlatformsModal from "@/components/FavoritePlatformsModal";
 import logo from "@/assets/logo.png";
 
 const baseNavItems = [
@@ -17,6 +19,7 @@ export default function Header() {
   const { pathname } = useLocation();
   const { user, profile, signOut } = useAuth();
   const { isAdmin } = useAdmin();
+  const [showPlatformModal, setShowPlatformModal] = useState(false);
 
   const navItems = isAdmin ? [...baseNavItems, adminNavItem] : baseNavItems;
 
@@ -69,13 +72,22 @@ export default function Header() {
               <Search className="w-[18px] h-[18px]" />
             </Link>
             {user && (
-              <Link
-                to="/bookmarks"
-                className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-                title="저장한 세일"
-              >
-                <Bookmark className="w-[18px] h-[18px]" />
-              </Link>
+              <>
+                <button
+                  onClick={() => setShowPlatformModal(true)}
+                  className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                  title="관심 플랫폼 설정"
+                >
+                  <Star className="w-[18px] h-[18px]" />
+                </button>
+                <Link
+                  to="/bookmarks"
+                  className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                  title="저장한 세일"
+                >
+                  <Bookmark className="w-[18px] h-[18px]" />
+                </Link>
+              </>
             )}
             <button
               className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
@@ -143,6 +155,8 @@ export default function Header() {
           })}
         </div>
       </nav>
+
+      <FavoritePlatformsModal open={showPlatformModal} onOpenChange={setShowPlatformModal} />
     </>
   );
 }

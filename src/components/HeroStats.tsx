@@ -1,15 +1,18 @@
 import { memo, useMemo } from "react";
 import { Sale, getSaleStatus, SaleStatus } from "@/data/salesUtils";
-import { Radar, TrendingUp, Clock } from "lucide-react";
+import { Radar, TrendingUp, Clock, Star } from "lucide-react";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
+import { Badge } from "@/components/ui/badge";
+import type { Platform } from "@/data/salesUtils";
 
 interface Props {
   sales: Sale[];
   activeFilter: SaleStatus | null;
   onFilterChange: (filter: SaleStatus | null) => void;
+  favoritePlatforms?: Platform[];
 }
 
-export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: Props) {
+export default memo(function HeroStats({ sales, activeFilter, onFilterChange, favoritePlatforms = [] }: Props) {
   const bp = useBreakpoint();
   const { liveCount, startingSoonCount, endingTodayCount } = useMemo(() => {
     let live = 0, soon = 0, ending = 0;
@@ -36,10 +39,27 @@ export default memo(function HeroStats({ sales, activeFilter, onFilterChange }: 
     <section className="space-y-2 sm:space-y-3">
       <div className="flex items-center gap-2.5">
         <Radar className="w-5 h-5 text-primary" />
-        <div>
+        <div className="flex-1">
           <h1 className="text-foreground tracking-tight text-xl sm:text-2xl font-bold">세일 레이더</h1>
           <p className="text-muted-foreground text-xs sm:text-[13px] font-medium">주요 쇼핑몰 세일을 실시간으로 탐지합니다</p>
         </div>
+        {favoritePlatforms.length > 0 && (
+          <div className="hidden sm:flex items-center gap-1.5 shrink-0">
+            <Star className="w-3.5 h-3.5 text-primary" />
+            <div className="flex flex-wrap gap-1">
+              {favoritePlatforms.slice(0, 3).map((p) => (
+                <Badge key={p} variant="secondary" className="text-[10px] font-semibold px-1.5 py-0 h-[18px]">
+                  {p}
+                </Badge>
+              ))}
+              {favoritePlatforms.length > 3 && (
+                <Badge variant="secondary" className="text-[10px] font-semibold px-1.5 py-0 h-[18px]">
+                  +{favoritePlatforms.length - 3}
+                </Badge>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {bp === "mobile" ? (
