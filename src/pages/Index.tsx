@@ -15,7 +15,7 @@ import QuickFilters from "@/components/QuickFilters";
 import PlatformExplorer from "@/components/PlatformExplorer";
 import TrendingCommunity from "@/components/TrendingCommunity";
 
-import NewRadarTestSection from "@/components/NewRadarTestSection";
+import EventRadarSection from "@/components/EventRadarSection";
 import {
   SaleCardCompactSkeleton,
   SaleCardSkeleton,
@@ -258,7 +258,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </section>
       )}
 
-      <NewRadarTestSection />
+      <EventRadarSection />
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={2} />
 
@@ -325,7 +325,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </section>
       )}
 
-      <NewRadarTestSection />
+      <EventRadarSection />
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={3} />
 
@@ -398,7 +398,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
             </div>
           )}
 
-          <NewRadarTestSection />
+          <EventRadarSection />
           <PlatformExplorer sales={activeSales} />
 
           {activeSales.length === 0 && (
