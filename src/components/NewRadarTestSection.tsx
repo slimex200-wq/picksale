@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useEventOccurrences, type EventOccurrence } from "@/hooks/useEventOccurrences";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Radar, ExternalLink, ChevronDown } from "lucide-react";
+import { Radar, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 
 const todayKST = () =>
   new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
@@ -20,7 +20,7 @@ const formatDateRange = (start?: string | null, end?: string | null) => {
 };
 
 const statusBadge: Record<string, { label: string; className: string }> = {
-  live: { label: "진행 중", className: "bg-green-100 text-green-700 border-green-300" },
+  live: { label: "진행 중", className: "bg-green-100 text-green-800 border-green-400 font-bold" },
   scheduled: { label: "예정", className: "bg-yellow-100 text-yellow-700 border-yellow-300" },
   ended: { label: "종료", className: "bg-muted text-muted-foreground/60 border-border/50" },
 };
@@ -42,25 +42,26 @@ function sortWithinGroup(items: EventOccurrence[]): EventOccurrence[] {
   });
 }
 
-function daysUntil(dateStr: string): number {
-  const today = new Date(todayKST());
-  const target = new Date(dateStr);
-  return Math.ceil((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-}
-
 /* ─── Card ─── */
-function RadarCard({ item, variant = "default" }: { item: EventOccurrence; variant?: "live" | "scheduled" | "ended" | "default" }) {
+function RadarCard({
+  item,
+  variant = "default",
+  onClick,
+}: {
+  item: EventOccurrence;
+  variant?: "live" | "scheduled" | "ended" | "default";
+  onClick?: () => void;
+}) {
   const today = todayKST();
   const isEndingToday = item.ends_on === today;
   const badge = statusBadge[item.status ?? ""] ?? statusBadge.ended;
-  const discount = item.max_discount_pct ? `${item.max_discount_pct}% OFF` : null;
+  const discount = item.max_discount_pct ? `최대 ${item.max_discount_pct}%` : null;
   const isLive = variant === "live";
   const isEnded = variant === "ended";
   const isScheduled = variant === "scheduled";
 
   const dateRange = formatDateRange(item.starts_on, item.ends_on);
 
-  // Scheduled helper text
   const scheduledHint = isScheduled && item.starts_on
     ? `${formatDate(item.starts_on)} 시작 예정`
     : null;
@@ -70,25 +71,31 @@ function RadarCard({ item, variant = "default" }: { item: EventOccurrence; varia
   const extraCount = tags.length - 2;
 
   const cardClasses = isEnded
-    ? "bg-muted/30 border-border/30 opacity-60"
+    ? "bg-muted/20 border-border/25"
     : isLive
-      ? "bg-card border-primary/20 hover:shadow-md ring-1 ring-primary/5"
-      : "bg-card border-border/60 hover:shadow-sm";
+      ? "bg-card border-primary/30 hover:shadow-lg ring-1 ring-primary/10 hover:-translate-y-0.5"
+      : "bg-card border-border/60 hover:shadow-sm hover:-translate-y-px";
 
   const cardShadow = isEnded
     ? "none"
     : isLive
-      ? "0 2px 10px rgba(0,0,0,0.08)"
+      ? "0 3px 14px rgba(0,0,0,0.10)"
       : "0 1px 6px rgba(0,0,0,0.06)";
+
+  const handleClick = () => {
+    if (isEnded) return;
+    onClick?.();
+  };
 
   return (
     <div
-      className={`rounded-xl border transition-all ${cardClasses}`}
+      className={`rounded-xl border transition-all ${cardClasses} ${!isEnded ? "cursor-pointer" : "opacity-50"}`}
       style={{ borderRadius: 12, boxShadow: cardShadow, padding: "10px 12px" }}
+      onClick={handleClick}
     >
       {/* Top row */}
       <div className="flex items-center justify-between gap-2 mb-1">
-        <span className={`text-[11px] font-semibold truncate ${isEnded ? "text-muted-foreground/40" : "text-muted-foreground"}`}>
+        <span className={`text-[11px] font-semibold truncate ${isEnded ? "text-muted-foreground/30" : isLive ? "text-foreground/70" : "text-muted-foreground"}`}>
           {item.organization_name ?? "알 수 없음"}
         </span>
         <div className="flex items-center gap-1.5 shrink-0">
@@ -100,7 +107,7 @@ function RadarCard({ item, variant = "default" }: { item: EventOccurrence; varia
           )}
           <Badge
             variant="outline"
-            className={`text-[10px] px-1.5 py-0 h-[18px] font-semibold border ${badge.className} ${isEnded ? "opacity-50" : ""}`}
+            className={`text-[10px] px-1.5 py-0 h-[18px] font-semibold border ${badge.className} ${isEnded ? "opacity-40" : ""}`}
           >
             {badge.label}
           </Badge>
@@ -109,7 +116,7 @@ function RadarCard({ item, variant = "default" }: { item: EventOccurrence; varia
 
       {/* Title */}
       <h3
-        className={`line-clamp-2 tracking-tight mb-0.5 ${isEnded ? "text-muted-foreground/50" : "text-card-foreground"}`}
+        className={`line-clamp-2 tracking-tight mb-0.5 ${isEnded ? "text-muted-foreground/40" : isLive ? "text-card-foreground" : "text-card-foreground"}`}
         style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.4 }}
       >
         {item.occurrence_title || item.event_name || "이벤트"}
@@ -125,18 +132,18 @@ function RadarCard({ item, variant = "default" }: { item: EventOccurrence; varia
       {/* Date + Discount */}
       <div className="flex items-center gap-2 flex-wrap mb-1">
         {isScheduled && scheduledHint ? (
-          <span className="text-[10px] font-medium text-yellow-600">
+          <span className="text-[10px] font-semibold text-yellow-600">
             📅 {scheduledHint}
           </span>
         ) : dateRange ? (
-          <span className={`text-[10px] font-medium ${isEnded ? "text-muted-foreground/40" : "text-muted-foreground"}`}>
+          <span className={`text-[10px] font-medium ${isEnded ? "text-muted-foreground/30" : isLive ? "text-foreground/60" : "text-muted-foreground"}`}>
             {dateRange}
           </span>
         ) : null}
         {discount && !isEnded && (
           <Badge
             variant="secondary"
-            className="text-[10px] px-1.5 py-0 h-[18px] font-bold"
+            className={`text-[10px] px-1.5 py-0 h-[18px] ${isLive ? "font-bold bg-primary/10 text-primary" : "font-bold"}`}
           >
             {discount}
           </Badge>
@@ -168,6 +175,7 @@ function RadarCard({ item, variant = "default" }: { item: EventOccurrence; varia
           href={item.official_url}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
           className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline"
         >
           <ExternalLink className="w-3 h-3" />
@@ -202,7 +210,7 @@ export default function NewRadarTestSection() {
       <section className="space-y-3">
         <h2 className="text-lg font-extrabold text-foreground px-1 flex items-center gap-2 tracking-tight">
           <Radar className="w-5 h-5 text-primary" />
-          세일 이벤트
+          이벤트 레이더
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {[1, 2, 3, 4].map((i) => (
@@ -222,7 +230,7 @@ export default function NewRadarTestSection() {
     <section className="space-y-4">
       <h2 className="text-lg font-extrabold text-foreground px-1 flex items-center gap-2 tracking-tight">
         <Radar className="w-5 h-5 text-primary" />
-        세일 이벤트
+        이벤트 레이더
         <span className="text-muted-foreground bg-accent rounded-full px-2 py-0.5 text-[11px] font-semibold">
           {totalCount}
         </span>
@@ -247,16 +255,33 @@ export default function NewRadarTestSection() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
               {list.map((item, idx) => (
-                <RadarCard key={item.occurrence_id ?? idx} item={item} variant={g.key as "live" | "scheduled" | "ended"} />
+                <RadarCard
+                  key={item.occurrence_id ?? idx}
+                  item={item}
+                  variant={g.key as "live" | "scheduled" | "ended"}
+                  onClick={() => {
+                    // Future: navigate to event detail page
+                    // e.g. navigate(`/event/${item.occurrence_id}`)
+                  }}
+                />
               ))}
             </div>
-            {isEnded && hasMoreEnded && !showAllEnded && (
+            {isEnded && hasMoreEnded && (
               <button
-                onClick={() => setShowAllEnded(true)}
+                onClick={() => setShowAllEnded((v) => !v)}
                 className="flex items-center gap-1 mx-auto text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors py-1 px-3 rounded-lg hover:bg-accent"
               >
-                <ChevronDown className="w-3.5 h-3.5" />
-                지난 기록 더 보기 ({grouped.ended.length - 3}개)
+                {showAllEnded ? (
+                  <>
+                    <ChevronUp className="w-3.5 h-3.5" />
+                    접기
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-3.5 h-3.5" />
+                    지난 기록 더 보기 ({grouped.ended.length - 3}개)
+                  </>
+                )}
               </button>
             )}
           </div>
