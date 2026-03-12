@@ -198,7 +198,7 @@ export default function DealCard({ post, onOpenDetail }: { post: CommunityPost; 
 
       {/* Content preview */}
       {post.content && (
-        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+        <p className="text-xs text-muted-foreground line-clamp-1 leading-relaxed">
           {post.content}
         </p>
       )}
