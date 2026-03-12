@@ -42,16 +42,16 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, hideEn
           </div>
           <span className="text-foreground/70 font-semibold tracking-tight" style={{ fontSize: 11 }}>{sale.platform}</span>
         </div>
-        {status === "ending_today" ? (
+        {status === "ending_today" && !hideEndingBadge ? (
           <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: 10, fontWeight: 700, padding: "1px 6px" }}>
             <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
             오늘 마감
           </span>
-        ) : (
+        ) : status !== "ending_today" ? (
           <Badge variant="outline" className={`${statusInfo.className} border-0`} style={{ fontSize: 10, fontWeight: 600, padding: "1px 6px" }}>
             {statusInfo.emoji} {statusInfo.label}
           </Badge>
-        )}
+        ) : null}
       </div>
       <div className="relative z-10 px-3 pt-0.5">
         <span className={`font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground/60 font-normal"}`} style={{ fontSize: 11 }}>
