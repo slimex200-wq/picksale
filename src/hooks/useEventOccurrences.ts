@@ -34,7 +34,7 @@ export function getOccurrenceStatus(item: EventOccurrence): OccurrenceStatus {
 
 export function useEventOccurrences() {
   return useQuery({
-    queryKey: ["event_occurrence_cards"],
+    queryKey: ["event_occurrence_cards", "v2_series_fields"],
     queryFn: async (): Promise<EventOccurrence[]> => {
       const { data, error } = await supabase
         .from("event_occurrence_cards")
@@ -43,7 +43,7 @@ export function useEventOccurrences() {
       if (error) throw error;
       return (data ?? []) as EventOccurrence[];
     },
-    staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: true,
   });
 }
