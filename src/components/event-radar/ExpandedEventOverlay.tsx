@@ -45,63 +45,52 @@ export interface ExpandedEventOverlayProps {
 // ── Hooks ──
 
 function usePastOccurrences(event: EventOccurrence | null) {
+  const seriesId = event?.event_series_id;
+  const occurrenceId = event?.occurrence_id;
+
   return useQuery({
-    queryKey: ["past_occurrences", event?.occurrence_id],
-    enabled: !!event?.occurrence_id,
+    queryKey: ["past_occurrences", seriesId, occurrenceId],
+    enabled: !!seriesId && !!occurrenceId,
     queryFn: async (): Promise<EventOccurrence[]> => {
-      if (!event?.occurrence_id) return [];
-
-      const { data: currentOcc } = await supabase
-        .from("event_occurrences")
-        .select("event_series_id")
-        .eq("id", event.occurrence_id)
-        .single();
-
-      if (!currentOcc?.event_series_id) return [];
+      if (!seriesId || !occurrenceId) return [];
 
       const { data, error } = await supabase
         .from("event_occurrence_cards")
         .select("*")
-        .eq("event_series_id", currentOcc.event_series_id)
-        .neq("occurrence_id", event.occurrence_id)
+        .eq("event_series_id", seriesId)
+        .neq("occurrence_id", occurrenceId)
         .order("starts_on", { ascending: false })
         .limit(3);
 
       if (error) throw error;
       return (data ?? []) as EventOccurrence[];
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
   });
 }
 
 function useSameBrandEvents(event: EventOccurrence | null) {
+  const orgId = event?.organization_id;
+  const occurrenceId = event?.occurrence_id;
+
   return useQuery({
-    queryKey: ["same_brand_events", event?.occurrence_id],
-    enabled: !!event?.occurrence_id,
+    queryKey: ["same_brand_events", orgId, occurrenceId],
+    enabled: !!orgId && !!occurrenceId,
     queryFn: async (): Promise<EventOccurrence[]> => {
-      if (!event?.occurrence_id) return [];
-
-      // Get organization_id from event_occurrence_cards view
-      const { data: current } = await supabase
-        .from("event_occurrence_cards")
-        .select("organization_id, event_series_id")
-        .eq("occurrence_id", event.occurrence_id)
-        .single();
-
-      if (!current?.organization_id) return [];
+      if (!orgId || !occurrenceId) return [];
 
       const { data, error } = await supabase
         .from("event_occurrence_cards")
         .select("*")
-        .eq("organization_id", current.organization_id)
-        .neq("occurrence_id", event.occurrence_id)
+        .eq("organization_id", orgId)
+        .neq("occurrence_id", occurrenceId)
         .order("starts_on", { ascending: false })
         .limit(3);
 
       if (error) throw error;
       return (data ?? []) as EventOccurrence[];
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
   });
 }
 
