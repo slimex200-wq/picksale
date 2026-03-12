@@ -134,7 +134,7 @@ export default function EventOccurrenceSection() {
               </div>
               <div className="space-y-1.5">
                 {list.map((item) => (
-                  <OccurrenceItem key={item.id} item={item} />
+                  <OccurrenceItem key={item.occurrence_id ?? idx} item={item} />
                 ))}
               </div>
             </div>
