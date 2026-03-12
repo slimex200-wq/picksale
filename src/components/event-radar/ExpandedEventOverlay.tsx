@@ -57,14 +57,12 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
       style={{ animation: "expandOverlayIn 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards" }}
     >
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-foreground/50 backdrop-blur-sm"
         onClick={onClose}
         style={{ animation: "expandDimIn 300ms ease forwards" }}
       />
 
-      {/* Card */}
       <div
         className="relative z-10 w-full max-w-md bg-card rounded-2xl border border-border/60 overflow-hidden flex flex-col max-h-[85vh]"
         style={{
@@ -98,7 +96,6 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
 
         {/* Content */}
         <div className="p-5 space-y-4 overflow-y-auto flex-1">
-          {/* Status + Discount */}
           <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="outline" className={`${status.className} border text-xs font-semibold px-2 py-0.5`}>
               {status.emoji} {status.label}
@@ -110,7 +107,6 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
             )}
           </div>
 
-          {/* Date */}
           {dateRange && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
               <Calendar className="w-4 h-4 shrink-0" />
@@ -118,7 +114,6 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
             </div>
           )}
 
-          {/* Category tags */}
           {tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {tags.map((tag) => (
@@ -129,14 +124,12 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
             </div>
           )}
 
-          {/* Summary */}
           {event.summary && (
             <p className="text-sm text-muted-foreground leading-relaxed">
               {event.summary}
             </p>
           )}
 
-          {/* CTA */}
           {event.official_url && (
             <div className="pt-2">
               <Button
@@ -152,23 +145,11 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
       </div>
 
       <style>{`
-        @keyframes expandDimIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes expandOverlayIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
+        @keyframes expandDimIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes expandOverlayIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes expandCardIn {
-          from {
-            opacity: 0;
-            transform: scale(0.92) translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
+          from { opacity: 0; transform: scale(0.92) translateY(20px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
         }
       `}</style>
     </div>

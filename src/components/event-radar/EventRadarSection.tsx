@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { useEventOccurrences, type EventOccurrence } from "@/hooks/useEventOccurrences";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Radar, ChevronDown, ChevronUp } from "lucide-react";
-import EventRadarCard from "@/components/EventRadarCard";
-import ExpandedEventOverlay from "@/components/ExpandedEventOverlay";
+import { Radar } from "lucide-react";
+import EventRadarGroup from "./EventRadarGroup";
+import ExpandedEventOverlay from "./ExpandedEventOverlay";
 
 function sortWithinGroup(items: EventOccurrence[]): EventOccurrence[] {
   return [...items].sort((a, b) => {
@@ -16,10 +16,10 @@ function sortWithinGroup(items: EventOccurrence[]): EventOccurrence[] {
   });
 }
 
-const groups: { key: string; emoji: string; label: string }[] = [
-  { key: "live", emoji: "🟢", label: "진행 중" },
-  { key: "scheduled", emoji: "🟡", label: "예정" },
-  { key: "ended", emoji: "⚪", label: "지난 기록" },
+const GROUP_DEFS = [
+  { key: "live" as const, emoji: "🟢", label: "진행 중" },
+  { key: "scheduled" as const, emoji: "🟡", label: "예정" },
+  { key: "ended" as const, emoji: "⚪", label: "지난 기록" },
 ];
 
 export default function EventRadarSection() {
@@ -72,54 +72,21 @@ export default function EventRadarSection() {
         </span>
       </h2>
 
-      {groups.map((g) => {
-        const list = g.key === "ended" ? endedVisible : grouped[g.key];
-        const total = grouped[g.key].length;
-        if (total === 0) return null;
-        const isEnded = g.key === "ended";
-
-        return (
-          <div key={g.key} className="space-y-1.5">
-            <div className="flex items-center gap-1.5 px-1">
-              <h3 className="text-sm font-bold text-foreground flex items-center gap-1.5 tracking-tight">
-                <span>{g.emoji}</span>
-                {g.label}
-                <span className="text-xs text-muted-foreground font-medium ml-1 bg-accent rounded-full px-2 py-0.5">
-                  {total}
-                </span>
-              </h3>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
-              {list.map((item, idx) => (
-                <EventRadarCard
-                  key={item.occurrence_id ?? idx}
-                  item={item}
-                  variant={g.key as "live" | "scheduled" | "ended"}
-                  onClick={() => setSelectedEvent(item)}
-                />
-              ))}
-            </div>
-            {isEnded && hasMoreEnded && (
-              <button
-                onClick={() => setShowAllEnded((v) => !v)}
-                className="flex items-center gap-1 mx-auto text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors py-1 px-3 rounded-lg hover:bg-accent"
-              >
-                {showAllEnded ? (
-                  <>
-                    <ChevronUp className="w-3.5 h-3.5" />
-                    접기
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="w-3.5 h-3.5" />
-                    지난 기록 더 보기 ({grouped.ended.length - 3}개)
-                  </>
-                )}
-              </button>
-            )}
-          </div>
-        );
-      })}
+      {GROUP_DEFS.map((g) => (
+        <EventRadarGroup
+          key={g.key}
+          groupKey={g.key}
+          emoji={g.emoji}
+          label={g.label}
+          items={g.key === "ended" ? endedVisible : grouped[g.key]}
+          totalCount={grouped[g.key].length}
+          onCardClick={setSelectedEvent}
+          showAll={showAllEnded}
+          onToggleShowAll={() => setShowAllEnded((v) => !v)}
+          hasMore={hasMoreEnded}
+          hiddenCount={grouped.ended.length - 3}
+        />
+      ))}
 
       <ExpandedEventOverlay event={selectedEvent} onClose={() => setSelectedEvent(null)} />
     </section>

@@ -23,7 +23,7 @@ const statusBadge: Record<string, { label: string; className: string }> = {
   ended: { label: "종료", className: "bg-muted text-muted-foreground/60 border-border/50" },
 };
 
-interface EventRadarCardProps {
+export interface EventRadarCardProps {
   item: EventOccurrence;
   variant?: "live" | "scheduled" | "ended" | "default";
   onClick?: () => void;
@@ -71,7 +71,6 @@ export default function EventRadarCard({ item, variant = "default", onClick }: E
       style={{ borderRadius: 12, boxShadow: cardShadow, padding: "10px 12px" }}
       onClick={handleClick}
     >
-      {/* Top row */}
       <div className="flex items-center justify-between gap-2 mb-1">
         <span className={`text-[11px] font-semibold truncate ${isEnded ? "text-muted-foreground/30" : isLive ? "text-foreground/70" : "text-muted-foreground"}`}>
           {item.organization_name ?? "알 수 없음"}
@@ -92,7 +91,6 @@ export default function EventRadarCard({ item, variant = "default", onClick }: E
         </div>
       </div>
 
-      {/* Title */}
       <h3
         className={`line-clamp-2 tracking-tight mb-0.5 ${isEnded ? "text-muted-foreground/40" : "text-card-foreground"}`}
         style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.4 }}
@@ -100,14 +98,12 @@ export default function EventRadarCard({ item, variant = "default", onClick }: E
         {item.occurrence_title || item.event_name || "이벤트"}
       </h3>
 
-      {/* Summary */}
       {item.summary && !isEnded && (
         <p className="text-[11px] line-clamp-1 mb-1 text-muted-foreground">
           {item.summary}
         </p>
       )}
 
-      {/* Date + Discount */}
       <div className="flex items-center gap-2 flex-wrap mb-1">
         {isScheduled && scheduledHint ? (
           <span className="text-[10px] font-semibold text-yellow-600">
@@ -128,14 +124,10 @@ export default function EventRadarCard({ item, variant = "default", onClick }: E
         )}
       </div>
 
-      {/* Category chips */}
       {visibleTags.length > 0 && !isEnded && (
         <div className="flex flex-wrap gap-1 mb-1.5">
           {visibleTags.map((tag) => (
-            <span
-              key={tag}
-              className="text-[10px] font-medium rounded-full px-2 py-0.5 bg-accent text-accent-foreground"
-            >
+            <span key={tag} className="text-[10px] font-medium rounded-full px-2 py-0.5 bg-accent text-accent-foreground">
               {tag}
             </span>
           ))}
@@ -147,7 +139,6 @@ export default function EventRadarCard({ item, variant = "default", onClick }: E
         </div>
       )}
 
-      {/* CTA */}
       {item.official_url && !isEnded && (
         <a
           href={item.official_url}
