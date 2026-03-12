@@ -175,7 +175,7 @@ export function sortByRanking(sales: Sale[]): Sale[] {
   return [...sales].sort((a, b) => calculateRankingScore(b) - calculateRankingScore(a));
 }
 
-/* ── 추천 세일 정렬 (비주얼 완성도 우대) ── */
+/* ── 추천 세일 정렬 (비주얼 완성도 우대, 0~100 스케일 대응) ── */
 export function sortForFeatured(sales: Sale[]): Sale[] {
   const hasImage = (s: Sale) => !!(s.image_url && s.image_url.trim() && !/\.(mp4|webm|mov|avi)(\?|$)/i.test(s.image_url));
   return [...sales].sort((a, b) => {
