@@ -26,9 +26,9 @@ function OccurrenceItem({ item }: { item: EventOccurrence }) {
     >
       {/* Logo / Org initial */}
       <div className="w-10 h-10 rounded-lg bg-accent/60 border border-border/50 flex items-center justify-center shrink-0 overflow-hidden">
-        {item.organization_logo_url ? (
-          <img src={item.organization_logo_url} alt="" className="w-full h-full object-contain" loading="lazy" />
-        ) : (
+          <span className="text-sm font-bold text-muted-foreground">
+            {(item.organization_name ?? "?").charAt(0)}
+          </span>
           <span className="text-sm font-bold text-muted-foreground">
             {(item.organization_name ?? "?").charAt(0)}
           </span>
