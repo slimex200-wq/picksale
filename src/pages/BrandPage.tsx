@@ -317,6 +317,7 @@ export default function BrandPage() {
                 )}
                 <FollowButton organizationId={org.id} orgName={org.name} />
               </div>
+            </div>
 
             {/* Stats bar — hide zero-value items */}
             <div className="flex items-center gap-3 text-[11px] text-muted-foreground font-medium">
