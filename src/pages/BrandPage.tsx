@@ -278,16 +278,7 @@ export default function BrandPage() {
                     <span className="hidden sm:inline">공식 사이트</span>
                   </Button>
                 )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5 text-xs rounded-lg opacity-50 cursor-not-allowed h-8"
-                  disabled
-                >
-                  <Bell className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">알림</span>
-                </Button>
-              </div>
+                <FollowButton organizationId={org.id} orgName={org.name} />
             </div>
 
             {/* Stats bar — hide zero-value items */}
