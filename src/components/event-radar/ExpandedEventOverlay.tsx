@@ -108,13 +108,21 @@ function useSameBrandEvents(event: EventOccurrence | null) {
 
       if (!orgId) return [];
 
-      const { data, error } = await supabase
+      // Exclude current occurrence AND same series (already shown in "이전 기록")
+      let query = supabase
         .from("event_occurrence_cards")
         .select("occurrence_id,organization_name,organization_id,event_name,event_series_id,occurrence_title,status,starts_on,ends_on,max_discount_pct,official_url,category_tags,organization_slug,event_slug,summary")
         .eq("organization_id", orgId)
         .neq("occurrence_id", occurrenceId)
         .order("starts_on", { ascending: false })
         .limit(3);
+
+      const seriesId = event?.event_series_id;
+      if (seriesId) {
+        query = query.neq("event_series_id", seriesId);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       return (data ?? []) as EventOccurrence[];
@@ -349,7 +357,7 @@ export default function ExpandedEventOverlay({ event: initialEvent, onClose }: E
           {/* ─── Past Occurrences ─── */}
           <RelatedSection
             icon={History}
-            title="작년 기록 보기"
+            title="이전 기록"
             items={pastOccurrences}
             isLoading={pastLoading}
             emptyText="이전 기록이 아직 없습니다"
