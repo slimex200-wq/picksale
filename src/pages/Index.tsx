@@ -13,7 +13,7 @@ import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
 import QuickFilters from "@/components/QuickFilters";
 import PlatformExplorer from "@/components/PlatformExplorer";
-import TrendingCommunity from "@/components/TrendingCommunity";
+import PlatformSummary from "@/components/PlatformSummary";
 
 import { EventRadarSection } from "@/components/event-radar";
 import {
