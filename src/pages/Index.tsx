@@ -14,7 +14,7 @@ import HeroStats from "@/components/HeroStats";
 import QuickFilters from "@/components/QuickFilters";
 import PlatformExplorer from "@/components/PlatformExplorer";
 import TrendingCommunity from "@/components/TrendingCommunity";
-import EventOccurrenceSection from "@/components/EventOccurrenceSection";
+
 import NewRadarTestSection from "@/components/NewRadarTestSection";
 import {
   SaleCardCompactSkeleton,
