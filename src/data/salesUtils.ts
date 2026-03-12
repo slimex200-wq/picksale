@@ -141,7 +141,7 @@ export const saleStatusConfig: Record<SaleStatus, { label: string; emoji: string
   ended: { label: "종료", emoji: "⚪", className: "bg-muted text-muted-foreground" },
 };
 
-/* ── 랭킹 점수 계산 ── */
+/* ── 랭킹 점수 계산 (0~100 스케일 대응) ── */
 export function calculateRankingScore(sale: Sale): number {
   const todayStr = getTodayKST();
   let score = sale.importance_score;
