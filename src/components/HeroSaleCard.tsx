@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
+import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 
 interface HeroSaleCardProps {
   sale: Sale;
