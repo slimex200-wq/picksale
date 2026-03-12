@@ -400,7 +400,6 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
           )}
 
           <EventRadarSection />
-          <PlatformExplorer sales={activeSales} />
 
           {activeSales.length === 0 && (
             <div className="flex flex-col items-center py-10 text-muted-foreground">
@@ -410,7 +409,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
           )}
         </main>
 
-        <aside className="space-y-4 sticky top-4">
+        <aside className="sticky top-20 self-start h-fit space-y-4">
           <PlatformSummary sales={activeSales} />
         </aside>
       </div>
