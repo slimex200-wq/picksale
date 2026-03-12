@@ -157,7 +157,25 @@ export default function Index() {
         {isLoading && !sales.length ? (
           <HeroStatsSkeleton />
         ) : (
-          <HeroStats sales={activeSales} activeFilter={heroFilter} onFilterChange={handleHeroFilter} />
+          <HeroStats sales={platformFiltered} activeFilter={heroFilter} onFilterChange={handleHeroFilter} favoritePlatforms={favoritePlatforms} />
+        )}
+
+        {/* Favorite platform toggle */}
+        {user && hasFavorites && (
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
+              showAll
+                ? "border-border text-muted-foreground hover:bg-accent"
+                : "border-primary/30 bg-primary/5 text-primary"
+            }`}
+          >
+            {showAll ? (
+              <><Star className="w-3.5 h-3.5" /> 관심 플랫폼만</>
+            ) : (
+              <><Eye className="w-3.5 h-3.5" /> 전체 보기</>
+            )}
+          </button>
         )}
       </div>
 
