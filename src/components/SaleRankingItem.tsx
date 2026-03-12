@@ -2,6 +2,7 @@ import { Sale, isCreditCardPromo, getSaleStatus } from "@/data/salesUtils";
 import PlatformLogo from "@/components/PlatformLogo";
 import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
+import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 
 const RANK_MEDALS: Record<number, string> = { 1: "🥇", 2: "🥈", 3: "🥉" };
 
