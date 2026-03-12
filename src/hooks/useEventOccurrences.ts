@@ -14,6 +14,7 @@ export interface EventOccurrence {
   category_tags: string[] | null;
   organization_slug: string | null;
   event_slug: string | null;
+  summary: string | null;
 }
 
 export type OccurrenceStatus = "live" | "ending_today" | "starting_soon" | "ended";
@@ -35,7 +36,7 @@ export function useEventOccurrences() {
     queryFn: async (): Promise<EventOccurrence[]> => {
       const { data, error } = await supabase
         .from("event_occurrence_cards")
-        .select("occurrence_id,organization_name,event_name,occurrence_title,status,starts_on,ends_on,max_discount_pct,official_url,category_tags,organization_slug,event_slug");
+        .select("occurrence_id,organization_name,event_name,occurrence_title,status,starts_on,ends_on,max_discount_pct,official_url,category_tags,organization_slug,event_slug,summary");
 
       if (error) throw error;
       return (data ?? []) as EventOccurrence[];
