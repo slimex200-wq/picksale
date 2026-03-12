@@ -426,7 +426,7 @@ export type Database = {
             columns: ["occurrence_id"]
             isOneToOne: false
             referencedRelation: "event_occurrence_cards"
-            referencedColumns: ["id"]
+            referencedColumns: ["occurrence_id"]
           },
           {
             foreignKeyName: "event_signals_occurrence_id_fkey"
@@ -497,7 +497,7 @@ export type Database = {
             columns: ["occurrence_id"]
             isOneToOne: false
             referencedRelation: "event_occurrence_cards"
-            referencedColumns: ["id"]
+            referencedColumns: ["occurrence_id"]
           },
           {
             foreignKeyName: "event_sources_occurrence_id_fkey"
@@ -1014,26 +1014,22 @@ export type Database = {
     Views: {
       event_occurrence_cards: {
         Row: {
-          cadence: string | null
           category_tags: string[] | null
           ends_on: string | null
-          event_kind: string | null
+          event_name: string | null
           event_series_id: string | null
-          event_series_name: string | null
-          event_series_slug: string | null
-          id: string | null
+          event_slug: string | null
           last_verified_at: string | null
           max_discount_pct: number | null
+          occurrence_id: string | null
+          occurrence_title: string | null
           official_url: string | null
           organization_id: string | null
-          organization_logo_url: string | null
           organization_name: string | null
           organization_slug: string | null
-          sale_year: number | null
           starts_on: string | null
           status: string | null
           summary: string | null
-          title: string | null
         }
         Relationships: []
       }

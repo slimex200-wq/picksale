@@ -141,7 +141,7 @@ export const saleStatusConfig: Record<SaleStatus, { label: string; emoji: string
   ended: { label: "종료", emoji: "⚪", className: "bg-muted text-muted-foreground" },
 };
 
-/* ── 랭킹 점수 계산 ── */
+/* ── 랭킹 점수 계산 (0~100 스케일 대응) ── */
 export function calculateRankingScore(sale: Sale): number {
   const todayStr = getTodayKST();
   let score = sale.importance_score;
@@ -150,22 +150,22 @@ export function calculateRankingScore(sale: Sale): number {
 
   // 카드 프로모션 패널티
   if (isCreditCardPromo(sale.sale_name)) {
-    score -= 5;
+    score -= 15;
   }
 
   // 진행중 보너스
-  if (sale.start_date <= todayStr && sale.end_date >= todayStr) score += 3;
+  if (sale.start_date <= todayStr && sale.end_date >= todayStr) score += 8;
 
   // 곧 시작 보너스 (3일 이내)
   const startDiff = daysBetween(sale.start_date, todayStr);
-  if (startDiff > 0 && startDiff <= 3) score += 2;
+  if (startDiff > 0 && startDiff <= 3) score += 5;
 
   // 종료 임박 보너스 (2일 이내)
   const endDiff = daysBetween(sale.end_date, todayStr);
-  if (endDiff >= 0 && endDiff <= 2) score += 2;
+  if (endDiff >= 0 && endDiff <= 2) score += 5;
 
   // 플랫폼 가중치
-  score += platformWeight[sale.platform] ?? 0;
+  score += (platformWeight[sale.platform] ?? 0) * 3;
 
   return score;
 }
@@ -175,22 +175,22 @@ export function sortByRanking(sales: Sale[]): Sale[] {
   return [...sales].sort((a, b) => calculateRankingScore(b) - calculateRankingScore(a));
 }
 
-/* ── 추천 세일 정렬 (비주얼 완성도 우대) ── */
+/* ── 추천 세일 정렬 (비주얼 완성도 우대, 0~100 스케일 대응) ── */
 export function sortForFeatured(sales: Sale[]): Sale[] {
   const hasImage = (s: Sale) => !!(s.image_url && s.image_url.trim() && !/\.(mp4|webm|mov|avi)(\?|$)/i.test(s.image_url));
   return [...sales].sort((a, b) => {
     let scoreA = calculateRankingScore(a);
     let scoreB = calculateRankingScore(b);
 
-    // Tier bonus: major +3, minor +0, excluded -3
-    if (a.sale_tier === "major") scoreA += 3;
-    else if (a.sale_tier === "excluded") scoreA -= 3;
-    if (b.sale_tier === "major") scoreB += 3;
-    else if (b.sale_tier === "excluded") scoreB -= 3;
+    // Tier bonus: major +10, minor +0, excluded -10
+    if (a.sale_tier === "major") scoreA += 10;
+    else if (a.sale_tier === "excluded") scoreA -= 10;
+    if (b.sale_tier === "major") scoreB += 10;
+    else if (b.sale_tier === "excluded") scoreB -= 10;
 
-    // Image bonus: +4 for having a valid image
-    if (hasImage(a)) scoreA += 4;
-    if (hasImage(b)) scoreB += 4;
+    // Image bonus: +12 for having a valid image
+    if (hasImage(a)) scoreA += 12;
+    if (hasImage(b)) scoreB += 12;
 
     return scoreB - scoreA;
   });

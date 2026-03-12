@@ -26,19 +26,18 @@ function OccurrenceItem({ item }: { item: EventOccurrence }) {
     >
       {/* Logo / Org initial */}
       <div className="w-10 h-10 rounded-lg bg-accent/60 border border-border/50 flex items-center justify-center shrink-0 overflow-hidden">
-        {item.organization_logo_url ? (
-          <img src={item.organization_logo_url} alt="" className="w-full h-full object-contain" loading="lazy" />
-        ) : (
           <span className="text-sm font-bold text-muted-foreground">
             {(item.organization_name ?? "?").charAt(0)}
           </span>
-        )}
+          <span className="text-sm font-bold text-muted-foreground">
+            {(item.organization_name ?? "?").charAt(0)}
+          </span>
       </div>
 
       {/* Info */}
       <div className="flex-1 min-w-0">
         <p className="text-card-foreground truncate tracking-tight" style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.4 }}>
-          {item.title || item.event_series_name || "이벤트"}
+          {item.occurrence_title || item.event_name || "이벤트"}
         </p>
         <div className="flex items-center gap-1.5 mt-0.5">
           <span className="text-[10px] text-muted-foreground font-medium truncate">
@@ -134,8 +133,8 @@ export default function EventOccurrenceSection() {
                 </h3>
               </div>
               <div className="space-y-1.5">
-                {list.map((item) => (
-                  <OccurrenceItem key={item.id} item={item} />
+                {list.map((item, idx) => (
+                  <OccurrenceItem key={item.occurrence_id ?? idx} item={item} />
                 ))}
               </div>
             </div>

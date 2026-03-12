@@ -2,18 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface EventOccurrence {
-  id: string;
+  occurrence_id: string | null;
   organization_name: string | null;
-  event_series_name: string | null;
-  title: string | null;
+  event_name: string | null;
+  occurrence_title: string | null;
   status: string | null;
   starts_on: string | null;
   ends_on: string | null;
   max_discount_pct: number | null;
   official_url: string | null;
   category_tags: string[] | null;
-  organization_logo_url: string | null;
   organization_slug: string | null;
+  event_slug: string | null;
 }
 
 export type OccurrenceStatus = "live" | "ending_today" | "starting_soon" | "ended";
@@ -35,7 +35,7 @@ export function useEventOccurrences() {
     queryFn: async (): Promise<EventOccurrence[]> => {
       const { data, error } = await supabase
         .from("event_occurrence_cards")
-        .select("id,organization_name,event_series_name,title,status,starts_on,ends_on,max_discount_pct,official_url,category_tags,organization_logo_url,organization_slug");
+        .select("occurrence_id,organization_name,event_name,occurrence_title,status,starts_on,ends_on,max_discount_pct,official_url,category_tags,organization_slug,event_slug");
 
       if (error) throw error;
       return (data ?? []) as EventOccurrence[];
