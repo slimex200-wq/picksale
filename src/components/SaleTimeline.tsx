@@ -21,8 +21,11 @@ export default function SaleTimeline({ sales, onOpenDetail }: Props) {
     setExpanded((prev) => {
       const next = !prev[key];
       if (!next) {
+        // Double rAF to wait for React re-render + DOM update
         requestAnimationFrame(() => {
-          sectionRefs.current[key]?.scrollIntoView({ behavior: "smooth", block: "start" });
+          requestAnimationFrame(() => {
+            sectionRefs.current[key]?.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
         });
       }
       return { ...prev, [key]: next };
