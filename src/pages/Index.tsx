@@ -14,6 +14,7 @@ import HeroStats from "@/components/HeroStats";
 import QuickFilters from "@/components/QuickFilters";
 import PlatformExplorer from "@/components/PlatformExplorer";
 import PlatformSummary from "@/components/PlatformSummary";
+import TrendingCommunity from "@/components/TrendingCommunity";
 
 import { EventRadarSection } from "@/components/event-radar";
 import {
