@@ -409,7 +409,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
           )}
         </main>
 
-        <aside className="sticky top-20 self-start h-fit space-y-4">
+        <aside className="sticky top-[68px] self-start h-fit space-y-4 transition-none bg-background/80 backdrop-blur-sm rounded-xl p-3">
           <PlatformSummary sales={activeSales} />
         </aside>
       </div>
