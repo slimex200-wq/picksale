@@ -14,6 +14,7 @@ import HeroStats from "@/components/HeroStats";
 import QuickFilters from "@/components/QuickFilters";
 import PlatformExplorer from "@/components/PlatformExplorer";
 import TrendingCommunity from "@/components/TrendingCommunity";
+import EventOccurrenceSection from "@/components/EventOccurrenceSection";
 import {
   SaleCardCompactSkeleton,
   SaleCardSkeleton,
@@ -256,6 +257,7 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </section>
       )}
 
+      <EventOccurrenceSection />
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={2} />
 
@@ -322,6 +324,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </section>
       )}
 
+      <EventOccurrenceSection />
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={3} />
 
@@ -394,6 +397,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
             </div>
           )}
 
+          <EventOccurrenceSection />
           <PlatformExplorer sales={activeSales} />
 
           {activeSales.length === 0 && (
