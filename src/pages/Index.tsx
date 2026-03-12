@@ -410,7 +410,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
         </main>
 
         <aside className="space-y-4 sticky top-4">
-          <TrendingCommunity maxPosts={5} />
+          <PlatformSummary sales={activeSales} />
         </aside>
       </div>
 
