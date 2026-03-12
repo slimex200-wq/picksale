@@ -357,7 +357,7 @@ export default function ExpandedEventOverlay({ event: initialEvent, onClose }: E
           {/* ─── Past Occurrences ─── */}
           <RelatedSection
             icon={History}
-            title="작년 기록 보기"
+            title="이전 기록"
             items={pastOccurrences}
             isLoading={pastLoading}
             emptyText="이전 기록이 아직 없습니다"
