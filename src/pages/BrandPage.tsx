@@ -200,6 +200,43 @@ function BrandPageSkeleton() {
   );
 }
 
+// ── Follow Button ──
+function FollowButton({ organizationId, orgName }: { organizationId: string; orgName: string }) {
+  const { isFollowing, isToggling, follow, unfollow } = useOrganizationFollow(organizationId);
+  const { requireLogin } = useLoginGate();
+
+  const handleClick = () => {
+    requireLogin(async () => {
+      try {
+        if (isFollowing) {
+          await unfollow();
+          toast.success(`${orgName} 알림을 해제했습니다`);
+        } else {
+          await follow();
+          toast.success(`${orgName} 알림을 받습니다`);
+        }
+      } catch {
+        toast.error("처리 중 오류가 발생했습니다");
+      }
+    }, "alert");
+  };
+
+  return (
+    <Button
+      variant={isFollowing ? "default" : "outline"}
+      size="sm"
+      className={`gap-1.5 text-xs rounded-lg h-8 transition-all ${
+        isFollowing ? "bg-primary text-primary-foreground" : ""
+      }`}
+      onClick={handleClick}
+      disabled={isToggling}
+    >
+      {isFollowing ? <BellRing className="w-3.5 h-3.5" /> : <Bell className="w-3.5 h-3.5" />}
+      <span className="hidden sm:inline">{isToggling ? "처리 중..." : isFollowing ? "알림 받는 중" : "알림 받기"}</span>
+    </Button>
+  );
+}
+
 // ── Main Page ──
 export default function BrandPage() {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
