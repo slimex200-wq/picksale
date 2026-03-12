@@ -1,15 +1,18 @@
 import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useOrganizationBySlug, useBrandEvents, getSeriesSummaries, type SeriesSummary } from "@/hooks/useBrandData";
+import { useOrganizationFollow } from "@/hooks/useOrganizationFollow";
+import { useLoginGate } from "@/hooks/useLoginGate";
 import { type EventOccurrence } from "@/hooks/useEventOccurrences";
 import EventRadarCard from "@/components/event-radar/EventRadarCard";
 import ExpandedEventOverlay from "@/components/event-radar/ExpandedEventOverlay";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExternalLink, Building2, ChevronDown, ChevronUp, ArrowLeft, Bell, Layers, ChevronRight } from "lucide-react";
+import { ExternalLink, Building2, ChevronDown, ChevronUp, ArrowLeft, Bell, BellRing, Layers, ChevronRight } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
+import { toast } from "sonner";
 
 // ── Section Component ──
 function EventSection({
