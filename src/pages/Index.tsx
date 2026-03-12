@@ -398,7 +398,6 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
             </div>
           )}
 
-          <EventOccurrenceSection />
           <NewRadarTestSection />
           <PlatformExplorer sales={activeSales} />
 
