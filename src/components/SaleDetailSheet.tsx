@@ -13,6 +13,7 @@ import {
 import { ExternalLink, Calendar, Bell, X, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
+import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 import { useLoginGate } from "@/hooks/useLoginGate";
 import { useAuth } from "@/hooks/useAuth";
 
