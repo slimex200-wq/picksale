@@ -45,18 +45,32 @@ export interface ExpandedEventOverlayProps {
 // ── Hooks ──
 
 function usePastOccurrences(event: EventOccurrence | null) {
-  const seriesId = event?.event_series_id;
   const occurrenceId = event?.occurrence_id;
 
   return useQuery({
-    queryKey: ["past_occurrences", seriesId, occurrenceId],
-    enabled: !!seriesId && !!occurrenceId,
+    queryKey: ["past_occurrences", event?.event_series_id, occurrenceId],
+    enabled: !!occurrenceId,
     queryFn: async (): Promise<EventOccurrence[]> => {
-      if (!seriesId || !occurrenceId) return [];
+      if (!occurrenceId) return [];
+
+      let seriesId = event?.event_series_id ?? null;
+
+      if (!seriesId) {
+        const { data: current, error: currentError } = await supabase
+          .from("event_occurrence_cards")
+          .select("event_series_id")
+          .eq("occurrence_id", occurrenceId)
+          .maybeSingle();
+
+        if (currentError) throw currentError;
+        seriesId = current?.event_series_id ?? null;
+      }
+
+      if (!seriesId) return [];
 
       const { data, error } = await supabase
         .from("event_occurrence_cards")
-        .select("*")
+        .select("occurrence_id,organization_name,organization_id,event_name,event_series_id,occurrence_title,status,starts_on,ends_on,max_discount_pct,official_url,category_tags,organization_slug,event_slug,summary")
         .eq("event_series_id", seriesId)
         .neq("occurrence_id", occurrenceId)
         .order("starts_on", { ascending: false })
@@ -65,7 +79,8 @@ function usePastOccurrences(event: EventOccurrence | null) {
       if (error) throw error;
       return (data ?? []) as EventOccurrence[];
     },
-    staleTime: 2 * 60 * 1000,
+    staleTime: 30 * 1000,
+    refetchOnMount: "always",
   });
 }
 
