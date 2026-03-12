@@ -2,10 +2,11 @@ import { Sale, getSaleStatus, saleStatusConfig, isCreditCardPromo } from "@/data
 import { formatCategory } from "@/utils/categoryFormat";
 import PlatformLogo from "@/components/PlatformLogo";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Clock } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
+import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 import SaleBannerImage from "@/components/SaleBannerImage";
 
 interface SaleCardProps {
@@ -18,35 +19,6 @@ interface SaleCardProps {
   onOpenDetail?: (sale: Sale) => void;
 }
 
-function formatUpdatedAt(dateStr?: string): string | null {
-  if (!dateStr) return null;
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return null;
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-  if (diffMin < 60) return `${diffMin}분 전`;
-  const diffHr = Math.floor(diffMin / 60);
-  if (diffHr < 24) return `${diffHr}시간 전`;
-  const diffDay = Math.floor(diffHr / 24);
-  if (diffDay < 30) return `${diffDay}일 전`;
-  return `${d.getMonth() + 1}.${d.getDate()}`;
-}
-
-function getDiscountLine(sale: Sale): string | null {
-  const desc = sale.description?.trim();
-  if (!desc) return null;
-  // Take only the first line, max 40 chars
-  const firstLine = desc.split("\n")[0].slice(0, 40);
-  return firstLine || null;
-}
-
-function getSourceLabel(sale: Sale): string {
-  if (sale.source_type === "community") return "커뮤니티";
-  if (sale.source_type === "user") return "유저제보";
-  return "공식";
-}
-
 export default function SaleCard({ sale, rank, isActive = true, compact = false, onGoPrev, onGoNext, onOpenDetail }: SaleCardProps) {
   const navigate = useNavigate();
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
@@ -55,9 +27,6 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
   const isCardPromo = isCreditCardPromo(sale.sale_name);
-  const discountLine = getDiscountLine(sale);
-  const updatedAt = formatUpdatedAt(sale.updated_at);
-  const sourceLabel = getSourceLabel(sale);
 
   const hasZoneNav = !!(onGoPrev || onGoNext);
 
@@ -72,7 +41,6 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isActive) return;
     if ((e.target as HTMLElement).closest("button")) return;
-    if ((e.target as HTMLElement).closest("a")) return;
 
     if (compact || !hasZoneNav) {
       goToSale();
@@ -102,72 +70,34 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
     else setHoverZone("center");
   };
 
-  /* ─── Countdown badge ─── */
-  const CountdownBadge = () => (
-    <span
-      className={`inline-flex items-center gap-1 rounded-md shrink-0 ${
-        isUrgent
-          ? "bg-destructive/10 text-destructive"
-          : "bg-muted text-muted-foreground"
-      }`}
-      style={{ fontSize: compact ? 10 : 11, fontWeight: 700, padding: compact ? "1px 5px" : "2px 7px" }}
-    >
-      {status === "ending_today" && (
-        <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-closing-pulse" />
-      )}
-      {countdown}
-    </span>
-  );
-
-  /* ─── Meta row (source + updated) ─── */
-  const MetaRow = ({ size = "sm" }: { size?: "sm" | "xs" }) => {
-    const textSize = size === "xs" ? "text-[9px]" : "text-[10px]";
-    return (
-      <div className={`flex items-center gap-2 ${textSize} text-muted-foreground`}>
-        <span className="font-medium">{sourceLabel}</span>
-        {sale.link && (
-          <a
-            href={sale.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-0.5 text-primary hover:underline"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ExternalLink className="w-3 h-3" />
-            출처
-          </a>
-        )}
-        {updatedAt && (
-          <span className="inline-flex items-center gap-0.5">
-            <Clock className="w-3 h-3" />
-            {updatedAt}
-          </span>
-        )}
-      </div>
-    );
-  };
-
   /* ─── Compact layout (mobile) ─── */
   if (compact) {
     return (
       <div
-        className={`w-full bg-card cursor-pointer flex items-center gap-2.5 overflow-hidden transition-all hover:shadow-sm active:scale-[0.99] ${
+        className={`w-full bg-white cursor-pointer flex items-center gap-2.5 overflow-hidden transition-all hover:shadow-sm active:scale-[0.99] ${
           isCardPromo ? "opacity-60" : ""
         }`}
-        style={{ padding: "10px 12px", borderRadius: 12, border: "1px solid hsl(var(--border))", boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
+        style={{ padding: "10px 12px", borderRadius: 12, border: "1px solid #eaecf0", boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}
         onClick={goToSale}
       >
         <div className="w-10 h-10 flex items-center justify-center shrink-0">
-          <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-border" />
+          <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-black/5" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
-            <CountdownBadge />
-            {status !== "ending_today" && (
+            {status === "ending_today" ? (
+              <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today shrink-0" style={{ fontSize: "10px", fontWeight: 700, padding: "1px 5px" }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+                오늘 마감
+              </span>
+            ) : (
               <Badge variant="outline" className={`${statusInfo.className} border-0 shrink-0`} style={{ fontSize: "10px", fontWeight: "600", padding: "1px 5px" }}>
                 {statusInfo.emoji} {statusInfo.label}
               </Badge>
             )}
+            <span className={`text-[10px] shrink-0 font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
+              {countdown}
+            </span>
           </div>
           <h3
             className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
@@ -176,16 +106,12 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             {rank && <span className="text-primary mr-1 text-xs">#{rank}</span>}
             {sale.sale_name}
           </h3>
-          {discountLine && (
-            <p className="text-primary text-[11px] font-semibold truncate mt-0.5">{discountLine}</p>
-          )}
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="text-muted-foreground text-[11px] font-medium">{sale.platform}</span>
             <span className="text-muted-foreground/60 text-[10px] font-normal">
               {formatDate(sale.start_date)} – {formatDate(sale.end_date)}
             </span>
           </div>
-          <MetaRow size="xs" />
         </div>
         <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
       </div>
@@ -195,12 +121,12 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
   /* ─── Standard card layout ─── */
   return (
     <div
-      className={`relative w-full bg-card hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden ${
+      className={`relative w-full bg-white hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col overflow-hidden ${
         isCardPromo ? "opacity-60" : ""
       }`}
       style={{
         borderRadius: 12,
-        border: "1px solid hsl(var(--border))",
+        border: "1px solid #eaecf0",
         boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
       }}
       onClick={handleCardClick}
@@ -220,12 +146,22 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
       <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} aspectRatio="2/1" className="rounded-t-xl" />
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
         <div className="flex items-center justify-between">
-          <CountdownBadge />
-          {status !== "ending_today" && (
+          {status === "ending_today" ? (
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: "11px", fontWeight: 700, padding: "2px 8px" }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+              오늘 마감
+            </span>
+          ) : (
             <Badge variant="outline" className={`${statusInfo.className} border-0`} style={{ fontSize: '11px', fontWeight: '600', padding: '2px 8px' }}>
               {statusInfo.emoji} {statusInfo.label}
             </Badge>
           )}
+          <span
+            className={`whitespace-nowrap font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
+            style={{ fontSize: '11px' }}
+          >
+            {countdown}
+          </span>
         </div>
         <h3
           className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
@@ -233,12 +169,9 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         >
           {sale.sale_name}
         </h3>
-        {discountLine && (
-          <p className="text-primary text-xs font-semibold line-clamp-1">{discountLine}</p>
-        )}
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 flex items-center justify-center shrink-0">
-            <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-border" />
+            <PlatformLogo platform={sale.platform} className="w-full h-full object-contain rounded-[22%] border border-black/5" />
           </div>
           <span className="text-foreground font-medium" style={{ fontSize: '12px' }}>{sale.platform}</span>
           <span className="text-muted-foreground font-normal" style={{ fontSize: '11px' }}>
@@ -254,7 +187,6 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             ))}
           </div>
         )}
-        <MetaRow />
         {isActive && (
           <button
             className="mt-auto w-full rounded-lg text-xs font-semibold h-8 flex items-center justify-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
