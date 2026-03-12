@@ -407,10 +407,7 @@ function SaleItem({ sale, onOpenDetail }: { sale: Sale; onOpenDetail: (s: Sale) 
             {shortDate(sale.start_date)} ~ {shortDate(sale.end_date)}
           </span>
           {isEndingToday ? (
-            <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: "10px", fontWeight: 700, padding: "1px 5px" }}>
-              <span className="w-1 h-1 rounded-full bg-closing-today animate-closing-pulse" />
-              오늘 마감
-            </span>
+            <ClosingTodayBadge endDate={sale.end_date} size="sm" />
           ) : (
             <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-medium ${statusConf.className}`}>
               {dday}

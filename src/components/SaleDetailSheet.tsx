@@ -69,18 +69,17 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
           <SheetHeader className="p-0 text-left space-y-2">
             <div className="flex items-center gap-2">
               {status === "ending_today" ? (
-                <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today text-xs font-bold px-2 py-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
-                  오늘 마감
-                </span>
+                <ClosingTodayBadge endDate={sale.end_date} size="md" />
               ) : (
                 <Badge variant="outline" className={`${statusInfo.className} border-0 text-xs font-semibold`}>
                   {statusInfo.emoji} {statusInfo.label}
                 </Badge>
               )}
-              <span className={`text-xs font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
-                {countdown}
-              </span>
+              {status !== "ending_today" && (
+                <span className={`text-xs font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                  {countdown}
+                </span>
+              )}
             </div>
             <SheetTitle className="text-lg font-bold text-card-foreground leading-snug tracking-tight">
               {sale.sale_name}
