@@ -114,7 +114,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             </span>
           </div>
         </div>
-        <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+        <BookmarkButton saleId={sale.id} size={16} />
       </div>
     );
   }
