@@ -136,16 +136,19 @@ export default function ExpandedSaleOverlay({ sale, onClose, onSaleUpdated }: Pr
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   {status === "ending_today" ? (
-                    <ClosingTodayBadge endDate={currentSale.end_date} size="md" />
+                    <>
+                      <ClosingTodayBadge />
+                      <LiveCountdownText endDate={currentSale.end_date} className="text-xs" />
+                    </>
                   ) : (
-                    <Badge variant="outline" className={`${statusInfo.className} border-0 text-xs font-semibold`}>
-                      {statusInfo.emoji} {statusInfo.label}
-                    </Badge>
-                  )}
-                  {status !== "ending_today" && (
-                    <span className={`text-xs font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
-                      {countdown}
-                    </span>
+                    <>
+                      <Badge variant="outline" className={`${statusInfo.className} border-0 text-xs font-semibold`}>
+                        {statusInfo.emoji} {statusInfo.label}
+                      </Badge>
+                      <span className={`text-xs font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                        {countdown}
+                      </span>
+                    </>
                   )}
                 </div>
                 <h2 className="text-lg font-bold text-card-foreground leading-snug tracking-tight">

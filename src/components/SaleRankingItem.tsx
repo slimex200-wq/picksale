@@ -48,7 +48,10 @@ export default function SaleRankingItem({ sale, rank, onOpenDetail }: Props) {
 
       {/* Countdown */}
       {isEndingToday ? (
-        <ClosingTodayBadge endDate={sale.end_date} size="sm" />
+        <div className="shrink-0 flex items-center gap-1.5">
+          <ClosingTodayBadge />
+          <LiveCountdownText endDate={sale.end_date} className="text-[10px]" />
+        </div>
       ) : (
         <span
           className={`shrink-0 whitespace-nowrap px-1.5 py-0.5 rounded-md font-display ${

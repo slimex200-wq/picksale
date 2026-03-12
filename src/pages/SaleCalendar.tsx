@@ -408,7 +408,7 @@ function SaleItem({ sale, onOpenDetail }: { sale: Sale; onOpenDetail: (s: Sale) 
             {shortDate(sale.start_date)} ~ {shortDate(sale.end_date)}
           </span>
           {isEndingToday ? (
-            <ClosingTodayBadge endDate={sale.end_date} size="sm" />
+            <ClosingTodayBadge />
           ) : (
             <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-medium ${statusConf.className}`}>
               {dday}
