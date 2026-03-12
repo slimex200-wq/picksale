@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
+import LiveCountdownText from "@/components/LiveCountdownText";
 import SaleBannerImage from "@/components/SaleBannerImage";
-import { useCountdown } from "@/hooks/useCountdown";
 
 interface SaleCardProps {
   sale: Sale;
