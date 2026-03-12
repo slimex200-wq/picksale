@@ -14,6 +14,7 @@ export interface EventOccurrence {
   category_tags: string[] | null;
   organization_slug: string | null;
   event_slug: string | null;
+  summary: string | null;
 }
 
 export type OccurrenceStatus = "live" | "ending_today" | "starting_soon" | "ended";
