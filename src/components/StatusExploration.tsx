@@ -64,9 +64,10 @@ export default function StatusExploration({ sales, onOpenDetail }: Props) {
     setExpandedSections((prev) => {
       const next = !prev[key];
       if (!next) {
-        // collapsing → scroll to section top
         requestAnimationFrame(() => {
-          sectionRefs.current[key]?.scrollIntoView({ behavior: "smooth", block: "start" });
+          requestAnimationFrame(() => {
+            sectionRefs.current[key]?.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
         });
       }
       return { ...prev, [key]: next };
@@ -77,7 +78,9 @@ export default function StatusExploration({ sales, onOpenDetail }: Props) {
     setCommunityExpanded((prev) => {
       if (prev) {
         requestAnimationFrame(() => {
-          sectionRefs.current["community"]?.scrollIntoView({ behavior: "smooth", block: "start" });
+          requestAnimationFrame(() => {
+            sectionRefs.current["community"]?.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
         });
       }
       return !prev;
