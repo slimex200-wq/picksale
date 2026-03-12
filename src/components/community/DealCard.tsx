@@ -31,6 +31,17 @@ const categoryStyle: Record<string, { label: string; className: string }> = {
   shopping_tip: { label: "💡 쇼핑 팁", className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" },
 };
 
+const platformColor: Record<string, string> = {
+  쿠팡: "bg-[hsl(4,58%,59%)]/15 text-[hsl(4,58%,42%)] border-[hsl(4,58%,59%)]/25",
+  올리브영: "bg-[hsl(153,40%,48%)]/15 text-[hsl(153,40%,32%)] border-[hsl(153,40%,48%)]/25",
+  무신사: "bg-[hsl(0,0%,27%)]/15 text-[hsl(0,0%,20%)] border-[hsl(0,0%,27%)]/25",
+  KREAM: "bg-[hsl(16,72%,56%)]/15 text-[hsl(16,72%,38%)] border-[hsl(16,72%,56%)]/25",
+  SSG: "bg-[hsl(339,52%,52%)]/15 text-[hsl(339,52%,38%)] border-[hsl(339,52%,52%)]/25",
+  오늘의집: "bg-[hsl(183,64%,44%)]/15 text-[hsl(183,64%,30%)] border-[hsl(183,64%,44%)]/25",
+  "29CM": "bg-[hsl(30,24%,44%)]/15 text-[hsl(30,24%,32%)] border-[hsl(30,24%,44%)]/25",
+  WCONCEPT: "bg-[hsl(262,26%,52%)]/15 text-[hsl(262,26%,38%)] border-[hsl(262,26%,52%)]/25",
+};
+
 export function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
@@ -144,11 +155,15 @@ export default function DealCard({ post, onOpenDetail }: { post: CommunityPost; 
             </span>
           ) : null;
         })}
-        {post.platform && (
-          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+        {post.platform ? (
+          <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${platformColor[post.platform] ?? "bg-muted text-muted-foreground border-border/50"}`}>
             {post.platform}
           </span>
-        )}
+        ) : post.source_type ? (
+          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted/60 text-muted-foreground border border-border/40">
+            {post.source_type}
+          </span>
+        ) : null}
 
         {/* Admin menu */}
         {isAdmin && (
@@ -183,7 +198,7 @@ export default function DealCard({ post, onOpenDetail }: { post: CommunityPost; 
 
       {/* Content preview */}
       {post.content && (
-        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+        <p className="text-xs text-muted-foreground line-clamp-1 leading-relaxed">
           {post.content}
         </p>
       )}
@@ -219,7 +234,7 @@ export default function DealCard({ post, onOpenDetail }: { post: CommunityPost; 
             }`}
           >
             <ThumbsUp className="w-3.5 h-3.5" />
-            {post.upvotes > 0 ? post.upvotes : "첫 추천"}
+            {post.upvotes > 0 ? post.upvotes : "👍 추천"}
           </button>
         </div>
       </div>
