@@ -327,6 +327,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
       )}
 
       <EventOccurrenceSection />
+      <NewRadarTestSection />
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={3} />
 
