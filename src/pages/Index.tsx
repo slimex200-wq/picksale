@@ -102,19 +102,19 @@ export default function Index() {
   const hasActiveFilter = !!heroFilter || !!quickFilter || !!query.trim();
 
   const featuredSales = useMemo(
-    () => sortForFeatured(activeSales.filter((s) => {
+    () => sortForFeatured(platformFiltered.filter((s) => {
       const st = getSaleStatus(s);
       return st === "live" || st === "ending_today";
     })).slice(0, 6),
-    [activeSales]
+    [platformFiltered]
   );
   const endingTodaySales = useMemo(
-    () => sortByRanking(activeSales.filter((s) => getSaleStatus(s) === "ending_today")),
-    [activeSales]
+    () => sortByRanking(platformFiltered.filter((s) => getSaleStatus(s) === "ending_today")),
+    [platformFiltered]
   );
   const liveSales = useMemo(
-    () => sortByRanking(activeSales.filter((s) => getSaleStatus(s) === "live")),
-    [activeSales]
+    () => sortByRanking(platformFiltered.filter((s) => getSaleStatus(s) === "live")),
+    [platformFiltered]
   );
 
   const handleSearchSelect = (keyword: string) => {
@@ -130,7 +130,7 @@ export default function Index() {
     setHeroFilter(null);
   };
 
-  const rankingSales = useMemo(() => sortByRanking(activeSales).slice(0, 10), [activeSales]);
+  const rankingSales = useMemo(() => sortByRanking(platformFiltered).slice(0, 10), [platformFiltered]);
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-28 sm:pb-24">
