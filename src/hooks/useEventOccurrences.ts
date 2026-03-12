@@ -4,7 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 export interface EventOccurrence {
   occurrence_id: string | null;
   organization_name: string | null;
+  organization_id: string | null;
   event_name: string | null;
+  event_series_id: string | null;
   occurrence_title: string | null;
   status: string | null;
   starts_on: string | null;
