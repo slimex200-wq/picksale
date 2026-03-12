@@ -15,7 +15,7 @@ import QuickFilters from "@/components/QuickFilters";
 import PlatformExplorer from "@/components/PlatformExplorer";
 import TrendingCommunity from "@/components/TrendingCommunity";
 
-import NewRadarTestSection from "@/components/NewRadarTestSection";
+import EventRadarSection from "@/components/EventRadarSection";
 import {
   SaleCardCompactSkeleton,
   SaleCardSkeleton,
