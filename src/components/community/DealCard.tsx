@@ -234,7 +234,7 @@ export default function DealCard({ post, onOpenDetail }: { post: CommunityPost; 
             }`}
           >
             <ThumbsUp className="w-3.5 h-3.5" />
-            {post.upvotes > 0 ? post.upvotes : "첫 추천"}
+            {post.upvotes > 0 ? post.upvotes : "👍 추천"}
           </button>
         </div>
       </div>
