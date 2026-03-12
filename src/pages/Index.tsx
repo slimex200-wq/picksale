@@ -10,6 +10,7 @@ import PeekCarousel from "@/components/PeekCarousel";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SearchSuggestions from "@/components/SearchSuggestions";
+import EndingTodayGroupCard, { EndingTodayGroupEditorialCard } from "@/components/EndingTodayGroupCard";
 import HeroStats from "@/components/HeroStats";
 import QuickFilters from "@/components/QuickFilters";
 import PlatformExplorer from "@/components/PlatformExplorer";
