@@ -27,6 +27,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
   const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
+  const liveCountdown = useCountdown(sale.end_date);
   const isCardPromo = isCreditCardPromo(sale.sale_name);
 
   const hasZoneNav = !!(onGoPrev || onGoNext);
