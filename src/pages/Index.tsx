@@ -2,6 +2,8 @@ import { useState, useMemo, useRef } from "react";
 import { sortByRanking, sortForFeatured, getSaleStatus, SaleStatus, Sale } from "@/data/salesUtils";
 import { matchesQuickFilter } from "@/data/quickFilterDefs";
 import { useSales } from "@/hooks/useSales";
+import { useUserPreferences } from "@/hooks/useUserPreferences";
+import { useAuth } from "@/hooks/useAuth";
 import SaleCard from "@/components/SaleCard";
 import HeroSaleCard from "@/components/HeroSaleCard";
 import CoverflowCarousel from "@/components/CoverflowCarousel";
@@ -27,7 +29,8 @@ import {
   HeroStatsSkeleton,
 } from "@/components/skeletons/SaleCardSkeleton";
 import { Input } from "@/components/ui/input";
-import { Search, Trophy, ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Search, Trophy, ChevronRight, Star, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import CanonicalLink from "@/components/CanonicalLink";
