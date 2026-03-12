@@ -63,22 +63,33 @@ export default function SaleDetail() {
 
   const colorClass = platformColors[sale.platform];
 
+  const now = new Date();
+  const endDate = new Date(sale.end_date);
+  const isEnded = endDate < now;
+  const eventStatus = isEnded
+    ? "https://schema.org/EventCancelled"
+    : "https://schema.org/EventScheduled";
+
+  const seoTitle = `${sale.platform} ${sale.sale_name} (${sale.start_date}~${sale.end_date}) | PickSale 세일 정보`;
+  const seoDesc = `${sale.platform} ${sale.sale_name} 세일이 ${sale.start_date}부터 ${sale.end_date}까지 진행됩니다. PickSale에서 진행중인 모든 세일 정보를 확인하세요.`;
+
   const jsonLdData = {
     "@context": "https://schema.org",
-    "@type": "WebPage",
+    "@type": "Event",
     name: sale.sale_name,
-    description: sale.description || `${sale.platform} ${sale.sale_name} 세일 정보`,
+    description: sale.description || seoDesc,
     url: `${window.location.origin}${location.pathname}`,
-    about: {
-      "@type": "Offer",
-      name: sale.sale_name,
-      validFrom: sale.start_date,
-      validThrough: sale.end_date,
-      offeredBy: {
-        "@type": "Organization",
-        name: sale.platform,
-      },
-      ...(sale.link ? { url: sale.link } : {}),
+    startDate: sale.start_date,
+    endDate: sale.end_date,
+    eventStatus,
+    eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
+    location: {
+      "@type": "VirtualLocation",
+      url: sale.link,
+    },
+    organizer: {
+      "@type": "Organization",
+      name: sale.platform,
     },
     ...(sale.category.length > 0 ? { keywords: sale.category.join(", ") } : {}),
   };
@@ -86,10 +97,11 @@ export default function SaleDetail() {
   return (
     <div className="max-w-lg mx-auto pb-24 px-4 pt-4">
       <PageMeta
-        title={`${sale.sale_name} - ${sale.platform} | PickSale`}
-        description={sale.description || `${sale.platform} ${sale.sale_name} 세일 정보. ${sale.start_date} ~ ${sale.end_date}`}
+        title={seoTitle}
+        description={seoDesc}
         ogType="article"
         ogUrl={`${window.location.origin}/sale/${id}`}
+        {...(sale.image_url ? { ogImage: sale.image_url } : {})}
       />
       <JsonLd data={jsonLdData} />
       <CanonicalLink href={
