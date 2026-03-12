@@ -1,16 +1,15 @@
 import { lazy, Suspense, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { useSales } from "@/hooks/useSales";
-import { Sale, getSaleStatus, platforms, platformSlugs } from "@/data/salesUtils";
-import PlatformLogo from "@/components/PlatformLogo";
+import { Sale, getSaleStatus } from "@/data/salesUtils";
 import StatusExploration from "@/components/StatusExploration";
+import PlatformExplorer from "@/components/PlatformExplorer";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import {
   StatusExplorationSkeleton,
   TimelineSkeletonFull,
   PlatformGridSkeleton,
 } from "@/components/skeletons/SaleCardSkeleton";
-import { ChevronRight, Radar } from "lucide-react";
+import { Radar } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
 
