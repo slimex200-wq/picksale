@@ -13,8 +13,6 @@ import {
 import { ExternalLink, Calendar, Bell, X, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
-import ClosingTodayBadge from "@/components/ClosingTodayBadge";
-import LiveCountdownText from "@/components/LiveCountdownText";
 import { useLoginGate } from "@/hooks/useLoginGate";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -70,20 +68,18 @@ export default function SaleDetailSheet({ sale, open, onOpenChange }: Props) {
           <SheetHeader className="p-0 text-left space-y-2">
             <div className="flex items-center gap-2">
               {status === "ending_today" ? (
-                <>
-                  <ClosingTodayBadge />
-                  <LiveCountdownText endDate={sale.end_date} className="text-xs" />
-                </>
+                <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today text-xs font-bold px-2 py-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+                  오늘 마감
+                </span>
               ) : (
-                <>
-                  <Badge variant="outline" className={`${statusInfo.className} border-0 text-xs font-semibold`}>
-                    {statusInfo.emoji} {statusInfo.label}
-                  </Badge>
-                  <span className={`text-xs font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
-                    {countdown}
-                  </span>
-                </>
+                <Badge variant="outline" className={`${statusInfo.className} border-0 text-xs font-semibold`}>
+                  {statusInfo.emoji} {statusInfo.label}
+                </Badge>
               )}
+              <span className={`text-xs font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                {countdown}
+              </span>
             </div>
             <SheetTitle className="text-lg font-bold text-card-foreground leading-snug tracking-tight">
               {sale.sale_name}

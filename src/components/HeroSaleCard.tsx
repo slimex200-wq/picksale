@@ -7,8 +7,6 @@ import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
-import ClosingTodayBadge from "@/components/ClosingTodayBadge";
-import LiveCountdownText from "@/components/LiveCountdownText";
 
 interface HeroSaleCardProps {
   sale: Sale;
@@ -60,10 +58,10 @@ export default function HeroSaleCard({ sale, rank, isActive = true, onGoPrev, on
         </div>
         <span className="text-foreground font-semibold tracking-tight" style={{ fontSize: "12px" }}>{sale.platform}</span>
         {status === "ending_today" ? (
-          <div className="flex items-center gap-1.5 ml-auto">
-            <ClosingTodayBadge />
-            <LiveCountdownText endDate={sale.end_date} className="text-[10px]" />
-          </div>
+          <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today ml-auto" style={{ fontSize: "10px", fontWeight: 700, padding: "1px 6px" }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
+            오늘 마감
+          </span>
         ) : (
           <Badge variant="outline" className={`${statusInfo.className} border-0 ml-auto`} style={{ fontSize: "10px", fontWeight: "600", padding: "1px 6px" }}>
             {statusInfo.emoji} {statusInfo.label}
