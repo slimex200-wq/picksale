@@ -37,7 +37,7 @@ function OccurrenceItem({ item }: { item: EventOccurrence }) {
       {/* Info */}
       <div className="flex-1 min-w-0">
         <p className="text-card-foreground truncate tracking-tight" style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.4 }}>
-          {item.title || item.event_series_name || "이벤트"}
+          {item.occurrence_title || item.event_name || "이벤트"}
         </p>
         <div className="flex items-center gap-1.5 mt-0.5">
           <span className="text-[10px] text-muted-foreground font-medium truncate">
