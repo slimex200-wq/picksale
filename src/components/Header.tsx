@@ -78,6 +78,11 @@ export default function Header() {
               </Link>
             )}
             <button
+              className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+              title="알림"
+            >
+              <Bell className="w-[18px] h-[18px]" />
+            </button>
 
             {user ? (
               <div className="flex items-center gap-1.5 ml-1">
