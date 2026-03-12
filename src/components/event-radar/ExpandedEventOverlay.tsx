@@ -374,6 +374,13 @@ export default function ExpandedEventOverlay({ event: initialEvent, onClose }: E
             emptyText="같은 브랜드의 다른 이벤트가 없습니다"
             onItemClick={setEvent}
           />
+
+          {/* ─── Brand Page Link ─── */}
+          {event.organization_slug && (
+            <div className="border-t border-border/40 pt-4">
+              <BrandPageLink slug={event.organization_slug} name={event.organization_name} onClose={onClose} />
+            </div>
+          )}
         </div>
       </div>
 
