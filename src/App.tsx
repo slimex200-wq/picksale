@@ -39,6 +39,7 @@ import AboutPage from "./pages/AboutPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import NotFound from "./pages/NotFound";
+import BookmarksPage from "./pages/BookmarksPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -74,6 +75,7 @@ const App = () => (
             <Route path="/community" element={<><Header /><CommunityPage /><Footer /></>} />
             <Route path="/community/:id" element={<><Header /><CommunityDetail /><Footer /></>} />
             <Route path="/submit" element={<><Header /><SubmitSale /><Footer /></>} />
+            <Route path="/bookmarks" element={<><Header /><BookmarksPage /><Footer /></>} />
             <Route path="/admin" element={<><Header /><AdminGuard /></>}>
               <Route index element={<AdminOverview />} />
               <Route path="all" element={<AdminAll />} />

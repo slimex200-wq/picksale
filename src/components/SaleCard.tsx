@@ -8,6 +8,7 @@ import { useState } from "react";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 import SaleBannerImage from "@/components/SaleBannerImage";
+import BookmarkButton from "@/components/BookmarkButton";
 
 interface SaleCardProps {
   sale: Sale;
@@ -113,7 +114,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
             </span>
           </div>
         </div>
-        <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+        <BookmarkButton saleId={sale.id} size={16} />
       </div>
     );
   }
@@ -144,6 +145,9 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         </div>
       )}
       <SaleBannerImage imageUrl={sale.image_url} platform={sale.platform} alt={sale.sale_name} aspectRatio="2/1" className="rounded-t-xl" />
+      <div className="absolute top-2 right-2 z-10">
+        <BookmarkButton saleId={sale.id} size={16} className="bg-white/80 backdrop-blur-sm shadow-sm" />
+      </div>
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
         <div className="flex items-center justify-between">
           {status === "ending_today" ? (

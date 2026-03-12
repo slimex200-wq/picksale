@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { CalendarDays, Radar, Settings, Home, User, LogOut, Search, Bell, MessageSquare } from "lucide-react";
+import { CalendarDays, Radar, Settings, Home, User, LogOut, Search, Bell, MessageSquare, Bookmark } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import logo from "@/assets/logo.png";
@@ -68,6 +68,15 @@ export default function Header() {
             >
               <Search className="w-[18px] h-[18px]" />
             </Link>
+            {user && (
+              <Link
+                to="/bookmarks"
+                className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                title="저장한 세일"
+              >
+                <Bookmark className="w-[18px] h-[18px]" />
+              </Link>
+            )}
             <button
               className="p-2 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
               title="알림"
