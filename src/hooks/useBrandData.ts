@@ -50,18 +50,37 @@ export function useBrandEvents(organizationId: string | undefined) {
   });
 }
 
-/** Group events by event_series_id, pick the latest occurrence per series */
-export function getSeriesSummaries(events: EventOccurrence[]) {
-  const seriesMap = new Map<string, EventOccurrence>();
+export interface SeriesSummary {
+  latestOccurrence: EventOccurrence;
+  seriesName: string;
+  occurrenceCount: number;
+  bestDiscount: number | null;
+}
+
+export function getSeriesSummaries(events: EventOccurrence[]): SeriesSummary[] {
+  const seriesMap = new Map<string, { latest: EventOccurrence; count: number; bestDiscount: number | null }>();
   for (const ev of events) {
     const sid = ev.event_series_id;
     if (!sid) continue;
     const existing = seriesMap.get(sid);
-    if (!existing || (ev.starts_on ?? "") > (existing.starts_on ?? "")) {
-      seriesMap.set(sid, ev);
+    if (!existing) {
+      seriesMap.set(sid, { latest: ev, count: 1, bestDiscount: ev.max_discount_pct });
+    } else {
+      existing.count++;
+      if (ev.max_discount_pct && (!existing.bestDiscount || ev.max_discount_pct > existing.bestDiscount)) {
+        existing.bestDiscount = ev.max_discount_pct;
+      }
+      if ((ev.starts_on ?? "") > (existing.latest.starts_on ?? "")) {
+        existing.latest = ev;
+      }
     }
   }
-  return Array.from(seriesMap.values()).sort(
-    (a, b) => (b.starts_on ?? "").localeCompare(a.starts_on ?? "")
-  );
+  return Array.from(seriesMap.values())
+    .map((v) => ({
+      latestOccurrence: v.latest,
+      seriesName: v.latest.event_name || v.latest.occurrence_title || "이벤트",
+      occurrenceCount: v.count,
+      bestDiscount: v.bestDiscount,
+    }))
+    .sort((a, b) => (b.latestOccurrence.starts_on ?? "").localeCompare(a.latestOccurrence.starts_on ?? ""));
 }
