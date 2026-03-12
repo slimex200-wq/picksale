@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { countdownText } from "@/utils/countdown";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
+import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 
 const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
