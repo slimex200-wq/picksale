@@ -122,28 +122,30 @@ export default function Index() {
       <PageMeta title="PickSale - 쇼핑 세일 한눈에" description="의류, 뷰티, 라이프스타일 세일 정보를 한눈에 확인하세요." />
       <CanonicalLink href={window.location.origin + "/"} />
 
-      {/* Hero + Search */}
+      {/* Sticky Search */}
+      <div className="sticky top-[53px] z-40 bg-background/95 backdrop-blur-md pb-2 -mx-3 sm:-mx-4 px-3 sm:px-4 pt-2">
+        <div className="relative w-full max-w-lg" ref={searchRef}>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+            placeholder="세일, 플랫폼, 카테고리 검색"
+            className="pl-9 rounded-xl bg-card border-border h-10"
+          />
+          {searchFocused && !query.trim() && <SearchSuggestions onSelect={handleSearchSelect} />}
+        </div>
+      </div>
+
+      {/* Hero + Filters */}
       <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
         {isLoading && !sales.length ? (
           <HeroStatsSkeleton />
         ) : (
           <HeroStats sales={activeSales} activeFilter={heroFilter} onFilterChange={handleHeroFilter} />
         )}
-        <div className="space-y-2">
-          <div className="relative w-full max-w-lg" ref={searchRef}>
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
-              placeholder="세일, 플랫폼, 카테고리 검색"
-              className="pl-9 rounded-xl bg-card border-border h-10"
-            />
-            {searchFocused && !query.trim() && <SearchSuggestions onSelect={handleSearchSelect} />}
-          </div>
-          <QuickFilters activeFilter={quickFilter} onFilter={handleQuickFilter} sales={activeSales} />
-        </div>
+        <QuickFilters activeFilter={quickFilter} onFilter={handleQuickFilter} sales={activeSales} />
       </div>
 
       {isLoading && !sales.length ? (
