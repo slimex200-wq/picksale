@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
+import LiveCountdownText from "@/components/LiveCountdownText";
 
 interface Props {
   sale: Sale;
