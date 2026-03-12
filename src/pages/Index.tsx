@@ -324,6 +324,7 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         </section>
       )}
 
+      <EventOccurrenceSection />
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={3} />
 
