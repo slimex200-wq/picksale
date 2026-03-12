@@ -1,12 +1,20 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { type EventOccurrence } from "@/hooks/useEventOccurrences";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Calendar, X, Radar, History, Layers } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ExternalLink, Calendar, X, Radar, History, Layers, ChevronRight } from "lucide-react";
 
 function formatDate(d: string) {
   const [y, m, day] = d.split("-");
   return `${y}년 ${parseInt(m)}월 ${parseInt(day)}일`;
+}
+
+function formatDateShort(d: string) {
+  const [y, m, day] = d.split("-");
+  return `${y}.${m}.${day}`;
 }
 
 function formatDateRange(start?: string | null, end?: string | null) {
@@ -14,6 +22,13 @@ function formatDateRange(start?: string | null, end?: string | null) {
   if (start && end) return `${formatDate(start)} – ${formatDate(end)}`;
   if (start) return formatDate(start);
   return formatDate(end!);
+}
+
+function formatDateRangeShort(start?: string | null, end?: string | null) {
+  if (!start && !end) return "";
+  if (start && end) return `${formatDateShort(start)} - ${formatDateShort(end)}`;
+  if (start) return formatDateShort(start);
+  return formatDateShort(end!);
 }
 
 const statusConfig: Record<string, { label: string; emoji: string; className: string }> = {
@@ -27,7 +42,109 @@ interface Props {
   onClose: () => void;
 }
 
-export default function ExpandedEventOverlay({ event, onClose }: Props) {
+function usePastOccurrences(event: EventOccurrence | null) {
+  return useQuery({
+    queryKey: ["past_occurrences", event?.occurrence_id],
+    enabled: !!event?.occurrence_id,
+    queryFn: async (): Promise<EventOccurrence[]> => {
+      if (!event) return [];
+
+      // Get event_series_id from event_occurrences table
+      const { data: currentOcc } = await supabase
+        .from("event_occurrences")
+        .select("event_series_id")
+        .eq("id", event.occurrence_id!)
+        .single();
+
+      if (!currentOcc?.event_series_id) return [];
+
+      const { data, error } = await supabase
+        .from("event_occurrence_cards")
+        .select("*")
+        .eq("event_series_id", currentOcc.event_series_id)
+        .neq("occurrence_id", event.occurrence_id!)
+        .order("starts_on", { ascending: false });
+
+      if (error) throw error;
+      return (data ?? []) as EventOccurrence[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+function useSameBrandEvents(event: EventOccurrence | null) {
+  return useQuery({
+    queryKey: ["same_brand_events", event?.occurrence_id, event?.organization_name],
+    enabled: !!event?.occurrence_id && !!event?.organization_name,
+    queryFn: async (): Promise<EventOccurrence[]> => {
+      if (!event?.organization_name) return [];
+
+      const { data, error } = await supabase
+        .from("event_occurrence_cards")
+        .select("*")
+        .eq("organization_name", event.organization_name)
+        .neq("occurrence_id", event.occurrence_id!)
+        .in("status", ["live", "scheduled"])
+        .order("starts_on", { ascending: true })
+        .limit(3);
+
+      if (error) throw error;
+      return (data ?? []) as EventOccurrence[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+function RelatedItem({
+  item,
+  onClick,
+}: {
+  item: EventOccurrence;
+  onClick: () => void;
+}) {
+  const dateRange = formatDateRangeShort(item.starts_on, item.ends_on);
+  const discount = item.max_discount_pct ? `최대 ${item.max_discount_pct}%` : null;
+  const st = statusConfig[item.status ?? "ended"] ?? statusConfig.ended;
+
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-3 rounded-xl border border-border/60 px-3.5 py-3 text-left hover:bg-accent/50 hover:border-border transition-colors group"
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-bold text-card-foreground line-clamp-1 group-hover:text-primary transition-colors">
+          {item.occurrence_title || item.event_name || "이벤트"}
+        </p>
+        <div className="flex items-center gap-2 mt-1 flex-wrap">
+          {dateRange && (
+            <span className="text-[10px] text-muted-foreground font-medium">{dateRange}</span>
+          )}
+          {discount && (
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-[16px] font-bold bg-primary/10 text-primary">
+              {discount}
+            </Badge>
+          )}
+          <Badge variant="outline" className={`text-[9px] px-1 py-0 h-[14px] font-semibold border ${st.className}`}>
+            {st.label}
+          </Badge>
+        </div>
+      </div>
+      <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 group-hover:text-foreground shrink-0 transition-colors" />
+    </button>
+  );
+}
+
+export default function ExpandedEventOverlay({ event: initialEvent, onClose }: Props) {
+  const [event, setEvent] = useState<EventOccurrence | null>(initialEvent);
+
+  // Sync with prop changes
+  useEffect(() => {
+    setEvent(initialEvent);
+  }, [initialEvent]);
+
+  const { data: pastOccurrences = [], isLoading: pastLoading } = usePastOccurrences(event);
+  const { data: sameBrandEvents = [], isLoading: brandLoading } = useSameBrandEvents(event);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -154,34 +271,61 @@ export default function ExpandedEventOverlay({ event, onClose }: Props) {
             </div>
           )}
 
-          {/* ─── Future expansion placeholders ─── */}
-          <div className="border-t border-border/40 pt-4 space-y-2.5">
-            <button
-              disabled
-              className="w-full flex items-center gap-2.5 rounded-xl border border-dashed border-border/60 px-3.5 py-3 text-left opacity-50 cursor-not-allowed"
-            >
+          {/* ─── Past Occurrences (작년 기록) ─── */}
+          <div className="border-t border-border/40 pt-4 space-y-2">
+            <div className="flex items-center gap-2 px-0.5 mb-1">
               <History className="w-4 h-4 text-muted-foreground shrink-0" />
-              <div>
-                <span className="text-xs font-semibold text-foreground">작년 기록 보기</span>
-                <p className="text-[10px] text-muted-foreground mt-0.5">이전 연도 할인율과 일정을 비교할 수 있어요</p>
+              <span className="text-xs font-bold text-foreground">작년 기록 보기</span>
+            </div>
+
+            {pastLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-14 rounded-xl" />
+                <Skeleton className="h-14 rounded-xl" />
               </div>
-              <Badge variant="outline" className="ml-auto text-[9px] px-1.5 py-0 h-4 border-border/50 text-muted-foreground/50 shrink-0">
-                곧 추가
-              </Badge>
-            </button>
-            <button
-              disabled
-              className="w-full flex items-center gap-2.5 rounded-xl border border-dashed border-border/60 px-3.5 py-3 text-left opacity-50 cursor-not-allowed"
-            >
+            ) : pastOccurrences.length > 0 ? (
+              <div className="space-y-1.5">
+                {pastOccurrences.map((item) => (
+                  <RelatedItem
+                    key={item.occurrence_id}
+                    item={item}
+                    onClick={() => setEvent(item)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-[11px] text-muted-foreground/60 px-1 py-2">
+                이전 기록이 아직 없습니다
+              </p>
+            )}
+          </div>
+
+          {/* ─── Same Brand Events ─── */}
+          <div className="border-t border-border/40 pt-4 space-y-2">
+            <div className="flex items-center gap-2 px-0.5 mb-1">
               <Layers className="w-4 h-4 text-muted-foreground shrink-0" />
-              <div>
-                <span className="text-xs font-semibold text-foreground">같은 브랜드 다른 이벤트</span>
-                <p className="text-[10px] text-muted-foreground mt-0.5">{event.organization_name ?? "이 브랜드"}의 다른 세일 이벤트를 모아볼 수 있어요</p>
+              <span className="text-xs font-bold text-foreground">
+                {event.organization_name ?? "브랜드"}의 다른 이벤트
+              </span>
+            </div>
+
+            {brandLoading ? (
+              <Skeleton className="h-14 rounded-xl" />
+            ) : sameBrandEvents.length > 0 ? (
+              <div className="space-y-1.5">
+                {sameBrandEvents.map((item) => (
+                  <RelatedItem
+                    key={item.occurrence_id}
+                    item={item}
+                    onClick={() => setEvent(item)}
+                  />
+                ))}
               </div>
-              <Badge variant="outline" className="ml-auto text-[9px] px-1.5 py-0 h-4 border-border/50 text-muted-foreground/50 shrink-0">
-                곧 추가
-              </Badge>
-            </button>
+            ) : (
+              <p className="text-[11px] text-muted-foreground/60 px-1 py-2">
+                같은 브랜드의 다른 이벤트가 없습니다
+              </p>
+            )}
           </div>
         </div>
       </div>
