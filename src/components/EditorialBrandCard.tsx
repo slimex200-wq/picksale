@@ -10,12 +10,13 @@ interface Props {
   sale: Sale;
   rank?: number;
   isActive?: boolean;
+  hideEndingBadge?: boolean;
   onGoPrev?: () => void;
   onGoNext?: () => void;
   onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function EditorialBrandCard({ sale, rank, isActive = true, onOpenDetail }: Props) {
+export default function EditorialBrandCard({ sale, rank, isActive = true, hideEndingBadge = false, onOpenDetail }: Props) {
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
@@ -41,22 +42,24 @@ export default function EditorialBrandCard({ sale, rank, isActive = true, onOpen
           </div>
           <span className="text-foreground/70 font-semibold tracking-tight" style={{ fontSize: 11 }}>{sale.platform}</span>
         </div>
-        {status === "ending_today" ? (
+        {status === "ending_today" && !hideEndingBadge ? (
           <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: 10, fontWeight: 700, padding: "1px 6px" }}>
             <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
             오늘 마감
           </span>
-        ) : (
+        ) : status !== "ending_today" ? (
           <Badge variant="outline" className={`${statusInfo.className} border-0`} style={{ fontSize: 10, fontWeight: 600, padding: "1px 6px" }}>
             {statusInfo.emoji} {statusInfo.label}
           </Badge>
-        )}
+        ) : null}
       </div>
-      <div className="relative z-10 px-3 pt-0.5">
-        <span className={`font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground/60 font-normal"}`} style={{ fontSize: 11 }}>
-          {countdown}
-        </span>
-      </div>
+      {!(hideEndingBadge && status === "ending_today") && (
+        <div className="relative z-10 px-3 pt-0.5">
+          <span className={`font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground/60 font-normal"}`} style={{ fontSize: 11 }}>
+            {countdown}
+          </span>
+        </div>
+      )}
       <div className="flex-1" />
       <div className="relative z-10 px-3 pb-3 space-y-2">
         <h3

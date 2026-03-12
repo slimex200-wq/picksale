@@ -10,6 +10,7 @@ import PeekCarousel from "@/components/PeekCarousel";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SearchSuggestions from "@/components/SearchSuggestions";
+import EndingTodayGroupCard, { EndingTodayGroupEditorialCard } from "@/components/EndingTodayGroupCard";
 import HeroStats from "@/components/HeroStats";
 import QuickFilters from "@/components/QuickFilters";
 import PlatformExplorer from "@/components/PlatformExplorer";
@@ -49,6 +50,17 @@ function SectionHeader({ emoji, title, count, moreLink, moreLabel }: { emoji: st
       )}
     </div>
   );
+}
+
+/** Group ending-today sales by platform */
+function groupByPlatform(sales: Sale[]): { platform: string; sales: Sale[] }[] {
+  const map = new Map<string, Sale[]>();
+  for (const sale of sales) {
+    const existing = map.get(sale.platform) || [];
+    existing.push(sale);
+    map.set(sale.platform, existing);
+  }
+  return Array.from(map.entries()).map(([platform, sales]) => ({ platform, sales }));
 }
 
 export default function Index() {
@@ -227,8 +239,8 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
         <section className="space-y-2">
           <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
           <div className="space-y-2">
-            {endingTodaySales.slice(0, 3).map((sale) => (
-              <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
+            {groupByPlatform(endingTodaySales).slice(0, 3).map((group) => (
+              <EndingTodayGroupCard key={group.platform} platform={group.platform} sales={group.sales} onOpenDetail={setExpandedSale} />
             ))}
           </div>
         </section>
@@ -293,8 +305,8 @@ function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
           <section className="space-y-2">
             <SectionHeader emoji="⏰" title="오늘 마감" count={endingTodaySales.length} />
             <div className="space-y-2">
-              {endingTodaySales.slice(0, 4).map((sale) => (
-                <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
+              {groupByPlatform(endingTodaySales).slice(0, 4).map((group) => (
+                <EndingTodayGroupCard key={group.platform} platform={group.platform} sales={group.sales} onOpenDetail={setExpandedSale} />
               ))}
             </div>
           </section>
@@ -375,8 +387,8 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
                 <section className="space-y-3">
                   <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
                   <PeekCarousel cardWidth={240} gap={16}>
-                    {endingTodaySales.map((sale) => (
-                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
+                    {groupByPlatform(endingTodaySales).map((group) => (
+                      <EndingTodayGroupEditorialCard key={group.platform} platform={group.platform} sales={group.sales} onOpenDetail={setExpandedSale} />
                     ))}
                   </PeekCarousel>
                 </section>

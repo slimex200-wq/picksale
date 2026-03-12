@@ -14,12 +14,13 @@ interface SaleCardProps {
   rank?: number;
   isActive?: boolean;
   compact?: boolean;
+  hideEndingBadge?: boolean;
   onGoPrev?: () => void;
   onGoNext?: () => void;
   onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function SaleCard({ sale, rank, isActive = true, compact = false, onGoPrev, onGoNext, onOpenDetail }: SaleCardProps) {
+export default function SaleCard({ sale, rank, isActive = true, compact = false, hideEndingBadge = false, onGoPrev, onGoNext, onOpenDetail }: SaleCardProps) {
   const navigate = useNavigate();
   const [hoverZone, setHoverZone] = useState<"left" | "center" | "right" | null>(null);
   const countdown = countdownText(sale.end_date);
@@ -85,19 +86,21 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
-            {status === "ending_today" ? (
+            {status === "ending_today" && !hideEndingBadge ? (
               <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today shrink-0" style={{ fontSize: "10px", fontWeight: 700, padding: "1px 5px" }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
                 오늘 마감
               </span>
-            ) : (
+            ) : status !== "ending_today" ? (
               <Badge variant="outline" className={`${statusInfo.className} border-0 shrink-0`} style={{ fontSize: "10px", fontWeight: "600", padding: "1px 5px" }}>
                 {statusInfo.emoji} {statusInfo.label}
               </Badge>
+            ) : null}
+            {!(hideEndingBadge && status === "ending_today") && (
+              <span className={`text-[10px] shrink-0 font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
+                {countdown}
+              </span>
             )}
-            <span className={`text-[10px] shrink-0 font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
-              {countdown}
-            </span>
           </div>
           <h3
             className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
