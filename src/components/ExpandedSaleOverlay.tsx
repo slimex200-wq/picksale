@@ -5,6 +5,7 @@ import PlatformLogo from "@/components/PlatformLogo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Calendar, Bell, X, Pencil, Lock } from "lucide-react";
+import BookmarkButton from "@/components/BookmarkButton";
 import { toast } from "sonner";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
 import SaleBannerImage from "@/components/SaleBannerImage";
