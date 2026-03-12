@@ -8,6 +8,7 @@ import { useState } from "react";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 import SaleBannerImage from "@/components/SaleBannerImage";
+import { useCountdown } from "@/hooks/useCountdown";
 
 interface SaleCardProps {
   sale: Sale;
