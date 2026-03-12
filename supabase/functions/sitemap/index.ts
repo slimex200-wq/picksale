@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SITE_URL = "https://picksale.lovable.app";
+const SITE_URL = Deno.env.get("SITE_URL") || "https://picksale.lovable.app";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -17,7 +17,12 @@ Deno.serve(async (req) => {
 
     // Fetch published sales, active events, published community posts in parallel
     const [salesRes, eventsRes, postsRes] = await Promise.all([
-      supabase.from("sales").select("id, start_date, end_date").eq("publish_status", "published").limit(1000),
+      supabase
+        .from("sales")
+        .select("id, start_date, end_date, updated_at, importance_score")
+        .eq("publish_status", "published")
+        .gte("end_date", today)
+        .limit(1000),
       supabase.from("sale_events").select("id, start_date, end_date, updated_at").eq("event_status", "active").limit(500),
       supabase.from("community_posts").select("id, updated_at").eq("review_status", "published").limit(500),
     ]);
@@ -46,9 +51,12 @@ Deno.serve(async (req) => {
       urls += url(`/event/${e.id}`, e.updated_at?.split("T")[0] || today, "daily", "0.9");
     }
 
-    // Sale pages
+    // Sale pages — priority based on importance_score, lastmod from updated_at
     for (const s of sales) {
-      urls += url(`/sale/${s.id}`, s.start_date, "weekly", "0.7");
+      const score = s.importance_score ?? 0;
+      const priority = score >= 50 ? "0.9" : score >= 30 ? "0.8" : "0.6";
+      const lastmod = s.updated_at?.split("T")[0] || s.start_date || today;
+      urls += url(`/sale/${s.id}`, lastmod, "weekly", priority);
     }
 
     // Community posts
