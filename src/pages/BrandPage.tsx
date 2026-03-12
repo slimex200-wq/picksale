@@ -1,15 +1,18 @@
 import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useOrganizationBySlug, useBrandEvents, getSeriesSummaries, type SeriesSummary } from "@/hooks/useBrandData";
+import { useOrganizationFollow } from "@/hooks/useOrganizationFollow";
+import { useLoginGate } from "@/hooks/useLoginGate";
 import { type EventOccurrence } from "@/hooks/useEventOccurrences";
 import EventRadarCard from "@/components/event-radar/EventRadarCard";
 import ExpandedEventOverlay from "@/components/event-radar/ExpandedEventOverlay";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExternalLink, Building2, ChevronDown, ChevronUp, ArrowLeft, Bell, Layers, ChevronRight } from "lucide-react";
+import { ExternalLink, Building2, ChevronDown, ChevronUp, ArrowLeft, Bell, BellRing, Layers, ChevronRight } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
+import { toast } from "sonner";
 
 // ── Section Component ──
 function EventSection({
@@ -197,6 +200,43 @@ function BrandPageSkeleton() {
   );
 }
 
+// ── Follow Button ──
+function FollowButton({ organizationId, orgName }: { organizationId: string; orgName: string }) {
+  const { isFollowing, isToggling, follow, unfollow } = useOrganizationFollow(organizationId);
+  const { requireLogin } = useLoginGate();
+
+  const handleClick = () => {
+    requireLogin(async () => {
+      try {
+        if (isFollowing) {
+          await unfollow();
+          toast.success(`${orgName} 알림을 해제했습니다`);
+        } else {
+          await follow();
+          toast.success(`${orgName} 알림을 받습니다`);
+        }
+      } catch {
+        toast.error("처리 중 오류가 발생했습니다");
+      }
+    }, "alert");
+  };
+
+  return (
+    <Button
+      variant={isFollowing ? "default" : "outline"}
+      size="sm"
+      className={`gap-1.5 text-xs rounded-lg h-8 transition-all ${
+        isFollowing ? "bg-primary text-primary-foreground" : ""
+      }`}
+      onClick={handleClick}
+      disabled={isToggling}
+    >
+      {isFollowing ? <BellRing className="w-3.5 h-3.5" /> : <Bell className="w-3.5 h-3.5" />}
+      <span className="hidden sm:inline">{isToggling ? "처리 중..." : isFollowing ? "알림 받는 중" : "알림 받기"}</span>
+    </Button>
+  );
+}
+
 // ── Main Page ──
 export default function BrandPage() {
   const { organizationSlug } = useParams<{ organizationSlug: string }>();
@@ -275,15 +315,7 @@ export default function BrandPage() {
                     <span className="hidden sm:inline">공식 사이트</span>
                   </Button>
                 )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5 text-xs rounded-lg opacity-50 cursor-not-allowed h-8"
-                  disabled
-                >
-                  <Bell className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">알림</span>
-                </Button>
+                <FollowButton organizationId={org.id} orgName={org.name} />
               </div>
             </div>
 
