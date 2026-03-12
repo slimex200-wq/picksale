@@ -181,6 +181,417 @@ export type Database = {
         }
         Relationships: []
       }
+      event_occurrences: {
+        Row: {
+          category_tags: string[]
+          created_at: string
+          created_by: string | null
+          ends_on: string | null
+          event_series_id: string
+          id: string
+          last_verified_at: string | null
+          max_discount_pct: number | null
+          official_url: string | null
+          sale_year: number
+          starts_on: string | null
+          status: string
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_tags?: string[]
+          created_at?: string
+          created_by?: string | null
+          ends_on?: string | null
+          event_series_id: string
+          id?: string
+          last_verified_at?: string | null
+          max_discount_pct?: number | null
+          official_url?: string | null
+          sale_year: number
+          starts_on?: string | null
+          status?: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_tags?: string[]
+          created_at?: string
+          created_by?: string | null
+          ends_on?: string | null
+          event_series_id?: string
+          id?: string
+          last_verified_at?: string | null
+          max_discount_pct?: number | null
+          official_url?: string | null
+          sale_year?: number
+          starts_on?: string | null
+          status?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_occurrences_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_occurrences_event_series_id_fkey"
+            columns: ["event_series_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrence_cards"
+            referencedColumns: ["event_series_id"]
+          },
+          {
+            foreignKeyName: "event_occurrences_event_series_id_fkey"
+            columns: ["event_series_id"]
+            isOneToOne: false
+            referencedRelation: "event_series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_series: {
+        Row: {
+          cadence: string
+          created_at: string
+          event_kind: string
+          id: string
+          is_active: boolean
+          name: string
+          notes: string | null
+          organization_id: string
+          slug: string
+          typical_end_month: number | null
+          typical_start_month: number | null
+          updated_at: string
+        }
+        Insert: {
+          cadence?: string
+          created_at?: string
+          event_kind: string
+          id?: string
+          is_active?: boolean
+          name: string
+          notes?: string | null
+          organization_id: string
+          slug: string
+          typical_end_month?: number | null
+          typical_start_month?: number | null
+          updated_at?: string
+        }
+        Update: {
+          cadence?: string
+          created_at?: string
+          event_kind?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          notes?: string | null
+          organization_id?: string
+          slug?: string
+          typical_end_month?: number | null
+          typical_start_month?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_series_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrence_cards"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "event_series_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_series_follows: {
+        Row: {
+          created_at: string
+          event_series_id: string
+          notify_before_days: number[]
+          notify_on_ending_soon: boolean
+          notify_on_start: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_series_id: string
+          notify_before_days?: number[]
+          notify_on_ending_soon?: boolean
+          notify_on_start?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_series_id?: string
+          notify_before_days?: number[]
+          notify_on_ending_soon?: boolean
+          notify_on_start?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_series_follows_event_series_id_fkey"
+            columns: ["event_series_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrence_cards"
+            referencedColumns: ["event_series_id"]
+          },
+          {
+            foreignKeyName: "event_series_follows_event_series_id_fkey"
+            columns: ["event_series_id"]
+            isOneToOne: false
+            referencedRelation: "event_series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_signals: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          event_series_id: string
+          expires_on: string | null
+          id: string
+          occurrence_id: string | null
+          signal_date: string
+          signal_kind: string
+          signal_strength: number
+          source_id: string | null
+          summary: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          event_series_id: string
+          expires_on?: string | null
+          id?: string
+          occurrence_id?: string | null
+          signal_date?: string
+          signal_kind: string
+          signal_strength?: number
+          source_id?: string | null
+          summary: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          event_series_id?: string
+          expires_on?: string | null
+          id?: string
+          occurrence_id?: string | null
+          signal_date?: string
+          signal_kind?: string
+          signal_strength?: number
+          source_id?: string | null
+          summary?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_signals_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_signals_event_series_id_fkey"
+            columns: ["event_series_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrence_cards"
+            referencedColumns: ["event_series_id"]
+          },
+          {
+            foreignKeyName: "event_signals_event_series_id_fkey"
+            columns: ["event_series_id"]
+            isOneToOne: false
+            referencedRelation: "event_series"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_signals_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrence_cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_signals_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_signals_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "event_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_sources: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          excerpt: string | null
+          id: string
+          occurrence_id: string
+          published_at: string | null
+          publisher: string | null
+          reliability_score: number
+          source_kind: string
+          title: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          id?: string
+          occurrence_id: string
+          published_at?: string | null
+          publisher?: string | null
+          reliability_score?: number
+          source_kind: string
+          title: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          id?: string
+          occurrence_id?: string
+          published_at?: string | null
+          publisher?: string | null
+          reliability_score?: number
+          source_kind?: string
+          title?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_sources_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_sources_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrence_cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_sources_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_follows: {
+        Row: {
+          created_at: string
+          notify_before_days: number[]
+          notify_on_ending_soon: boolean
+          notify_on_start: boolean
+          organization_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          notify_before_days?: number[]
+          notify_on_ending_soon?: boolean
+          notify_on_start?: boolean
+          organization_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          notify_before_days?: number[]
+          notify_on_ending_soon?: boolean
+          notify_on_start?: boolean
+          organization_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_follows_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrence_cards"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "organization_follows_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          country_code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          org_type: string
+          slug: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          country_code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          org_type: string
+          slug: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          country_code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          org_type?: string
+          slug?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       platform_scrape_rules: {
         Row: {
           active: boolean
@@ -495,6 +906,92 @@ export type Database = {
           },
         ]
       }
+      submissions: {
+        Row: {
+          body: string | null
+          created_at: string
+          ends_on: string | null
+          event_series_id: string | null
+          id: string
+          moderation_status: string
+          organization_id: string | null
+          payload: Json
+          platform_name: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          source_url: string | null
+          starts_on: string | null
+          submitted_by: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          ends_on?: string | null
+          event_series_id?: string | null
+          id?: string
+          moderation_status?: string
+          organization_id?: string | null
+          payload?: Json
+          platform_name?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_url?: string | null
+          starts_on?: string | null
+          submitted_by: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          ends_on?: string | null
+          event_series_id?: string | null
+          id?: string
+          moderation_status?: string
+          organization_id?: string | null
+          payload?: Json
+          platform_name?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_url?: string | null
+          starts_on?: string | null
+          submitted_by?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submissions_event_series_id_fkey"
+            columns: ["event_series_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrence_cards"
+            referencedColumns: ["event_series_id"]
+          },
+          {
+            foreignKeyName: "submissions_event_series_id_fkey"
+            columns: ["event_series_id"]
+            isOneToOne: false
+            referencedRelation: "event_series"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submissions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "event_occurrence_cards"
+            referencedColumns: ["organization_id"]
+          },
+          {
+            foreignKeyName: "submissions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -515,7 +1012,31 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      event_occurrence_cards: {
+        Row: {
+          cadence: string | null
+          category_tags: string[] | null
+          ends_on: string | null
+          event_kind: string | null
+          event_series_id: string | null
+          event_series_name: string | null
+          event_series_slug: string | null
+          id: string | null
+          last_verified_at: string | null
+          max_discount_pct: number | null
+          official_url: string | null
+          organization_id: string | null
+          organization_logo_url: string | null
+          organization_name: string | null
+          organization_slug: string | null
+          sale_year: number | null
+          starts_on: string | null
+          status: string | null
+          summary: string | null
+          title: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
