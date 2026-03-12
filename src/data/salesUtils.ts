@@ -150,22 +150,22 @@ export function calculateRankingScore(sale: Sale): number {
 
   // 카드 프로모션 패널티
   if (isCreditCardPromo(sale.sale_name)) {
-    score -= 5;
+    score -= 15;
   }
 
   // 진행중 보너스
-  if (sale.start_date <= todayStr && sale.end_date >= todayStr) score += 3;
+  if (sale.start_date <= todayStr && sale.end_date >= todayStr) score += 8;
 
   // 곧 시작 보너스 (3일 이내)
   const startDiff = daysBetween(sale.start_date, todayStr);
-  if (startDiff > 0 && startDiff <= 3) score += 2;
+  if (startDiff > 0 && startDiff <= 3) score += 5;
 
   // 종료 임박 보너스 (2일 이내)
   const endDiff = daysBetween(sale.end_date, todayStr);
-  if (endDiff >= 0 && endDiff <= 2) score += 2;
+  if (endDiff >= 0 && endDiff <= 2) score += 5;
 
   // 플랫폼 가중치
-  score += platformWeight[sale.platform] ?? 0;
+  score += (platformWeight[sale.platform] ?? 0) * 3;
 
   return score;
 }
