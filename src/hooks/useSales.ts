@@ -4,7 +4,7 @@ import type { Sale, Platform, SaleTier, ReviewStatus, PublishStatus } from "@/da
 import { getTodayKST } from "@/data/salesUtils";
 
 /** Columns needed for card/list views (no description, source_urls, filter_reason) */
-const LIST_COLUMNS = "id,platform,sale_name,start_date,end_date,category,link,sale_tier,importance_score,review_status,publish_status,grouped_page_count,event_id,signal_id,created_at,image_url";
+const LIST_COLUMNS = "id,platform,sale_name,start_date,end_date,category,link,sale_tier,importance_score,review_status,publish_status,grouped_page_count,event_id,signal_id,created_at,image_url,updated_at,description,latest_source_url,source_type";
 
 /** Public hook – only returns published & non-expired sales */
 export function useSales() {
