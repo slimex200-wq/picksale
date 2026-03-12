@@ -3,6 +3,7 @@ import PlatformLogo from "@/components/PlatformLogo";
 import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
+import LiveCountdownText from "@/components/LiveCountdownText";
 
 const RANK_MEDALS: Record<number, string> = { 1: "🥇", 2: "🥈", 3: "🥉" };
 
