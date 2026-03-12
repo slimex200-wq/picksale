@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Sale, getSaleStatus, sortByRanking, type SaleStatus } from "@/data/salesUtils";
 import SaleRankingItem from "./SaleRankingItem";
-import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface Props {
   sales: Sale[];
@@ -20,9 +19,21 @@ function isCommunity(sale: Sale): boolean {
   return sale.platform === "커뮤니티 핫딜" || sale.source_type === "community";
 }
 
+function ToggleButton({ expanded, hiddenCount, onToggle }: { expanded: boolean; hiddenCount: number; onToggle: () => void }) {
+  return (
+    <button
+      onClick={onToggle}
+      className="flex items-center gap-1 mx-auto text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors py-1 px-3 rounded-lg hover:bg-accent"
+    >
+      {expanded ? "△ 접기" : `▽ 더보기 (${hiddenCount}개)`}
+    </button>
+  );
+}
+
 export default function StatusExploration({ sales, onOpenDetail }: Props) {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const [communityExpanded, setCommunityExpanded] = useState(false);
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const { grouped, communityActive } = useMemo(() => {
     const result: Record<SaleStatus, Sale[]> = {
@@ -49,8 +60,29 @@ export default function StatusExploration({ sales, onOpenDetail }: Props) {
     return { grouped: result, communityActive: sortByRanking(community) };
   }, [sales]);
 
-  const toggleSection = (key: string) =>
-    setExpandedSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  const toggleSection = useCallback((key: string) => {
+    setExpandedSections((prev) => {
+      const next = !prev[key];
+      if (!next) {
+        // collapsing → scroll to section top
+        requestAnimationFrame(() => {
+          sectionRefs.current[key]?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+      return { ...prev, [key]: next };
+    });
+  }, []);
+
+  const toggleCommunity = useCallback(() => {
+    setCommunityExpanded((prev) => {
+      if (prev) {
+        requestAnimationFrame(() => {
+          sectionRefs.current["community"]?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+      return !prev;
+    });
+  }, []);
 
   const nonEmpty = sections.filter((s) => grouped[s.status].length > 0);
 
@@ -70,7 +102,11 @@ export default function StatusExploration({ sales, onOpenDetail }: Props) {
             const hasMore = all.length > INITIAL_LIMIT;
 
             return (
-              <div key={section.status} className="space-y-2">
+              <div
+                key={section.status}
+                ref={(el) => { sectionRefs.current[section.status] = el; }}
+                className="space-y-2 scroll-mt-4"
+              >
                 <div className="flex items-center justify-between px-1">
                   <h3 className="text-sm font-bold text-foreground flex items-center gap-1.5 tracking-tight">
                     {section.status === "ending_today" ? (
@@ -95,22 +131,11 @@ export default function StatusExploration({ sales, onOpenDetail }: Props) {
                   ))}
                 </div>
                 {hasMore && (
-                  <button
-                    onClick={() => toggleSection(section.status)}
-                    className="flex items-center gap-1 mx-auto text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors py-1 px-3 rounded-lg hover:bg-accent"
-                  >
-                    {isExpanded ? (
-                      <>
-                        <ChevronUp className="w-3.5 h-3.5" />
-                        접기
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="w-3.5 h-3.5" />
-                        더보기 ({all.length - INITIAL_LIMIT}개)
-                      </>
-                    )}
-                  </button>
+                  <ToggleButton
+                    expanded={isExpanded}
+                    hiddenCount={all.length - INITIAL_LIMIT}
+                    onToggle={() => toggleSection(section.status)}
+                  />
                 )}
               </div>
             );
@@ -118,7 +143,10 @@ export default function StatusExploration({ sales, onOpenDetail }: Props) {
 
           {/* Community Hot Deals Section */}
           {communityActive.length > 0 && (
-            <div className="space-y-2">
+            <div
+              ref={(el) => { sectionRefs.current["community"] = el; }}
+              className="space-y-2 scroll-mt-4"
+            >
               <div className="flex items-center justify-between px-1">
                 <h3 className="text-sm font-bold text-foreground flex items-center gap-1.5 tracking-tight">
                   <span>🔥</span>
@@ -134,22 +162,11 @@ export default function StatusExploration({ sales, onOpenDetail }: Props) {
                 ))}
               </div>
               {communityActive.length > INITIAL_LIMIT && (
-                <button
-                  onClick={() => setCommunityExpanded((v) => !v)}
-                  className="flex items-center gap-1 mx-auto text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors py-1 px-3 rounded-lg hover:bg-accent"
-                >
-                  {communityExpanded ? (
-                    <>
-                      <ChevronUp className="w-3.5 h-3.5" />
-                      접기
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="w-3.5 h-3.5" />
-                      더보기 ({communityActive.length - INITIAL_LIMIT}개)
-                    </>
-                  )}
-                </button>
+                <ToggleButton
+                  expanded={communityExpanded}
+                  hiddenCount={communityActive.length - INITIAL_LIMIT}
+                  onToggle={toggleCommunity}
+                />
               )}
             </div>
           )}
