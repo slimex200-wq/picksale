@@ -14,6 +14,7 @@ interface SaleCardProps {
   rank?: number;
   isActive?: boolean;
   compact?: boolean;
+  hideEndingBadge?: boolean;
   onGoPrev?: () => void;
   onGoNext?: () => void;
   onOpenDetail?: (sale: Sale) => void;
