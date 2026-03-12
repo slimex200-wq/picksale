@@ -349,7 +349,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
   return (
     <>
       <div className="grid grid-cols-[1fr_280px] gap-6 min-w-0 items-start">
-        <main className="space-y-8 min-w-0 overflow-x-hidden">
+        <main className="space-y-8 min-w-0">
           {rankingSales.length > 0 && (
             <section className="space-y-3">
               <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />

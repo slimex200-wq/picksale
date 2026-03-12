@@ -6,10 +6,6 @@
   font-family: 'Noto Sans KR', sans-serif;
 }
 
-#root {
-  overflow-x: hidden;
-}
-
 @layer base {
   :root {
     --background: 209 40% 96%;
