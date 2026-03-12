@@ -63,8 +63,11 @@ export default function Index() {
   const [quickFilter, setQuickFilter] = useState<string | null>(null);
   const [searchFocused, setSearchFocused] = useState(false);
   const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
+  const [showAll, setShowAll] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const { data: sales = [], isLoading } = useSales();
+  const { user } = useAuth();
+  const { favoritePlatforms, hasFavorites } = useUserPreferences();
   const bp = useBreakpoint();
 
   const activeSales = useMemo(
@@ -72,8 +75,14 @@ export default function Index() {
     [sales]
   );
 
+  // Apply favorite platforms filter
+  const platformFiltered = useMemo(() => {
+    if (!hasFavorites || showAll) return activeSales;
+    return activeSales.filter((s) => favoritePlatforms.includes(s.platform as any));
+  }, [activeSales, favoritePlatforms, hasFavorites, showAll]);
+
   const filtered = useMemo(() => {
-    let result = activeSales;
+    let result = platformFiltered;
     if (heroFilter) result = result.filter((s) => getSaleStatus(s) === heroFilter);
     if (quickFilter) {
       result = result.filter((s) => matchesQuickFilter(s, quickFilter));
@@ -88,7 +97,7 @@ export default function Index() {
       );
     }
     return sortByRanking(result);
-  }, [query, activeSales, heroFilter, quickFilter]);
+  }, [query, platformFiltered, heroFilter, quickFilter]);
 
   const hasActiveFilter = !!heroFilter || !!quickFilter || !!query.trim();
 
