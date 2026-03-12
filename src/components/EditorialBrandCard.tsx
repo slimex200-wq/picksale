@@ -16,7 +16,7 @@ interface Props {
   onOpenDetail?: (sale: Sale) => void;
 }
 
-export default function EditorialBrandCard({ sale, rank, isActive = true, onOpenDetail }: Props) {
+export default function EditorialBrandCard({ sale, rank, isActive = true, hideEndingBadge = false, onOpenDetail }: Props) {
   const countdown = countdownText(sale.end_date);
   const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
