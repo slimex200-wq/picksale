@@ -155,11 +155,15 @@ export default function DealCard({ post, onOpenDetail }: { post: CommunityPost; 
             </span>
           ) : null;
         })}
-        {post.platform && (
-          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+        {post.platform ? (
+          <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${platformColor[post.platform] ?? "bg-muted text-muted-foreground border-border/50"}`}>
             {post.platform}
           </span>
-        )}
+        ) : post.source_type ? (
+          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted/60 text-muted-foreground border border-border/40">
+            {post.source_type}
+          </span>
+        ) : null}
 
         {/* Admin menu */}
         {isAdmin && (
