@@ -40,6 +40,7 @@ import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import NotFound from "./pages/NotFound";
 import BookmarksPage from "./pages/BookmarksPage";
+import BrandPage from "./pages/BrandPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
