@@ -233,8 +233,7 @@ export default function DealCard({ post, onOpenDetail }: { post: CommunityPost; 
                 : "bg-transparent border border-border text-muted-foreground hover:bg-accent"
             }`}
           >
-            <ThumbsUp className="w-3.5 h-3.5" />
-            {post.upvotes > 0 ? post.upvotes : "👍 추천"}
+            {post.upvotes > 0 ? <><ThumbsUp className="w-3.5 h-3.5" />{post.upvotes}</> : "👍 추천"}
           </button>
         </div>
       </div>
