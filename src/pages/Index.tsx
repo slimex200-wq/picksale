@@ -398,7 +398,7 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
             </div>
           )}
 
-          <NewRadarTestSection />
+          <EventRadarSection />
           <PlatformExplorer sales={activeSales} />
 
           {activeSales.length === 0 && (
