@@ -10,6 +10,7 @@ interface Props {
   sale: Sale;
   rank?: number;
   isActive?: boolean;
+  hideEndingBadge?: boolean;
   onGoPrev?: () => void;
   onGoNext?: () => void;
   onOpenDetail?: (sale: Sale) => void;
