@@ -87,16 +87,19 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
             {status === "ending_today" ? (
-              <ClosingTodayBadge endDate={sale.end_date} size="sm" />
+              <>
+                <ClosingTodayBadge />
+                <LiveCountdownText endDate={sale.end_date} className="text-[10px]" />
+              </>
             ) : (
-              <Badge variant="outline" className={`${statusInfo.className} border-0 shrink-0`} style={{ fontSize: "10px", fontWeight: "600", padding: "1px 5px" }}>
-                {statusInfo.emoji} {statusInfo.label}
-              </Badge>
-            )}
-            {status !== "ending_today" && (
-              <span className={`text-[10px] shrink-0 font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
-                {countdown}
-              </span>
+              <>
+                <Badge variant="outline" className={`${statusInfo.className} border-0 shrink-0`} style={{ fontSize: "10px", fontWeight: "600", padding: "1px 5px" }}>
+                  {statusInfo.emoji} {statusInfo.label}
+                </Badge>
+                <span className={`text-[10px] shrink-0 font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
+                  {countdown}
+                </span>
+              </>
             )}
           </div>
           <h3
