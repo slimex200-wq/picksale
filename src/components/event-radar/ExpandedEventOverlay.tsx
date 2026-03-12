@@ -85,18 +85,32 @@ function usePastOccurrences(event: EventOccurrence | null) {
 }
 
 function useSameBrandEvents(event: EventOccurrence | null) {
-  const orgId = event?.organization_id;
   const occurrenceId = event?.occurrence_id;
 
   return useQuery({
-    queryKey: ["same_brand_events", orgId, occurrenceId],
-    enabled: !!orgId && !!occurrenceId,
+    queryKey: ["same_brand_events", event?.organization_id, occurrenceId],
+    enabled: !!occurrenceId,
     queryFn: async (): Promise<EventOccurrence[]> => {
-      if (!orgId || !occurrenceId) return [];
+      if (!occurrenceId) return [];
+
+      let orgId = event?.organization_id ?? null;
+
+      if (!orgId) {
+        const { data: current, error: currentError } = await supabase
+          .from("event_occurrence_cards")
+          .select("organization_id")
+          .eq("occurrence_id", occurrenceId)
+          .maybeSingle();
+
+        if (currentError) throw currentError;
+        orgId = current?.organization_id ?? null;
+      }
+
+      if (!orgId) return [];
 
       const { data, error } = await supabase
         .from("event_occurrence_cards")
-        .select("*")
+        .select("occurrence_id,organization_name,organization_id,event_name,event_series_id,occurrence_title,status,starts_on,ends_on,max_discount_pct,official_url,category_tags,organization_slug,event_slug,summary")
         .eq("organization_id", orgId)
         .neq("occurrence_id", occurrenceId)
         .order("starts_on", { ascending: false })
@@ -105,7 +119,8 @@ function useSameBrandEvents(event: EventOccurrence | null) {
       if (error) throw error;
       return (data ?? []) as EventOccurrence[];
     },
-    staleTime: 2 * 60 * 1000,
+    staleTime: 30 * 1000,
+    refetchOnMount: "always",
   });
 }
 
