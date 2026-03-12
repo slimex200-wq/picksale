@@ -32,7 +32,6 @@ function OccurrenceItem({ item }: { item: EventOccurrence }) {
           <span className="text-sm font-bold text-muted-foreground">
             {(item.organization_name ?? "?").charAt(0)}
           </span>
-        )}
       </div>
 
       {/* Info */}
