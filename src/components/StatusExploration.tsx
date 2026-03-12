@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Sale, getSaleStatus, sortByRanking, saleStatusConfig, type SaleStatus } from "@/data/salesUtils";
 import SaleRankingItem from "./SaleRankingItem";
+import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 
 interface Props {
   sales: Sale[];

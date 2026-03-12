@@ -2,6 +2,7 @@ import { Sale, isCreditCardPromo, getSaleStatus } from "@/data/salesUtils";
 import PlatformLogo from "@/components/PlatformLogo";
 import { useNavigate } from "react-router-dom";
 import { countdownText, isUrgentCountdown } from "@/utils/countdown";
+import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 
 const RANK_MEDALS: Record<number, string> = { 1: "🥇", 2: "🥈", 3: "🥉" };
 
@@ -46,10 +47,7 @@ export default function SaleRankingItem({ sale, rank, onOpenDetail }: Props) {
 
       {/* Countdown */}
       {isEndingToday ? (
-        <span className="shrink-0 inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today whitespace-nowrap" style={{ fontSize: '10px', fontWeight: 700, padding: '2px 6px' }}>
-          <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
-          오늘 마감
-        </span>
+        <ClosingTodayBadge endDate={sale.end_date} size="sm" />
       ) : (
         <span
           className={`shrink-0 whitespace-nowrap px-1.5 py-0.5 rounded-md font-display ${

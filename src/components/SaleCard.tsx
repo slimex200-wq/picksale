@@ -8,6 +8,7 @@ import { useState } from "react";
 import { countdownText, isUrgentCountdown, formatDate } from "@/utils/countdown";
 import ClosingTodayBadge from "@/components/ClosingTodayBadge";
 import SaleBannerImage from "@/components/SaleBannerImage";
+import { useCountdown } from "@/hooks/useCountdown";
 
 interface SaleCardProps {
   sale: Sale;
@@ -26,6 +27,7 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
   const isUrgent = isUrgentCountdown(countdown);
   const status = getSaleStatus(sale);
   const statusInfo = saleStatusConfig[status];
+  const liveCountdown = useCountdown(sale.end_date);
   const isCardPromo = isCreditCardPromo(sale.sale_name);
 
   const hasZoneNav = !!(onGoPrev || onGoNext);
@@ -86,18 +88,17 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-0.5">
             {status === "ending_today" ? (
-              <span className="inline-flex items-center gap-1 rounded-md bg-closing-today-bg text-closing-today shrink-0" style={{ fontSize: "10px", fontWeight: 700, padding: "1px 5px" }}>
-                <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
-                오늘 마감
-              </span>
+              <ClosingTodayBadge endDate={sale.end_date} size="sm" />
             ) : (
               <Badge variant="outline" className={`${statusInfo.className} border-0 shrink-0`} style={{ fontSize: "10px", fontWeight: "600", padding: "1px 5px" }}>
                 {statusInfo.emoji} {statusInfo.label}
               </Badge>
             )}
-            <span className={`text-[10px] shrink-0 font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
-              {countdown}
-            </span>
+            {status !== "ending_today" && (
+              <span className={`text-[10px] shrink-0 font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}>
+                {countdown}
+              </span>
+            )}
           </div>
           <h3
             className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
@@ -147,21 +148,20 @@ export default function SaleCard({ sale, rank, isActive = true, compact = false,
       <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
         <div className="flex items-center justify-between">
           {status === "ending_today" ? (
-            <span className="inline-flex items-center gap-1.5 rounded-md bg-closing-today-bg text-closing-today" style={{ fontSize: "11px", fontWeight: 700, padding: "2px 8px" }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-closing-today animate-closing-pulse" />
-              오늘 마감
-            </span>
+            <ClosingTodayBadge endDate={sale.end_date} size="md" />
           ) : (
             <Badge variant="outline" className={`${statusInfo.className} border-0`} style={{ fontSize: '11px', fontWeight: '600', padding: '2px 8px' }}>
               {statusInfo.emoji} {statusInfo.label}
             </Badge>
           )}
-          <span
-            className={`whitespace-nowrap font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
-            style={{ fontSize: '11px' }}
-          >
-            {countdown}
-          </span>
+          {status !== "ending_today" && (
+            <span
+              className={`whitespace-nowrap font-display ${isUrgent ? "text-destructive font-semibold" : "text-muted-foreground font-normal"}`}
+              style={{ fontSize: '11px' }}
+            >
+              {countdown}
+            </span>
+          )}
         </div>
         <h3
           className={`line-clamp-2 tracking-tight leading-snug ${isCardPromo ? "text-muted-foreground" : "text-card-foreground"}`}
