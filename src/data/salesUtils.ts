@@ -182,15 +182,15 @@ export function sortForFeatured(sales: Sale[]): Sale[] {
     let scoreA = calculateRankingScore(a);
     let scoreB = calculateRankingScore(b);
 
-    // Tier bonus: major +3, minor +0, excluded -3
-    if (a.sale_tier === "major") scoreA += 3;
-    else if (a.sale_tier === "excluded") scoreA -= 3;
-    if (b.sale_tier === "major") scoreB += 3;
-    else if (b.sale_tier === "excluded") scoreB -= 3;
+    // Tier bonus: major +10, minor +0, excluded -10
+    if (a.sale_tier === "major") scoreA += 10;
+    else if (a.sale_tier === "excluded") scoreA -= 10;
+    if (b.sale_tier === "major") scoreB += 10;
+    else if (b.sale_tier === "excluded") scoreB -= 10;
 
-    // Image bonus: +4 for having a valid image
-    if (hasImage(a)) scoreA += 4;
-    if (hasImage(b)) scoreB += 4;
+    // Image bonus: +12 for having a valid image
+    if (hasImage(a)) scoreA += 12;
+    if (hasImage(b)) scoreB += 12;
 
     return scoreB - scoreA;
   });
