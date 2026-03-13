@@ -41,6 +41,7 @@ import PrivacyPage from "./pages/PrivacyPage";
 import NotFound from "./pages/NotFound";
 import BookmarksPage from "./pages/BookmarksPage";
 import BrandPage from "./pages/BrandPage";
+import EventSeriesPage from "./pages/EventSeriesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
