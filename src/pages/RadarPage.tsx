@@ -7,9 +7,10 @@ import SaleCard from "@/components/SaleCard";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import { EventRadarSection } from "@/components/event-radar";
 import { SaleCardSkeleton } from "@/components/skeletons/SaleCardSkeleton";
-import { Radar, Search, X } from "lucide-react";
+import { Radar, Search, X, ChevronDown } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 type StatusFilter = "all" | "live" | "ending_today" | "starting_soon";
 
@@ -28,6 +29,7 @@ export default function RadarPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [platformFilter, setPlatformFilter] = useState<Platform[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
+  const [platformOpen, setPlatformOpen] = useState(false);
 
   const activeSales = useMemo(
     () => sales.filter((s) => getSaleStatus(s) !== "ended"),
@@ -87,7 +89,7 @@ export default function RadarPage() {
       </div>
 
       {/* Filters */}
-      <div className="space-y-2.5">
+      <div className="space-y-2">
         {/* Status */}
         <div className="space-y-1">
           <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">상태</span>
@@ -103,22 +105,7 @@ export default function RadarPage() {
           </div>
         </div>
 
-        {/* Platform */}
-        <div className="space-y-1">
-          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">플랫폼</span>
-          <div className="flex gap-2 flex-wrap">
-            {platforms.filter((p) => p !== "커뮤니티 핫딜").map((p) => (
-              <FilterChip
-                key={p}
-                def={{ label: p, emoji: platformEmojis[p] || "" }}
-                isActive={platformFilter.includes(p)}
-                onClick={() => togglePlatform(p)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Category — reuse QUICK_FILTER_DEFS (skip null + ending_today) */}
+        {/* Category */}
         <div className="space-y-1">
           <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">카테고리</span>
           <div className="flex gap-2 flex-wrap">
@@ -132,6 +119,29 @@ export default function RadarPage() {
             ))}
           </div>
         </div>
+
+        {/* Platform — collapsible */}
+        <Collapsible open={platformOpen} onOpenChange={setPlatformOpen}>
+          <CollapsibleTrigger className="flex items-center gap-1.5 group cursor-pointer py-0.5">
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">플랫폼</span>
+            {platformFilter.length > 0 && (
+              <span className="text-[10px] text-primary font-bold">{platformFilter.length}</span>
+            )}
+            <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${platformOpen ? "rotate-180" : ""}`} />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="flex gap-2 flex-wrap pt-1">
+              {platforms.filter((p) => p !== "커뮤니티 핫딜").map((p) => (
+                <FilterChip
+                  key={p}
+                  def={{ label: p, emoji: platformEmojis[p] || "" }}
+                  isActive={platformFilter.includes(p)}
+                  onClick={() => togglePlatform(p)}
+                />
+              ))}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         {/* Filter summary */}
         {hasFilter && (
