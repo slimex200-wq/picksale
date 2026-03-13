@@ -133,21 +133,21 @@ function useSameBrandEvents(event: EventOccurrence | null) {
   });
 }
 
-function BrandPageLink({ slug, name, onClose }: { slug: string; name: string | null; onClose: () => void }) {
+function NavigationLink({ to, icon: Icon, label, sublabel, onClose }: { to: string; icon: typeof Building2; label: string; sublabel: string; onClose: () => void }) {
   const navigate = useNavigate();
   return (
     <button
-      onClick={() => { onClose(); navigate(`/brands/${slug}`); }}
+      onClick={() => { onClose(); navigate(to); }}
       className="w-full flex items-center gap-3 rounded-xl border border-border/60 px-3.5 py-3 text-left hover:bg-accent/50 hover:border-border transition-colors group"
     >
       <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-        <Building2 className="w-3.5 h-3.5 text-primary" />
+        <Icon className="w-3.5 h-3.5 text-primary" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs font-bold text-card-foreground group-hover:text-primary transition-colors">
-          {name ?? "브랜드"} 페이지 보기
+          {label}
         </p>
-        <p className="text-[10px] text-muted-foreground mt-0.5">모든 이벤트와 시리즈 확인</p>
+        <p className="text-[10px] text-muted-foreground mt-0.5">{sublabel}</p>
       </div>
       <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 group-hover:text-foreground shrink-0 transition-colors" />
     </button>
