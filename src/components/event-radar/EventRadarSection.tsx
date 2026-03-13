@@ -64,13 +64,6 @@ export default function EventRadarSection() {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-lg font-extrabold text-foreground px-1 flex items-center gap-2 tracking-tight">
-        <Radar className="w-5 h-5 text-primary" />
-        이벤트 레이더
-        <span className="text-muted-foreground bg-accent rounded-full px-2 py-0.5 text-[11px] font-semibold">
-          {totalCount}
-        </span>
-      </h2>
 
       {GROUP_DEFS.map((g) => (
         <EventRadarGroup
