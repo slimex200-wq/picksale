@@ -9,10 +9,9 @@ import { EventRadarSection } from "@/components/event-radar";
 import { SaleCardSkeleton } from "@/components/skeletons/SaleCardSkeleton";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import { Input } from "@/components/ui/input";
-import { Radar, Search, X, ChevronDown } from "lucide-react";
+import { Radar, Search, X } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 type StatusFilter = "all" | "live" | "ending_today" | "starting_soon";
 
