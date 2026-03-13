@@ -79,21 +79,14 @@ export default function RadarPage() {
       <PageMeta title="세일 레이더 - PickSale" description="상태별, 플랫폼별, 카테고리별로 전체 세일을 탐색하세요." />
       <CanonicalLink href={window.location.origin + "/radar"} />
 
-      {/* Header */}
-      <div className="flex items-center gap-2.5">
-        <Radar className="w-6 h-6 text-primary" />
-        <div>
-          <h1 className="text-2xl sm:text-3xl text-foreground font-extrabold tracking-tight">세일 레이더</h1>
-          <p className="text-xs text-muted-foreground mt-0.5 font-normal">전체 세일을 필터별로 탐색하세요</p>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="space-y-2">
-        {/* Status */}
-        <div className="space-y-1">
-          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">상태</span>
-          <div className="flex gap-2 flex-wrap">
+      {/* Header + Status filters */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <Radar className="w-6 h-6 text-primary" />
+            <h1 className="text-2xl sm:text-3xl text-foreground font-extrabold tracking-tight">세일 레이더</h1>
+          </div>
+          <div className="flex gap-2 flex-wrap sm:ml-auto">
             {STATUS_OPTIONS.map((opt) => (
               <FilterChip
                 key={opt.key}
@@ -106,31 +99,28 @@ export default function RadarPage() {
         </div>
 
         {/* Category */}
-        <div className="space-y-1">
-          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">카테고리</span>
-          <div className="flex gap-2 flex-wrap">
-            {QUICK_FILTER_DEFS.filter((f) => f.key !== null && f.key !== "ending_today").map((f) => (
-              <FilterChip
-                key={f.key!}
-                def={f}
-                isActive={categoryFilter.includes(f.key!)}
-                onClick={() => toggleCategory(f.key!)}
-              />
-            ))}
-          </div>
+        <div className="flex gap-2 flex-wrap">
+          {QUICK_FILTER_DEFS.filter((f) => f.key !== null && f.key !== "ending_today").map((f) => (
+            <FilterChip
+              key={f.key!}
+              def={f}
+              isActive={categoryFilter.includes(f.key!)}
+              onClick={() => toggleCategory(f.key!)}
+            />
+          ))}
         </div>
 
         {/* Platform — collapsible */}
         <Collapsible open={platformOpen} onOpenChange={setPlatformOpen}>
-          <CollapsibleTrigger className="flex items-center gap-1.5 group cursor-pointer py-0.5">
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">플랫폼</span>
+          <CollapsibleTrigger className="flex items-center gap-1.5 cursor-pointer">
+            <span className="text-[11px] font-medium text-muted-foreground">플랫폼</span>
             {platformFilter.length > 0 && (
               <span className="text-[10px] text-primary font-bold">{platformFilter.length}</span>
             )}
             <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${platformOpen ? "rotate-180" : ""}`} />
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <div className="flex gap-2 flex-wrap pt-1">
+            <div className="flex gap-2 flex-wrap pt-1.5">
               {platforms.filter((p) => p !== "커뮤니티 핫딜").map((p) => (
                 <FilterChip
                   key={p}
