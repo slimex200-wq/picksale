@@ -4,43 +4,33 @@ import { matchesQuickFilter } from "@/data/quickFilterDefs";
 import { useSales } from "@/hooks/useSales";
 import { useUserPreferences } from "@/hooks/useUserPreferences";
 import { useAuth } from "@/hooks/useAuth";
+import { useEventOccurrences, type EventOccurrence } from "@/hooks/useEventOccurrences";
 import SaleCard from "@/components/SaleCard";
-import HeroSaleCard from "@/components/HeroSaleCard";
-import CoverflowCarousel from "@/components/CoverflowCarousel";
-import EditorialBrandCard from "@/components/EditorialBrandCard";
-import PeekCarousel from "@/components/PeekCarousel";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import SaleRankingItem from "@/components/SaleRankingItem";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import HeroStats from "@/components/HeroStats";
 import QuickFilters from "@/components/QuickFilters";
-import PlatformExplorer from "@/components/PlatformExplorer";
-import PlatformSummary from "@/components/PlatformSummary";
 import TrendingCommunity from "@/components/TrendingCommunity";
 
-import { EventRadarSection } from "@/components/event-radar";
 import {
   SaleCardCompactSkeleton,
   SaleCardSkeleton,
-  EditorialCardSkeleton,
   RankingItemSkeleton,
-  PlatformCardSkeleton,
-  CommunityPostSkeleton,
   HeroStatsSkeleton,
 } from "@/components/skeletons/SaleCardSkeleton";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Search, Trophy, ChevronRight, Star, Eye } from "lucide-react";
+import { Search, Trophy, Star, Eye, ChevronRight, Radar, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useBreakpoint } from "@/hooks/useBreakpoint";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
+import { Skeleton } from "@/components/ui/skeleton";
 
-function SectionHeader({ emoji, title, count, moreLink, moreLabel }: { emoji: string; title: string; count?: number; moreLink?: string; moreLabel?: string }) {
+function SectionHeader({ emoji, title, count, moreLink, moreLabel }: { emoji?: string; title: string; count?: number; moreLink?: string; moreLabel?: string; icon?: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between px-1">
       <h2 className="text-foreground flex items-center gap-2 text-lg sm:text-xl font-extrabold tracking-tight">
-        <span>{emoji}</span>
+        {emoji && <span>{emoji}</span>}
         {title}
         {count !== undefined && (
           <span className="text-muted-foreground bg-accent rounded-full px-2 py-0.5 text-[11px] font-semibold">
@@ -57,6 +47,59 @@ function SectionHeader({ emoji, title, count, moreLink, moreLabel }: { emoji: st
   );
 }
 
+/* ── Event Series Summary Card ── */
+function EventSeriesSummary() {
+  const { data: items = [], isLoading } = useEventOccurrences();
+
+  const liveEvents = useMemo(
+    () => items.filter((e) => e.status === "live" || e.status === "scheduled").slice(0, 4),
+    [items]
+  );
+
+  if (isLoading) {
+    return (
+      <section className="space-y-3">
+        <SectionHeader emoji="📅" title="대표 세일 시리즈" />
+        <div className="grid grid-cols-2 gap-2">
+          {[1, 2].map((i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
+        </div>
+      </section>
+    );
+  }
+
+  if (liveEvents.length === 0) return null;
+
+  return (
+    <section className="space-y-3">
+      <SectionHeader emoji="📅" title="대표 세일 시리즈" moreLink="/radar" moreLabel="전체 보기" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {liveEvents.map((ev) => (
+          <Link
+            key={ev.occurrence_id}
+            to={ev.event_slug ? `/series/${ev.event_slug}` : "#"}
+            className="group rounded-xl border border-border/60 bg-card p-3 hover:shadow-sm hover:-translate-y-px transition-all"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className={`w-2 h-2 rounded-full ${ev.status === "live" ? "bg-green-500" : "bg-yellow-400"}`} />
+              <span className="text-[11px] font-semibold text-muted-foreground truncate">
+                {ev.organization_name}
+              </span>
+            </div>
+            <h3 className="text-[13px] font-bold text-card-foreground line-clamp-1 group-hover:text-primary transition-colors">
+              {ev.event_name || ev.occurrence_title}
+            </h3>
+            {ev.max_discount_pct && (
+              <span className="text-[10px] font-bold text-primary mt-0.5 inline-block">
+                최대 {ev.max_discount_pct}%
+              </span>
+            )}
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function Index() {
   const [query, setQuery] = useState("");
   const [heroFilter, setHeroFilter] = useState<SaleStatus | null>(null);
@@ -68,14 +111,12 @@ export default function Index() {
   const { data: sales = [], isLoading } = useSales();
   const { user } = useAuth();
   const { favoritePlatforms, hasFavorites } = useUserPreferences();
-  const bp = useBreakpoint();
 
   const activeSales = useMemo(
     () => sales.filter((s) => getSaleStatus(s) !== "ended"),
     [sales]
   );
 
-  // Apply favorite platforms filter
   const platformFiltered = useMemo(() => {
     if (!hasFavorites || showAll) return activeSales;
     return activeSales.filter((s) => favoritePlatforms.includes(s.platform as any));
@@ -84,9 +125,7 @@ export default function Index() {
   const filtered = useMemo(() => {
     let result = platformFiltered;
     if (heroFilter) result = result.filter((s) => getSaleStatus(s) === heroFilter);
-    if (quickFilter) {
-      result = result.filter((s) => matchesQuickFilter(s, quickFilter));
-    }
+    if (quickFilter) result = result.filter((s) => matchesQuickFilter(s, quickFilter));
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       result = result.filter(
@@ -101,19 +140,23 @@ export default function Index() {
 
   const hasActiveFilter = !!heroFilter || !!quickFilter || !!query.trim();
 
-  const featuredSales = useMemo(
-    () => sortForFeatured(platformFiltered.filter((s) => {
+  // Home summary data
+  const liveSales = useMemo(
+    () => sortByRanking(platformFiltered.filter((s) => {
       const st = getSaleStatus(s);
       return st === "live" || st === "ending_today";
     })).slice(0, 6),
     [platformFiltered]
   );
-  const endingTodaySales = useMemo(
-    () => sortByRanking(platformFiltered.filter((s) => getSaleStatus(s) === "ending_today")),
+  const startingSoonSales = useMemo(
+    () => sortByRanking(platformFiltered.filter((s) => getSaleStatus(s) === "starting_soon")).slice(0, 4),
     [platformFiltered]
   );
-  const liveSales = useMemo(
-    () => sortByRanking(platformFiltered.filter((s) => getSaleStatus(s) === "live")),
+  const nextMajorSales = useMemo(
+    () => sortForFeatured(platformFiltered.filter((s) => {
+      const st = getSaleStatus(s);
+      return st === "live" || st === "ending_today";
+    })).slice(0, 3),
     [platformFiltered]
   );
 
@@ -130,14 +173,12 @@ export default function Index() {
     setHeroFilter(null);
   };
 
-  const rankingSales = useMemo(() => sortByRanking(platformFiltered).slice(0, 10), [platformFiltered]);
-
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-28 sm:pb-24">
+    <div className="max-w-3xl mx-auto px-3 sm:px-4 pt-3 sm:pt-4 pb-28 sm:pb-24">
       <PageMeta title="PickSale - 쇼핑 세일 한눈에" description="의류, 뷰티, 라이프스타일 세일 정보를 한눈에 확인하세요." />
       <CanonicalLink href={window.location.origin + "/"} />
 
-      {/* Search + Filters + Hero */}
+      {/* Search + Filters + Stats */}
       <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
         <div className="space-y-2">
           <div className="relative w-full max-w-xl" ref={searchRef}>
@@ -160,7 +201,6 @@ export default function Index() {
           <HeroStats sales={platformFiltered} activeFilter={heroFilter} onFilterChange={handleHeroFilter} favoritePlatforms={favoritePlatforms} />
         )}
 
-        {/* Favorite platform toggle */}
         {user && hasFavorites && (
           <button
             onClick={() => setShowAll(!showAll)}
@@ -180,14 +220,21 @@ export default function Index() {
       </div>
 
       {isLoading && !sales.length ? (
-        bp === "mobile" ? <MobileLoadingSkeleton /> :
-        bp === "tablet" ? <TabletLoadingSkeleton /> :
-        <DesktopLoadingSkeleton />
+        <div className="space-y-6">
+          <section className="space-y-2">
+            <SectionHeader emoji="🔥" title="다음 주요 세일" />
+            {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
+          </section>
+          <section className="space-y-2">
+            <SectionHeader emoji="🟢" title="진행 중" />
+            {[1, 2, 3].map((i) => <RankingItemSkeleton key={i} />)}
+          </section>
+        </div>
       ) : hasActiveFilter ? (
         <section className="space-y-3">
           <SectionHeader emoji="🔍" title="검색 결과" count={filtered.length} />
           {filtered.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               {filtered.map((sale, i) => <SaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />)}
             </div>
           ) : (
@@ -196,247 +243,60 @@ export default function Index() {
               <p className="text-sm mt-2">검색 결과가 없습니다.</p>
             </div>
           )}
-          <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
         </section>
-      ) : bp === "mobile" ? (
-        <MobileLayout
-          featuredSales={featuredSales}
-          liveSales={liveSales}
-          endingTodaySales={endingTodaySales}
-          rankingSales={rankingSales}
-          activeSales={activeSales}
-        />
-      ) : bp === "tablet" ? (
-        <TabletLayout
-          featuredSales={featuredSales}
-          liveSales={liveSales}
-          endingTodaySales={endingTodaySales}
-          rankingSales={rankingSales}
-          activeSales={activeSales}
-        />
       ) : (
-        <DesktopLayout
-          featuredSales={featuredSales}
-          liveSales={liveSales}
-          endingTodaySales={endingTodaySales}
-          rankingSales={rankingSales}
-          activeSales={activeSales}
-        />
-      )}
-    </div>
-  );
-}
-
-/* ─── Layout Props ─── */
-
-interface LayoutProps {
-  featuredSales: Sale[];
-  liveSales: Sale[];
-  endingTodaySales: Sale[];
-  rankingSales: Sale[];
-  activeSales: Sale[];
-}
-
-/* ─── MOBILE ─── */
-function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
-  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
-
-  return (
-    <div className="space-y-6">
-      {featuredSales.length > 0 && (
-        <section className="space-y-2 -mx-3">
-          <div className="px-3">
-            <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
-          </div>
-          <CoverflowCarousel>
-            {featuredSales.map((sale, i) => (
-              <EditorialBrandCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
-            ))}
-          </CoverflowCarousel>
-        </section>
-      )}
-
-      {endingTodaySales.length > 0 && (
-        <section className="space-y-2">
-          <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
-          <div className="space-y-2">
-            {endingTodaySales.slice(0, 3).map((sale) => (
-              <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {liveSales.length > 0 && (
-        <section className="space-y-2">
-          <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} moreLink="/radar" />
-          <div className="space-y-2">
-            {liveSales.slice(0, 3).map((sale) => (
-              <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {rankingSales.length > 0 && (
-        <section className="space-y-2">
-          <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
-          <div className="space-y-1.5">
-            {rankingSales.slice(0, 3).map((sale, i) => (
-              <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      <EventRadarSection />
-      <PlatformExplorer sales={activeSales} />
-      <TrendingCommunity maxPosts={2} />
-
-      <div>
-        <p className="text-[10px] text-muted-foreground text-center mb-1">광고</p>
-        <div className="flex justify-center py-3">
-          <iframe src="https://coupa.ng/clTGff" width="120" height="240" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url" />
-        </div>
-      </div>
-
-      {activeSales.length === 0 && (
-        <div className="flex flex-col items-center py-10 text-muted-foreground">
-          <Trophy className="w-8 h-8 text-muted-foreground/40" />
-          <p className="text-sm mt-2">진행 중인 세일이 없습니다.</p>
-        </div>
-      )}
-
-      <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
-    </div>
-  );
-}
-
-/* ─── TABLET ─── */
-function TabletLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
-  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
-
-  return (
-    <div className="space-y-6">
-      {featuredSales.length > 0 && (
-        <section className="space-y-3">
-          <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
-          <div className="grid grid-cols-2 gap-3">
-            {featuredSales.slice(0, 4).map((sale, i) => (
-              <SaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      <div className="grid grid-cols-2 gap-4">
-        {endingTodaySales.length > 0 && (
-          <section className="space-y-2">
-            <SectionHeader emoji="⏰" title="오늘 마감" count={endingTodaySales.length} />
-            <div className="space-y-2">
-              {endingTodaySales.slice(0, 4).map((sale) => (
-                <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
-              ))}
-            </div>
-          </section>
-        )}
-        {liveSales.length > 0 && (
-          <section className="space-y-2">
-            <SectionHeader emoji="🟢" title="진행중" count={liveSales.length} moreLink="/radar" />
-            <div className="space-y-2">
-              {liveSales.slice(0, 4).map((sale) => (
-                <SaleCard key={sale.id} sale={sale} compact onOpenDetail={setExpandedSale} />
-              ))}
-            </div>
-          </section>
-        )}
-      </div>
-
-      {rankingSales.length > 0 && (
-        <section className="space-y-2">
-          <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
-          <div className="grid grid-cols-2 gap-1.5">
-            {rankingSales.slice(0, 6).map((sale, i) => (
-              <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      <EventRadarSection />
-      <PlatformExplorer sales={activeSales} />
-      <TrendingCommunity maxPosts={3} />
-
-      {activeSales.length === 0 && (
-        <div className="flex flex-col items-center py-10 text-muted-foreground">
-          <Trophy className="w-8 h-8 text-muted-foreground/40" />
-          <p className="text-sm mt-2">진행 중인 세일이 없습니다.</p>
-        </div>
-      )}
-
-      <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
-    </div>
-  );
-}
-
-/* ─── DESKTOP ─── */
-function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSales, activeSales }: LayoutProps) {
-  const [expandedSale, setExpandedSale] = useState<Sale | null>(null);
-
-  return (
-    <>
-      <div className="grid grid-cols-[1fr_280px] gap-6 min-w-0 items-start">
-        <main className="space-y-8 min-w-0">
-          {rankingSales.length > 0 && (
+        <div className="space-y-6">
+          {/* 1. 다음 주요 세일 */}
+          {nextMajorSales.length > 0 && (
             <section className="space-y-3">
-              <SectionHeader emoji="🏆" title="세일 랭킹" moreLink="/radar" moreLabel="전체 랭킹" />
-              <div className="grid grid-cols-2 gap-1.5">
-                {rankingSales.slice(0, 6).map((sale, i) => (
+              <SectionHeader emoji="🔥" title="다음 주요 세일" count={nextMajorSales.length} moreLink="/radar" />
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+                {nextMajorSales.map((sale, i) => (
+                  <SaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* 2. 대표 세일 시리즈 */}
+          <EventSeriesSummary />
+
+          {/* 3. 진행 중 세일 6개 */}
+          {liveSales.length > 0 && (
+            <section className="space-y-3">
+              <SectionHeader emoji="🟢" title="진행 중 세일" count={liveSales.length} moreLink="/radar" />
+              <div className="space-y-1.5">
+                {liveSales.map((sale, i) => (
                   <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
                 ))}
               </div>
             </section>
           )}
 
-          {featuredSales.length > 0 && (
-            <section style={{ marginBottom: 32 }} className="overflow-hidden">
-              <div className="mb-3">
-                <SectionHeader emoji="🔥" title="추천 세일" count={featuredSales.length} moreLink="/radar" />
-              </div>
-              <CoverflowCarousel>
-                {featuredSales.map((sale, i) => (
-                  <HeroSaleCard key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
+          {/* 4. 곧 시작 세일 4개 */}
+          {startingSoonSales.length > 0 && (
+            <section className="space-y-3">
+              <SectionHeader emoji="🟡" title="곧 시작" count={startingSoonSales.length} moreLink="/radar" />
+              <div className="space-y-1.5">
+                {startingSoonSales.map((sale, i) => (
+                  <SaleRankingItem key={sale.id} sale={sale} rank={i + 1} onOpenDetail={setExpandedSale} />
                 ))}
-              </CoverflowCarousel>
+              </div>
             </section>
           )}
 
-          {(endingTodaySales.length > 0 || liveSales.length > 0) && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 min-w-0 gap-5">
-              {endingTodaySales.length > 0 && (
-                <section className="space-y-3">
-                  <SectionHeader emoji="⏰" title="오늘 마감 세일" count={endingTodaySales.length} />
-                  <PeekCarousel cardWidth={240} gap={16}>
-                    {endingTodaySales.map((sale) => (
-                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
-                    ))}
-                  </PeekCarousel>
-                </section>
-              )}
-              {liveSales.length > 0 && (
-                <section className="space-y-3">
-                  <SectionHeader emoji="🟢" title="진행중 세일" count={liveSales.length} />
-                  <PeekCarousel cardWidth={240} gap={16}>
-                    {liveSales.slice(0, 6).map((sale) => (
-                      <EditorialBrandCard key={sale.id} sale={sale} onOpenDetail={setExpandedSale} />
-                    ))}
-                  </PeekCarousel>
-                </section>
-              )}
-            </div>
-          )}
+          {/* 5. 커뮤니티 트렌딩 */}
+          <TrendingCommunity maxPosts={3} />
 
-          <EventRadarSection />
+          {/* 6. 레이더에서 전체 보기 */}
+          <Link
+            to="/radar"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-border bg-card hover:bg-accent transition-colors text-sm font-semibold text-foreground"
+          >
+            <Radar className="w-4 h-4 text-primary" />
+            레이더에서 전체 세일 보기
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          </Link>
 
           {activeSales.length === 0 && (
             <div className="flex flex-col items-center py-10 text-muted-foreground">
@@ -444,108 +304,10 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
               <p className="text-sm mt-2">진행 중인 세일이 없습니다.</p>
             </div>
           )}
-        </main>
-
-        <aside className="sticky top-[68px] self-start h-fit space-y-4 transition-none bg-background/80 backdrop-blur-sm rounded-xl p-3">
-          <PlatformSummary sales={activeSales} />
-          <div>
-            <p className="text-[10px] text-muted-foreground text-center mb-1">광고</p>
-            <div className="flex justify-center py-3">
-              <iframe src="https://coupa.ng/clTGff" width="120" height="240" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url" />
-            </div>
-          </div>
-        </aside>
-      </div>
+        </div>
+      )}
 
       <ExpandedSaleOverlay sale={expandedSale} onClose={() => setExpandedSale(null)} />
-    </>
-  );
-}
-
-/* ─── Loading Skeletons ─── */
-function MobileLoadingSkeleton() {
-  return (
-    <div className="space-y-6">
-      <section className="space-y-2">
-        <SectionHeader emoji="🔥" title="추천 세일" />
-        {[1, 2, 3, 4].map((i) => <SaleCardCompactSkeleton key={i} />)}
-      </section>
-      <section className="space-y-2">
-        <SectionHeader emoji="⏰" title="오늘 마감 세일" />
-        {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
-      </section>
-      <section className="space-y-2">
-        <SectionHeader emoji="🏆" title="세일 랭킹" />
-        {[1, 2, 3].map((i) => <RankingItemSkeleton key={i} />)}
-      </section>
-      <section className="space-y-2">
-        <SectionHeader emoji="🏬" title="플랫폼별 세일" />
-        <div className="flex gap-2 overflow-hidden">
-          {[1, 2].map((i) => <PlatformCardSkeleton key={i} />)}
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function TabletLoadingSkeleton() {
-  return (
-    <div className="space-y-6">
-      <section className="space-y-3">
-        <SectionHeader emoji="🔥" title="추천 세일" />
-        <div className="grid grid-cols-2 gap-3">
-          {[1, 2, 3, 4].map((i) => <SaleCardSkeleton key={i} />)}
-        </div>
-      </section>
-      <div className="grid grid-cols-2 gap-4">
-        <section className="space-y-2">
-          <SectionHeader emoji="⏰" title="오늘 마감" />
-          {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
-        </section>
-        <section className="space-y-2">
-          <SectionHeader emoji="🟢" title="진행중" />
-          {[1, 2, 3].map((i) => <SaleCardCompactSkeleton key={i} />)}
-        </section>
-      </div>
-      <section className="space-y-2">
-        <SectionHeader emoji="🏆" title="세일 랭킹" />
-        <div className="grid grid-cols-2 gap-1.5">
-          {[1, 2, 3, 4].map((i) => <RankingItemSkeleton key={i} />)}
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function DesktopLoadingSkeleton() {
-  return (
-    <div className="grid grid-cols-[1fr_280px] gap-6 min-w-0">
-      <main className="space-y-8 min-w-0">
-        <section className="space-y-3">
-          <SectionHeader emoji="🏆" title="세일 랭킹" />
-          <div className="grid grid-cols-2 gap-1.5">
-            {[1, 2, 3, 4, 5, 6].map((i) => <RankingItemSkeleton key={i} />)}
-          </div>
-        </section>
-        <section className="space-y-3">
-          <SectionHeader emoji="🔥" title="추천 세일" />
-          <div className="grid grid-cols-3 gap-3">
-            {[1, 2, 3].map((i) => <SaleCardSkeleton key={i} />)}
-          </div>
-        </section>
-        <section className="space-y-3">
-          <SectionHeader emoji="🏬" title="플랫폼별 세일" />
-          <div className="grid grid-cols-4 gap-2">
-            {[1, 2, 3, 4].map((i) => <PlatformCardSkeleton key={i} />)}
-          </div>
-        </section>
-      </main>
-      <aside className="space-y-4">
-        <section className="space-y-3">
-          <SectionHeader emoji="🔥" title="커뮤니티 트렌딩" />
-          {[1, 2, 3, 4, 5].map((i) => <CommunityPostSkeleton key={i} />)}
-        </section>
-      </aside>
     </div>
   );
 }
