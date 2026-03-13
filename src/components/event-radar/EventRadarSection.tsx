@@ -44,10 +44,6 @@ export default function EventRadarSection() {
   if (isLoading) {
     return (
       <section className="space-y-3">
-        <h2 className="text-lg font-extrabold text-foreground px-1 flex items-center gap-2 tracking-tight">
-          <Radar className="w-5 h-5 text-primary" />
-          이벤트 레이더
-        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {[1, 2, 3, 4].map((i) => (
             <Skeleton key={i} className="h-28 rounded-xl" />
