@@ -140,6 +140,9 @@ export default function QuickFilters({ activeFilter, onFilter, sales = [] }: Pro
           </Sheet>
         </>
       )}
+        {/* Spacer so last chip isn't hidden behind fade */}
+        <div className="shrink-0 w-6" aria-hidden />
+        </div>
       </div>
     </div>
   );
