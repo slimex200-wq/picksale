@@ -41,6 +41,7 @@ import PrivacyPage from "./pages/PrivacyPage";
 import NotFound from "./pages/NotFound";
 import BookmarksPage from "./pages/BookmarksPage";
 import BrandPage from "./pages/BrandPage";
+import EventSeriesPage from "./pages/EventSeriesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -78,6 +79,7 @@ const App = () => (
             <Route path="/submit" element={<><Header /><SubmitSale /><Footer /></>} />
             <Route path="/bookmarks" element={<><Header /><BookmarksPage /><Footer /></>} />
             <Route path="/brands/:organizationSlug" element={<><Header /><BrandPage /><Footer /></>} />
+            <Route path="/series/:eventSeriesSlug" element={<><Header /><EventSeriesPage /><Footer /></>} />
             <Route path="/admin" element={<><Header /><AdminGuard /></>}>
               <Route index element={<AdminOverview />} />
               <Route path="all" element={<AdminAll />} />
