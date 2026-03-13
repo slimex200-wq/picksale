@@ -29,6 +29,7 @@ export default function RadarPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [platformFilter, setPlatformFilter] = useState<Platform[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
+  const [platformOpen, setPlatformOpen] = useState(false);
 
   const activeSales = useMemo(
     () => sales.filter((s) => getSaleStatus(s) !== "ended"),
