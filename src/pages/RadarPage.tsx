@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import { useSales } from "@/hooks/useSales";
 import { Sale, getSaleStatus, sortByRanking, Platform, platforms, platformEmojis } from "@/data/salesUtils";
 import { QUICK_FILTER_DEFS, matchesQuickFilter } from "@/data/quickFilterDefs";
@@ -7,6 +7,8 @@ import SaleCard from "@/components/SaleCard";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import { EventRadarSection } from "@/components/event-radar";
 import { SaleCardSkeleton } from "@/components/skeletons/SaleCardSkeleton";
+import SearchSuggestions from "@/components/SearchSuggestions";
+import { Input } from "@/components/ui/input";
 import { Radar, Search, X, ChevronDown } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
@@ -21,8 +23,6 @@ const STATUS_OPTIONS: { key: StatusFilter; label: string; emoji: string }[] = [
   { key: "starting_soon", label: "곧 시작", emoji: "🟡" },
 ];
 
-const CATEGORIES = ["패션", "뷰티", "라이프스타일", "테크", "식품", "스포츠"];
-
 export default function RadarPage() {
   const { data: sales = [], isLoading } = useSales();
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
@@ -30,6 +30,9 @@ export default function RadarPage() {
   const [platformFilter, setPlatformFilter] = useState<Platform[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
   const [platformOpen, setPlatformOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const activeSales = useMemo(
     () => sales.filter((s) => getSaleStatus(s) !== "ended"),
@@ -50,16 +53,26 @@ export default function RadarPage() {
         categoryFilter.some((filterKey) => matchesQuickFilter(s, filterKey))
       );
     }
+    if (query.trim()) {
+      const q = query.trim().toLowerCase();
+      result = result.filter(
+        (s) =>
+          s.sale_name.toLowerCase().includes(q) ||
+          s.platform.toLowerCase().includes(q) ||
+          s.category.some((c) => c.toLowerCase().includes(q))
+      );
+    }
 
     return sortByRanking(result);
-  }, [activeSales, statusFilter, platformFilter, categoryFilter]);
+  }, [activeSales, statusFilter, platformFilter, categoryFilter, query]);
 
-  const hasFilter = statusFilter !== "all" || platformFilter.length > 0 || categoryFilter.length > 0;
+  const hasFilter = statusFilter !== "all" || platformFilter.length > 0 || categoryFilter.length > 0 || query.trim() !== "";
 
   const clearFilters = () => {
     setStatusFilter("all");
     setPlatformFilter([]);
     setCategoryFilter([]);
+    setQuery("");
   };
 
   const togglePlatform = (p: Platform) => {
@@ -74,19 +87,38 @@ export default function RadarPage() {
     );
   };
 
+  const handleSearchSelect = (keyword: string) => {
+    setQuery(keyword);
+    setSearchFocused(false);
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-8 pb-28 sm:pb-24 space-y-6">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-4 pb-28 sm:pb-24 space-y-4">
       <PageMeta title="세일 레이더 - PickSale" description="상태별, 플랫폼별, 카테고리별로 전체 세일을 탐색하세요." />
       <CanonicalLink href={window.location.origin + "/radar"} />
 
-      {/* Header + Status filters */}
-      <div className="space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-          <div className="flex items-center gap-2.5 shrink-0">
-            <Radar className="w-6 h-6 text-primary" />
-            <h1 className="text-2xl sm:text-3xl text-foreground font-extrabold tracking-tight">세일 레이더</h1>
+      {/* Search bar — same style as home */}
+      <div className="relative w-full max-w-xl" ref={searchRef}>
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+          placeholder="브랜드, 세일명, 플랫폼 검색"
+          className="pl-9 rounded-xl bg-card border-border h-11"
+        />
+        {searchFocused && !query.trim() && <SearchSuggestions onSelect={handleSearchSelect} />}
+      </div>
+
+      {/* Title + Status filters */}
+      <div className="space-y-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
+            <Radar className="w-5 h-5 text-primary" />
+            <h1 className="text-xl sm:text-2xl text-foreground font-extrabold tracking-tight">세일 레이더</h1>
           </div>
-          <div className="flex gap-2 flex-wrap sm:ml-auto">
+          <div className="flex gap-1.5 flex-wrap sm:ml-auto">
             {STATUS_OPTIONS.map((opt) => (
               <FilterChip
                 key={opt.key}
@@ -98,8 +130,8 @@ export default function RadarPage() {
           </div>
         </div>
 
-        {/* Category */}
-        <div className="flex gap-2 flex-wrap">
+        {/* Category chips */}
+        <div className="flex gap-1.5 flex-wrap">
           {QUICK_FILTER_DEFS.filter((f) => f.key !== null && f.key !== "ending_today").map((f) => (
             <FilterChip
               key={f.key!}
@@ -110,17 +142,17 @@ export default function RadarPage() {
           ))}
         </div>
 
-        {/* Platform — collapsible */}
+        {/* Platform chips — collapsible */}
         <Collapsible open={platformOpen} onOpenChange={setPlatformOpen}>
-          <CollapsibleTrigger className="flex items-center gap-1.5 cursor-pointer">
-            <span className="text-[11px] font-medium text-muted-foreground">플랫폼</span>
+          <CollapsibleTrigger className="flex items-center gap-1.5 cursor-pointer py-0.5">
+            <span className="text-[11px] font-medium text-muted-foreground">플랫폼 필터</span>
             {platformFilter.length > 0 && (
               <span className="text-[10px] text-primary font-bold">{platformFilter.length}</span>
             )}
             <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${platformOpen ? "rotate-180" : ""}`} />
           </CollapsibleTrigger>
           <CollapsibleContent>
-            <div className="flex gap-2 flex-wrap pt-1.5">
+            <div className="flex gap-1.5 flex-wrap pt-1">
               {platforms.filter((p) => p !== "커뮤니티 핫딜").map((p) => (
                 <FilterChip
                   key={p}
