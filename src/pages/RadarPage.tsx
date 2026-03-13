@@ -45,7 +45,7 @@ export default function RadarPage() {
     }
     if (categoryFilter.length > 0) {
       result = result.filter((s) =>
-        s.category.some((c) => categoryFilter.some((f) => c.toLowerCase().includes(f.toLowerCase())))
+        categoryFilter.some((filterKey) => matchesQuickFilter(s, filterKey))
       );
     }
 
