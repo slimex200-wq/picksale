@@ -28,7 +28,6 @@ export default function RadarPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [platformFilter, setPlatformFilter] = useState<Platform[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
-  const [platformOpen, setPlatformOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
