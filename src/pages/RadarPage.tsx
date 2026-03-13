@@ -9,10 +9,9 @@ import { EventRadarSection } from "@/components/event-radar";
 import { SaleCardSkeleton } from "@/components/skeletons/SaleCardSkeleton";
 import SearchSuggestions from "@/components/SearchSuggestions";
 import { Input } from "@/components/ui/input";
-import { Radar, Search, X, ChevronDown } from "lucide-react";
+import { Radar, Search, X } from "lucide-react";
 import CanonicalLink from "@/components/CanonicalLink";
 import PageMeta from "@/components/PageMeta";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 type StatusFilter = "all" | "live" | "ending_today" | "starting_soon";
 
@@ -29,7 +28,6 @@ export default function RadarPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [platformFilter, setPlatformFilter] = useState<Platform[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
-  const [platformOpen, setPlatformOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -93,11 +91,11 @@ export default function RadarPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-4 pb-28 sm:pb-24 space-y-4">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-3 pb-28 sm:pb-24 space-y-3">
       <PageMeta title="세일 레이더 - PickSale" description="상태별, 플랫폼별, 카테고리별로 전체 세일을 탐색하세요." />
       <CanonicalLink href={window.location.origin + "/radar"} />
 
-      {/* Search bar — same style as home */}
+      {/* 1. Search bar */}
       <div className="relative w-full max-w-xl" ref={searchRef}>
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
@@ -106,78 +104,65 @@ export default function RadarPage() {
           onFocus={() => setSearchFocused(true)}
           onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
           placeholder="브랜드, 세일명, 플랫폼 검색"
-          className="pl-9 rounded-xl bg-card border-border h-11"
+          className="pl-9 rounded-xl bg-card border-border h-10"
         />
         {searchFocused && !query.trim() && <SearchSuggestions onSelect={handleSearchSelect} />}
       </div>
 
-      {/* Title + Status filters */}
-      <div className="space-y-2">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <div className="flex items-center gap-2 shrink-0">
-            <Radar className="w-5 h-5 text-primary" />
-            <h1 className="text-xl sm:text-2xl text-foreground font-extrabold tracking-tight">세일 레이더</h1>
-          </div>
-          <div className="flex gap-1.5 flex-wrap sm:ml-auto">
-            {STATUS_OPTIONS.map((opt) => (
-              <FilterChip
-                key={opt.key}
-                def={{ label: opt.label, emoji: opt.emoji }}
-                isActive={statusFilter === opt.key}
-                onClick={() => setStatusFilter(opt.key)}
-              />
-            ))}
-          </div>
+      {/* 2. Title + Status filters inline */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
+          <Radar className="w-5 h-5 text-primary" />
+          <h1 className="text-lg sm:text-xl text-foreground font-extrabold tracking-tight">세일 레이더</h1>
         </div>
-
-        {/* Category chips */}
         <div className="flex gap-1.5 flex-wrap">
-          {QUICK_FILTER_DEFS.filter((f) => f.key !== null && f.key !== "ending_today").map((f) => (
+          {STATUS_OPTIONS.map((opt) => (
             <FilterChip
-              key={f.key!}
-              def={f}
-              isActive={categoryFilter.includes(f.key!)}
-              onClick={() => toggleCategory(f.key!)}
+              key={opt.key}
+              def={{ label: opt.label, emoji: opt.emoji }}
+              isActive={statusFilter === opt.key}
+              onClick={() => setStatusFilter(opt.key)}
             />
           ))}
         </div>
-
-        {/* Platform chips — collapsible */}
-        <Collapsible open={platformOpen} onOpenChange={setPlatformOpen}>
-          <CollapsibleTrigger className="flex items-center gap-1.5 cursor-pointer py-0.5">
-            <span className="text-[11px] font-medium text-muted-foreground">플랫폼 필터</span>
-            {platformFilter.length > 0 && (
-              <span className="text-[10px] text-primary font-bold">{platformFilter.length}</span>
-            )}
-            <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${platformOpen ? "rotate-180" : ""}`} />
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <div className="flex gap-1.5 flex-wrap pt-1">
-              {platforms.filter((p) => p !== "커뮤니티 핫딜").map((p) => (
-                <FilterChip
-                  key={p}
-                  def={{ label: p, emoji: platformEmojis[p] || "" }}
-                  isActive={platformFilter.includes(p)}
-                  onClick={() => togglePlatform(p)}
-                />
-              ))}
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
-
-        {/* Filter summary */}
-        {hasFilter && (
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] text-muted-foreground">{filtered.length}개 결과</span>
-            <button
-              onClick={clearFilters}
-              className="text-[11px] text-primary hover:underline flex items-center gap-0.5 font-medium"
-            >
-              <X className="w-3 h-3" /> 초기화
-            </button>
-          </div>
-        )}
       </div>
+
+      {/* 3. Category chips */}
+      <div className="flex gap-1.5 flex-wrap">
+        {QUICK_FILTER_DEFS.filter((f) => f.key !== null && f.key !== "ending_today").map((f) => (
+          <FilterChip
+            key={f.key!}
+            def={f}
+            isActive={categoryFilter.includes(f.key!)}
+            onClick={() => toggleCategory(f.key!)}
+          />
+        ))}
+      </div>
+
+      {/* 4. Platform chips */}
+      <div className="flex gap-1.5 flex-wrap">
+        {platforms.filter((p) => p !== "커뮤니티 핫딜").map((p) => (
+          <FilterChip
+            key={p}
+            def={{ label: p, emoji: platformEmojis[p] || "" }}
+            isActive={platformFilter.includes(p)}
+            onClick={() => togglePlatform(p)}
+          />
+        ))}
+      </div>
+
+      {/* Filter summary */}
+      {hasFilter && (
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] text-muted-foreground">{filtered.length}개 결과</span>
+          <button
+            onClick={clearFilters}
+            className="text-[11px] text-primary hover:underline flex items-center gap-0.5 font-medium"
+          >
+            <X className="w-3 h-3" /> 초기화
+          </button>
+        </div>
+      )}
 
       {/* Event Radar */}
       <EventRadarSection />
