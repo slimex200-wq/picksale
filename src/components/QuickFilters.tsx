@@ -148,16 +148,16 @@ export default function QuickFilters({ activeFilter, onFilter, sales = [] }: Pro
   );
 }
 
-/* ── Shared chip component ── */
-function FilterChip({
+/* ── Shared chip component (exported for reuse) ── */
+export function FilterChip({
   def,
   isActive,
   count,
   onClick,
 }: {
-  def: (typeof QUICK_FILTER_DEFS)[number];
+  def: { label: string; emoji: string; dot?: boolean };
   isActive: boolean;
-  count: number;
+  count?: number;
   onClick: () => void;
 }) {
   return (
@@ -176,7 +176,7 @@ function FilterChip({
         <span className="text-sm">{def.emoji}</span>
       )}
       {def.label}
-      {count > 0 && (
+      {count !== undefined && count > 0 && (
         <span className={`text-[11px] tabular-nums ${
           isActive ? "text-primary-foreground/70" : "text-muted-foreground"
         }`}>

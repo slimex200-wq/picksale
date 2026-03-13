@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { useSales } from "@/hooks/useSales";
 import { Sale, getSaleStatus, sortByRanking, Platform, platforms, platformEmojis } from "@/data/salesUtils";
+import { QUICK_FILTER_DEFS, matchesQuickFilter } from "@/data/quickFilterDefs";
+import { FilterChip } from "@/components/QuickFilters";
 import SaleCard from "@/components/SaleCard";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
 import { EventRadarSection } from "@/components/event-radar";
@@ -43,7 +45,7 @@ export default function RadarPage() {
     }
     if (categoryFilter.length > 0) {
       result = result.filter((s) =>
-        s.category.some((c) => categoryFilter.some((f) => c.toLowerCase().includes(f.toLowerCase())))
+        categoryFilter.some((filterKey) => matchesQuickFilter(s, filterKey))
       );
     }
 
@@ -91,18 +93,12 @@ export default function RadarPage() {
           <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">상태</span>
           <div className="flex gap-2 flex-wrap">
             {STATUS_OPTIONS.map((opt) => (
-              <button
+              <FilterChip
                 key={opt.key}
+                def={{ label: opt.label, emoji: opt.emoji }}
+                isActive={statusFilter === opt.key}
                 onClick={() => setStatusFilter(opt.key)}
-                className={`shrink-0 px-3.5 py-2 rounded-full text-[13px] transition-all whitespace-nowrap flex items-center gap-1.5 border ${
-                  statusFilter === opt.key
-                    ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
-                    : "bg-card text-foreground/70 border-border font-medium hover:bg-accent hover:border-border/80"
-                }`}
-              >
-                <span className="text-sm">{opt.emoji}</span>
-                {opt.label}
-              </button>
+              />
             ))}
           </div>
         </div>
@@ -112,38 +108,27 @@ export default function RadarPage() {
           <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">플랫폼</span>
           <div className="flex gap-2 flex-wrap">
             {platforms.filter((p) => p !== "커뮤니티 핫딜").map((p) => (
-              <button
+              <FilterChip
                 key={p}
+                def={{ label: p, emoji: platformEmojis[p] || "" }}
+                isActive={platformFilter.includes(p)}
                 onClick={() => togglePlatform(p)}
-                className={`shrink-0 px-3.5 py-2 rounded-full text-[13px] transition-all whitespace-nowrap flex items-center gap-1.5 border ${
-                  platformFilter.includes(p)
-                    ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
-                    : "bg-card text-foreground/70 border-border font-medium hover:bg-accent hover:border-border/80"
-                }`}
-              >
-                <span className="text-sm">{platformEmojis[p]}</span>
-                {p}
-              </button>
+              />
             ))}
           </div>
         </div>
 
-        {/* Category */}
+        {/* Category — reuse QUICK_FILTER_DEFS (skip null + ending_today) */}
         <div className="space-y-1">
           <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">카테고리</span>
           <div className="flex gap-2 flex-wrap">
-            {CATEGORIES.map((c) => (
-              <button
-                key={c}
-                onClick={() => toggleCategory(c)}
-                className={`shrink-0 px-3.5 py-2 rounded-full text-[13px] transition-all whitespace-nowrap flex items-center gap-1.5 border ${
-                  categoryFilter.includes(c)
-                    ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
-                    : "bg-card text-foreground/70 border-border font-medium hover:bg-accent hover:border-border/80"
-                }`}
-              >
-                {c}
-              </button>
+            {QUICK_FILTER_DEFS.filter((f) => f.key !== null && f.key !== "ending_today").map((f) => (
+              <FilterChip
+                key={f.key!}
+                def={f}
+                isActive={categoryFilter.includes(f.key!)}
+                onClick={() => toggleCategory(f.key!)}
+              />
             ))}
           </div>
         </div>
