@@ -46,9 +46,9 @@ import EventSeriesPage from "./pages/EventSeriesPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
-      refetchOnWindowFocus: false,
+      staleTime: 60 * 1000, // 1 min default
+      gcTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: true,
       placeholderData: keepPreviousData,
     },
   },
