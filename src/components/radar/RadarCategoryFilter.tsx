@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import {
   LayoutGrid,
@@ -13,6 +14,9 @@ import {
   PawPrint,
   type LucideIcon,
 } from "lucide-react";
+import type { Sale } from "@/data/salesUtils";
+import { getSaleStatus } from "@/data/salesUtils";
+import { matchesQuickFilter } from "@/data/quickFilterDefs";
 
 interface CategoryDef {
   key: string | null;
@@ -37,10 +41,22 @@ const CATEGORIES: CategoryDef[] = [
 interface Props {
   selected: string[];
   onChange: (selected: string[]) => void;
+  sales?: Sale[];
 }
 
-export default function RadarCategoryFilter({ selected, onChange }: Props) {
+export default function RadarCategoryFilter({ selected, onChange, sales = [] }: Props) {
   const isAllActive = selected.length === 0;
+
+  const counts = useMemo(() => {
+    const active = sales.filter((s) => getSaleStatus(s) !== "ended");
+    const map: Record<string, number> = { all: active.length };
+    for (const cat of CATEGORIES) {
+      if (cat.key) {
+        map[cat.key] = active.filter((s) => matchesQuickFilter(s, cat.key!)).length;
+      }
+    }
+    return map;
+  }, [sales]);
 
   const handleClick = (key: string | null) => {
     if (key === null) {
@@ -63,6 +79,7 @@ export default function RadarCategoryFilter({ selected, onChange }: Props) {
         {CATEGORIES.map((cat) => {
           const isActive = cat.key === null ? isAllActive : selected.includes(cat.key);
           const Icon = cat.icon;
+          const count = counts[cat.key ?? "all"] ?? 0;
           return (
             <button
               key={cat.key ?? "all"}
@@ -76,6 +93,14 @@ export default function RadarCategoryFilter({ selected, onChange }: Props) {
             >
               <Icon className="w-3.5 h-3.5" />
               {cat.label}
+              {count > 0 && (
+                <span className={cn(
+                  "text-[11px] tabular-nums",
+                  isActive ? "text-primary/60" : "text-muted-foreground/50"
+                )}>
+                  {count}
+                </span>
+              )}
             </button>
           );
         })}

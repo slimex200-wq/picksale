@@ -21,8 +21,7 @@ export default function RadarPlatformFilter({ selected, onChange }: Props) {
       return;
     }
     if (selected.includes(p)) {
-      const next = selected.filter((x) => x !== p);
-      onChange(next);
+      onChange(selected.filter((x) => x !== p));
     } else {
       onChange([...selected, p]);
     }
@@ -30,24 +29,16 @@ export default function RadarPlatformFilter({ selected, onChange }: Props) {
 
   const visible = expanded
     ? VISIBLE_PLATFORMS
-    : VISIBLE_PLATFORMS.slice(0, INITIAL_COUNT - 1); // -1 because "전체" takes one slot
+    : VISIBLE_PLATFORMS.slice(0, INITIAL_COUNT - 1);
+
+  const showToggle = VISIBLE_PLATFORMS.length > INITIAL_COUNT - 1;
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-semibold text-muted-foreground/60 uppercase tracking-[0.08em]">
-          플랫폼
-        </span>
-        {VISIBLE_PLATFORMS.length > INITIAL_COUNT - 1 && (
-          <button
-            onClick={() => setExpanded((p) => !p)}
-            className="text-[11px] text-primary font-medium hover:underline"
-          >
-            {expanded ? "접기" : "더보기"}
-          </button>
-        )}
-      </div>
-      <div className="flex gap-1.5 flex-wrap">
+      <span className="text-[11px] font-semibold text-muted-foreground/60 uppercase tracking-[0.08em]">
+        플랫폼
+      </span>
+      <div className="flex gap-1.5 flex-wrap items-center">
         {/* 전체 chip */}
         <button
           onClick={() => handleClick(null)}
@@ -87,6 +78,14 @@ export default function RadarPlatformFilter({ selected, onChange }: Props) {
             </button>
           );
         })}
+        {showToggle && (
+          <button
+            onClick={() => setExpanded((p) => !p)}
+            className="text-[12px] text-primary font-medium hover:underline whitespace-nowrap"
+          >
+            {expanded ? "접기" : "더보기"}
+          </button>
+        )}
       </div>
     </div>
   );

@@ -101,7 +101,7 @@ export default function RadarPage() {
       </div>
 
       {/* 3. Category chips */}
-      <RadarCategoryFilter selected={categoryFilter} onChange={setCategoryFilter} />
+      <RadarCategoryFilter selected={categoryFilter} onChange={setCategoryFilter} sales={sales} />
 
       {/* 4. Separator */}
       <Separator className="bg-border/40" />
