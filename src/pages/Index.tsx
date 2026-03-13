@@ -293,6 +293,13 @@ function MobileLayout({ featuredSales, liveSales, endingTodaySales, rankingSales
       <PlatformExplorer sales={activeSales} />
       <TrendingCommunity maxPosts={2} />
 
+      <div>
+        <p className="text-[10px] text-muted-foreground text-center mb-1">광고</p>
+        <div className="flex justify-center py-3">
+          <iframe src="https://coupa.ng/clTGff" width="120" height="240" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url" />
+        </div>
+      </div>
+
       {activeSales.length === 0 && (
         <div className="flex flex-col items-center py-10 text-muted-foreground">
           <Trophy className="w-8 h-8 text-muted-foreground/40" />
