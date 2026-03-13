@@ -441,6 +441,12 @@ function DesktopLayout({ featuredSales, liveSales, endingTodaySales, rankingSale
 
         <aside className="sticky top-[68px] self-start h-fit space-y-4 transition-none bg-background/80 backdrop-blur-sm rounded-xl p-3">
           <PlatformSummary sales={activeSales} />
+          <div>
+            <p className="text-[10px] text-muted-foreground text-center mb-1">광고</p>
+            <div className="flex justify-center py-3">
+              <iframe src="https://coupa.ng/clTGff" width="120" height="240" frameBorder="0" scrolling="no" referrerPolicy="unsafe-url" />
+            </div>
+          </div>
         </aside>
       </div>
 
