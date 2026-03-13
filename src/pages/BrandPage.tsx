@@ -366,7 +366,6 @@ export default function BrandPage() {
 
             <SeriesSummarySection
               series={seriesSummaries}
-              onCardClick={setSelectedEvent}
             />
           </div>
 

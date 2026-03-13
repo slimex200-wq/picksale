@@ -396,12 +396,27 @@ export default function ExpandedEventOverlay({ event: initialEvent, onClose }: E
             onItemClick={setEvent}
           />
 
-          {/* ─── Brand Page Link ─── */}
-          {event.organization_slug && (
-            <div className="border-t border-border/40 pt-4">
-              <BrandPageLink slug={event.organization_slug} name={event.organization_name} onClose={onClose} />
-            </div>
-          )}
+          {/* ─── Series & Brand Page Links ─── */}
+          <div className="border-t border-border/40 pt-4 space-y-1.5">
+            {event.event_slug && (
+              <NavigationLink
+                to={`/series/${event.event_slug}`}
+                icon={Layers}
+                label={`${event.event_name ?? "시리즈"} 페이지 보기`}
+                sublabel="연도별 기록과 다음 예상 시기 확인"
+                onClose={onClose}
+              />
+            )}
+            {event.organization_slug && (
+              <NavigationLink
+                to={`/brands/${event.organization_slug}`}
+                icon={Building2}
+                label={`${event.organization_name ?? "브랜드"} 페이지 보기`}
+                sublabel="모든 이벤트와 시리즈 확인"
+                onClose={onClose}
+              />
+            )}
+          </div>
         </div>
       </div>
 
