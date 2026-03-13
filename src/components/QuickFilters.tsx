@@ -155,7 +155,7 @@ export function FilterChip({
   count,
   onClick,
 }: {
-  def: { label: string; emoji: string; dot?: boolean };
+  def: { label: string; emoji: string; dot?: boolean; dotColor?: string };
   isActive: boolean;
   count?: number;
   onClick: () => void;
@@ -171,7 +171,13 @@ export function FilterChip({
       }`}
     >
       {def.dot ? (
-        <span className={`w-1.5 h-1.5 rounded-full animate-closing-pulse ${isActive ? "bg-primary-foreground" : "bg-closing-today"}`} />
+        <span
+          className="w-1.5 h-1.5 rounded-full animate-closing-pulse"
+          style={{
+            backgroundColor: isActive ? undefined : def.dotColor,
+          }}
+          {...(isActive ? { className: "w-1.5 h-1.5 rounded-full animate-closing-pulse bg-primary-foreground" } : {})}
+        />
       ) : (
         <span className="text-sm">{def.emoji}</span>
       )}
