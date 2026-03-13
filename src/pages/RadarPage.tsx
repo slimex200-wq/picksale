@@ -85,22 +85,22 @@ export default function RadarPage() {
       </div>
 
       {/* Filters */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {/* Status */}
         <div className="space-y-1">
-          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">상태</span>
-          <div className="flex gap-1.5 flex-wrap">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">상태</span>
+          <div className="flex gap-2 flex-wrap">
             {STATUS_OPTIONS.map((opt) => (
               <button
                 key={opt.key}
                 onClick={() => setStatusFilter(opt.key)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-1 ${
+                className={`shrink-0 px-3.5 py-2 rounded-full text-[13px] transition-all whitespace-nowrap flex items-center gap-1.5 border ${
                   statusFilter === opt.key
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
+                    : "bg-card text-foreground/70 border-border font-medium hover:bg-accent hover:border-border/80"
                 }`}
               >
-                <span className="text-[10px]">{opt.emoji}</span>
+                <span className="text-sm">{opt.emoji}</span>
                 {opt.label}
               </button>
             ))}
@@ -109,19 +109,19 @@ export default function RadarPage() {
 
         {/* Platform */}
         <div className="space-y-1">
-          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">플랫폼</span>
-          <div className="flex gap-1.5 flex-wrap">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">플랫폼</span>
+          <div className="flex gap-2 flex-wrap">
             {platforms.filter((p) => p !== "커뮤니티 핫딜").map((p) => (
               <button
                 key={p}
                 onClick={() => togglePlatform(p)}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all flex items-center gap-1 whitespace-nowrap border ${
+                className={`shrink-0 px-3.5 py-2 rounded-full text-[13px] transition-all whitespace-nowrap flex items-center gap-1.5 border ${
                   platformFilter.includes(p)
-                    ? "bg-primary/10 text-primary border-primary/30 font-semibold"
-                    : "bg-transparent text-foreground/60 border-border hover:bg-accent hover:text-foreground/80"
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
+                    : "bg-card text-foreground/70 border-border font-medium hover:bg-accent hover:border-border/80"
                 }`}
               >
-                <span className="text-xs">{platformEmojis[p]}</span>
+                <span className="text-sm">{platformEmojis[p]}</span>
                 {p}
               </button>
             ))}
@@ -130,16 +130,16 @@ export default function RadarPage() {
 
         {/* Category */}
         <div className="space-y-1">
-          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">카테고리</span>
-          <div className="flex gap-1.5 flex-wrap">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider pl-0.5">카테고리</span>
+          <div className="flex gap-2 flex-wrap">
             {CATEGORIES.map((c) => (
               <button
                 key={c}
                 onClick={() => toggleCategory(c)}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all whitespace-nowrap border ${
+                className={`shrink-0 px-3.5 py-2 rounded-full text-[13px] transition-all whitespace-nowrap flex items-center gap-1.5 border ${
                   categoryFilter.includes(c)
-                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                    : "bg-card text-foreground/70 border-border hover:bg-accent hover:border-border/80"
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm font-bold"
+                    : "bg-card text-foreground/70 border-border font-medium hover:bg-accent hover:border-border/80"
                 }`}
               >
                 {c}
