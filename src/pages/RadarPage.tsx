@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useSales } from "@/hooks/useSales";
 import { Sale, getSaleStatus, sortByRanking, Platform, platforms, platformEmojis } from "@/data/salesUtils";
-import { QUICK_FILTER_DEFS } from "@/data/quickFilterDefs";
+import { QUICK_FILTER_DEFS, matchesQuickFilter } from "@/data/quickFilterDefs";
 import { FilterChip } from "@/components/QuickFilters";
 import SaleCard from "@/components/SaleCard";
 import ExpandedSaleOverlay from "@/components/ExpandedSaleOverlay";
