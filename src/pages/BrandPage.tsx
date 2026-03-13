@@ -155,10 +155,8 @@ function SeriesCard({ series }: { series: SeriesSummary }) {
 // ── Series Summary Section ──
 function SeriesSummarySection({
   series,
-  onCardClick,
 }: {
   series: SeriesSummary[];
-  onCardClick: (item: EventOccurrence) => void;
 }) {
   if (series.length === 0) return null;
 
@@ -176,7 +174,6 @@ function SeriesSummarySection({
           <SeriesCard
             key={s.latestOccurrence.event_series_id}
             series={s}
-            onClick={() => onCardClick(s.latestOccurrence)}
           />
         ))}
       </div>
