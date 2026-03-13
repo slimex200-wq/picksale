@@ -2,11 +2,11 @@ import { FilterChip } from "@/components/QuickFilters";
 
 export type StatusFilter = "all" | "live" | "ending_today" | "starting_soon";
 
-const STATUS_DEFS: { key: StatusFilter; label: string; emoji: string; dot?: boolean }[] = [
+const STATUS_DEFS: { key: StatusFilter; label: string; emoji: string; dot?: boolean; dotColor?: string }[] = [
   { key: "all", label: "전체", emoji: "🛍" },
-  { key: "live", label: "진행중", emoji: "", dot: true },
-  { key: "ending_today", label: "오늘 마감", emoji: "", dot: true },
-  { key: "starting_soon", label: "곧 시작", emoji: "", dot: true },
+  { key: "live", label: "진행중", emoji: "", dot: true, dotColor: "#22c55e" },
+  { key: "ending_today", label: "오늘 마감", emoji: "", dot: true, dotColor: "#ef4444" },
+  { key: "starting_soon", label: "곧 시작", emoji: "", dot: true, dotColor: "#f59e0b" },
 ];
 
 interface Props {

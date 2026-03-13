@@ -172,11 +172,8 @@ export function FilterChip({
     >
       {def.dot ? (
         <span
-          className="w-1.5 h-1.5 rounded-full animate-closing-pulse"
-          style={{
-            backgroundColor: isActive ? undefined : def.dotColor,
-          }}
-          {...(isActive ? { className: "w-1.5 h-1.5 rounded-full animate-closing-pulse bg-primary-foreground" } : {})}
+          className={`w-1.5 h-1.5 rounded-full animate-closing-pulse ${isActive ? "bg-primary-foreground" : (!def.dotColor ? "bg-closing-today" : "")}`}
+          style={!isActive && def.dotColor ? { backgroundColor: def.dotColor } : undefined}
         />
       ) : (
         <span className="text-sm">{def.emoji}</span>
