@@ -140,6 +140,7 @@ export default function QuickFilters({ activeFilter, onFilter, sales = [] }: Pro
           </Sheet>
         </>
       )}
+      </div>
     </div>
   );
 }
