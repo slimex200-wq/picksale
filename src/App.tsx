@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider, keepPreviousData } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { useRealtimeInvalidation } from "@/hooks/useRealtimeInvalidation";
 import { LoginGateProvider } from "@/hooks/useLoginGate";
 import LoginPrompt from "@/components/LoginPrompt";
 import Header from "@/components/Header";
@@ -46,18 +47,24 @@ import EventSeriesPage from "./pages/EventSeriesPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
-      refetchOnWindowFocus: false,
+      staleTime: 60 * 1000, // 1 min default
+      gcTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: true,
       placeholderData: keepPreviousData,
     },
   },
 });
 
+function RealtimeSync() {
+  useRealtimeInvalidation();
+  return null;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
+        <RealtimeSync />
         <Toaster />
         <Sonner />
         <BrowserRouter>

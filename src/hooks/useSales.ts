@@ -22,9 +22,9 @@ export function useSales() {
       if (error) throw error;
       return (data ?? []).map(mapRow);
     },
-    staleTime: 5 * 60 * 1000, // 5 min
-    gcTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
+    staleTime: 60 * 1000, // 1 min
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
   });
 }
 
