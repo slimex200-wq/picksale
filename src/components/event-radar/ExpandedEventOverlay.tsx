@@ -133,21 +133,21 @@ function useSameBrandEvents(event: EventOccurrence | null) {
   });
 }
 
-function BrandPageLink({ slug, name, onClose }: { slug: string; name: string | null; onClose: () => void }) {
+function NavigationLink({ to, icon: Icon, label, sublabel, onClose }: { to: string; icon: typeof Building2; label: string; sublabel: string; onClose: () => void }) {
   const navigate = useNavigate();
   return (
     <button
-      onClick={() => { onClose(); navigate(`/brands/${slug}`); }}
+      onClick={() => { onClose(); navigate(to); }}
       className="w-full flex items-center gap-3 rounded-xl border border-border/60 px-3.5 py-3 text-left hover:bg-accent/50 hover:border-border transition-colors group"
     >
       <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-        <Building2 className="w-3.5 h-3.5 text-primary" />
+        <Icon className="w-3.5 h-3.5 text-primary" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs font-bold text-card-foreground group-hover:text-primary transition-colors">
-          {name ?? "브랜드"} 페이지 보기
+          {label}
         </p>
-        <p className="text-[10px] text-muted-foreground mt-0.5">모든 이벤트와 시리즈 확인</p>
+        <p className="text-[10px] text-muted-foreground mt-0.5">{sublabel}</p>
       </div>
       <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 group-hover:text-foreground shrink-0 transition-colors" />
     </button>
@@ -396,12 +396,27 @@ export default function ExpandedEventOverlay({ event: initialEvent, onClose }: E
             onItemClick={setEvent}
           />
 
-          {/* ─── Brand Page Link ─── */}
-          {event.organization_slug && (
-            <div className="border-t border-border/40 pt-4">
-              <BrandPageLink slug={event.organization_slug} name={event.organization_name} onClose={onClose} />
-            </div>
-          )}
+          {/* ─── Series & Brand Page Links ─── */}
+          <div className="border-t border-border/40 pt-4 space-y-1.5">
+            {event.event_slug && (
+              <NavigationLink
+                to={`/series/${event.event_slug}`}
+                icon={Layers}
+                label={`${event.event_name ?? "시리즈"} 페이지 보기`}
+                sublabel="연도별 기록과 다음 예상 시기 확인"
+                onClose={onClose}
+              />
+            )}
+            {event.organization_slug && (
+              <NavigationLink
+                to={`/brands/${event.organization_slug}`}
+                icon={Building2}
+                label={`${event.organization_name ?? "브랜드"} 페이지 보기`}
+                sublabel="모든 이벤트와 시리즈 확인"
+                onClose={onClose}
+              />
+            )}
+          </div>
         </div>
       </div>
 

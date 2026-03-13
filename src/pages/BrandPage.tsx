@@ -116,16 +116,17 @@ function CompactEndedRow({ item, onClick }: { item: EventOccurrence; onClick: ()
 }
 
 // ── Series Summary Card ──
-function SeriesCard({ series, onClick }: { series: SeriesSummary; onClick: () => void }) {
+function SeriesCard({ series }: { series: SeriesSummary }) {
+  const slug = series.latestOccurrence.event_slug;
   const statusLabel = series.latestOccurrence.status === "live" ? "진행 중"
     : series.latestOccurrence.status === "scheduled" ? "예정" : "종료";
   const statusDot = series.latestOccurrence.status === "live" ? "bg-green-500"
     : series.latestOccurrence.status === "scheduled" ? "bg-yellow-500" : "bg-muted-foreground/30";
 
   return (
-    <button
-      onClick={onClick}
-      className="w-full text-left rounded-xl border border-border/60 bg-card p-3.5 hover:shadow-sm hover:border-border transition-all group"
+    <Link
+      to={slug ? `/series/${slug}` : "#"}
+      className="w-full text-left rounded-xl border border-border/60 bg-card p-3.5 hover:shadow-sm hover:border-border transition-all group block"
     >
       <div className="flex items-center justify-between gap-2 mb-1.5">
         <h3 className="text-[13px] font-bold text-card-foreground tracking-tight line-clamp-1 group-hover:text-primary transition-colors">
@@ -147,17 +148,15 @@ function SeriesCard({ series, onClick }: { series: SeriesSummary; onClick: () =>
           {series.occurrenceCount}회 기록
         </span>
       </div>
-    </button>
+    </Link>
   );
 }
 
 // ── Series Summary Section ──
 function SeriesSummarySection({
   series,
-  onCardClick,
 }: {
   series: SeriesSummary[];
-  onCardClick: (item: EventOccurrence) => void;
 }) {
   if (series.length === 0) return null;
 
@@ -175,7 +174,6 @@ function SeriesSummarySection({
           <SeriesCard
             key={s.latestOccurrence.event_series_id}
             series={s}
-            onClick={() => onCardClick(s.latestOccurrence)}
           />
         ))}
       </div>
@@ -368,7 +366,6 @@ export default function BrandPage() {
 
             <SeriesSummarySection
               series={seriesSummaries}
-              onCardClick={setSelectedEvent}
             />
           </div>
 
