@@ -57,15 +57,15 @@ export default function QuickFilters({ activeFilter, onFilter, sales = [] }: Pro
   };
 
   return (
-    <div className="relative -mx-3 sm:-mx-4 px-3 sm:px-4">
-      {/* Left fade */}
-      <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 z-10 bg-gradient-to-r from-background to-transparent" />
-      {/* Right fade */}
-      <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 z-10 bg-gradient-to-l from-background to-transparent" />
+    <div className="relative -mx-3 sm:-mx-4">
+      {/* Right fade hint */}
+      <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 z-10 bg-gradient-to-l from-background to-transparent" />
       <div
         ref={scrollRef}
-        className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide flex-nowrap pr-6"
+        className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide flex-nowrap px-3 sm:px-4"
+        style={{ minWidth: 0 }}
       >
+        <div className="flex gap-2 flex-nowrap" style={{ minWidth: "max-content" }}>
       {visibleFilters.map((f) => {
         const isActive = activeFilter === f.key;
         const count = counts[f.key ?? "all"] ?? 0;
@@ -140,6 +140,9 @@ export default function QuickFilters({ activeFilter, onFilter, sales = [] }: Pro
           </Sheet>
         </>
       )}
+        {/* Spacer so last chip isn't hidden behind fade */}
+        <div className="shrink-0 w-6" aria-hidden />
+        </div>
       </div>
     </div>
   );

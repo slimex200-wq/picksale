@@ -84,32 +84,32 @@ export default function RadarPage() {
         </div>
       </div>
 
-      {/* Filter Panel */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-4">
-        {/* Status — segment control style */}
-        <div className="space-y-1.5">
-          <span className="text-[11px] font-semibold text-muted-foreground tracking-wide uppercase">상태</span>
-          <div className="inline-flex rounded-lg bg-muted p-0.5 gap-0.5">
+      {/* Filters */}
+      <div className="space-y-3">
+        {/* Status */}
+        <div className="space-y-1">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">상태</span>
+          <div className="flex gap-1.5 flex-wrap">
             {STATUS_OPTIONS.map((opt) => (
               <button
                 key={opt.key}
                 onClick={() => setStatusFilter(opt.key)}
-                className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-1 ${
                   statusFilter === opt.key
                     ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                 }`}
               >
-                <span className="text-[11px]">{opt.emoji}</span>
+                <span className="text-[10px]">{opt.emoji}</span>
                 {opt.label}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Platform — subtle chips */}
-        <div className="space-y-1.5">
-          <span className="text-[11px] font-semibold text-muted-foreground tracking-wide uppercase">플랫폼</span>
+        {/* Platform */}
+        <div className="space-y-1">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">플랫폼</span>
           <div className="flex gap-1.5 flex-wrap">
             {platforms.filter((p) => p !== "커뮤니티 핫딜").map((p) => (
               <button
@@ -128,15 +128,15 @@ export default function RadarPage() {
           </div>
         </div>
 
-        {/* Category — clear active state */}
-        <div className="space-y-1.5">
-          <span className="text-[11px] font-semibold text-muted-foreground tracking-wide uppercase">카테고리</span>
+        {/* Category */}
+        <div className="space-y-1">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">카테고리</span>
           <div className="flex gap-1.5 flex-wrap">
             {CATEGORIES.map((c) => (
               <button
                 key={c}
                 onClick={() => toggleCategory(c)}
-                className={`px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all whitespace-nowrap border ${
+                className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all whitespace-nowrap border ${
                   categoryFilter.includes(c)
                     ? "bg-primary text-primary-foreground border-primary shadow-sm"
                     : "bg-card text-foreground/70 border-border hover:bg-accent hover:border-border/80"
@@ -148,15 +148,15 @@ export default function RadarPage() {
           </div>
         </div>
 
-        {/* Active filter summary */}
+        {/* Filter summary */}
         {hasFilter && (
-          <div className="flex items-center gap-2 pt-1 border-t border-border">
-            <span className="text-xs text-muted-foreground">{filtered.length}개 결과</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-muted-foreground">{filtered.length}개 결과</span>
             <button
               onClick={clearFilters}
-              className="text-xs text-primary hover:underline flex items-center gap-0.5 font-medium"
+              className="text-[11px] text-primary hover:underline flex items-center gap-0.5 font-medium"
             >
-              <X className="w-3 h-3" /> 필터 초기화
+              <X className="w-3 h-3" /> 초기화
             </button>
           </div>
         )}
