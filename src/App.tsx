@@ -55,10 +55,16 @@ const queryClient = new QueryClient({
   },
 });
 
+function RealtimeSync() {
+  useRealtimeInvalidation();
+  return null;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
+        <RealtimeSync />
         <Toaster />
         <Sonner />
         <BrowserRouter>
