@@ -43,7 +43,7 @@ export function useEventOccurrences() {
       if (error) throw error;
       return (data ?? []) as EventOccurrence[];
     },
-    staleTime: 2 * 60 * 1000,
+    staleTime: 60 * 1000,
     refetchOnWindowFocus: true,
   });
 }
